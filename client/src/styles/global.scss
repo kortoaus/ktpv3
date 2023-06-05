@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './v1/components.scss';
+@import './v1/DefaultListView.scss';
+
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+main{
+  height: 100%;
+  overflow-y: scroll;
+}
+
+h1{
+  @apply text-3xl font-semibold;
+}
+
+.fccc {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.f-inline{
+  @apply flex items-center
+}
+

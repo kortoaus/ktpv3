@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",                               
+    "module": "commonjs",              
+    "outDir":"dist",
+    "lib": [
+      "ES2021.String"
+    ],                 
+    "strict": true,    "esModuleInterop": true,  
+    "skipLibCheck": true,                          
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@libs/*": ["src/libs/*"],
+      "@controller/*": ["src/controller/*"],
+      "@routes/*": ["src/routes/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+  },
+  }
+}

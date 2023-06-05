@@ -1,0 +1,47 @@
+
+.defaultForm{
+  @apply flex flex-col gap-4 w-full;
+  .form-element-group{
+    @apply flex flex-col;
+    label{
+      @apply font-medium mb-1;
+    }
+    input{
+      @apply p-2 border-gray-300 border rounded-md;
+      &:disabled{
+        @apply bg-gray-100;
+      }
+      &.actived{
+        @apply text-white bg-blue-500
+      }
+    }
+  }
+  button{
+    @apply h-14 bg-green-500 text-white rounded-md;
+  }
+  .err{
+    @apply mt-1 text-red-500;
+  }
+}
+
+.NumPad{
+  @apply grid grid-cols-3;
+  button{
+    @apply  h-16 text-xl border;
+  }
+}
+
+.titleScreen{
+  @apply grid grid-cols-2 grid-rows-2 h-full w-full gap-4 p-4;
+  button{
+    @apply fccc rounded-md text-white w-full h-full;
+  }
+}
+
+.configContainer{
+  @apply h-full p-8;
+}
+
+.BasicBtn {
+  @apply flex items-center gap-1 border px-4 py-1 rounded-md;
+}

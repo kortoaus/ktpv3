@@ -1,4 +1,30 @@
 /**
+ * Model Shop
+ *
+ */
+export type Shop = {
+  id: number;
+  abn: string;
+  code: string;
+  name: string;
+  phone: string;
+  logo: string;
+  address1: string;
+  address2: string;
+  suburb: string;
+  state: string;
+  postcode: string;
+  createdAt: Date;
+  updatedAt: Date;
+  creditRate: number;
+  cashPointRate: number;
+  creditPointRate: number;
+  apiKey: string;
+  customerKey: string;
+  holidayCharge: number;
+};
+
+/**
  * Model Printer
  *
  */
@@ -39,6 +65,7 @@ export type Category = {
   createdAt: Date;
   updatedAt: Date;
   name: string;
+  index: number;
 };
 
 /**

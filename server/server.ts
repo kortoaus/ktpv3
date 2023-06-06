@@ -9,11 +9,10 @@ const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT;
 
-import client from "@libs/prismaClient";
-import { authMid } from "@middlewares/auth";
 import authRouter from "@routes/v1/authRouter";
 import shiftRouter from "@routes/v1/shiftRouter";
 import tableRouter from "@routes/v1/tableRouter";
+import categoryRouter from "@routes/v1/categoryRouter";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -47,6 +46,7 @@ const apiRoot = `/api`;
 app.use(`${apiRoot}/v1/auth`, authRouter);
 app.use(`${apiRoot}/v1/shift`, shiftRouter);
 app.use(`${apiRoot}/v1/table`, tableRouter);
+app.use(`${apiRoot}/v1/category`, categoryRouter);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

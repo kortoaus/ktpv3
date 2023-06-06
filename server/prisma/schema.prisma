@@ -26,6 +26,7 @@ model Shop {
   creditPointRate Float    @default(1)
   apiKey          String   @default("")
   customerKey     String   @default("")
+  holidayCharge   Float    @default(10)
 }
 
 model Printer {
@@ -59,6 +60,8 @@ model Category {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   name      String
+  index     Int       @default(999)
+  archived  Boolean   @default(false)
   Product   Product[]
 }
 

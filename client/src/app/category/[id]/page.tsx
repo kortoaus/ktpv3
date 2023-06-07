@@ -45,7 +45,7 @@ export default function CategoryDetailPage({ params: { id } }: Props) {
   }, [id]);
 
   return (
-    <main className="fccc">
+    <main className="">
       {loading && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && data && <CategoryUpdate data={data} />}

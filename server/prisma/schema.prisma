@@ -70,14 +70,16 @@ model BuffetClass {
   mId       Int?
   name      String
   priceA    Float    @default(0)
-  priceWA   Float    @default(0)
   priceB    Float    @default(0)
-  priceWB   Float    @default(0)
   priceC    Float    @default(0)
-  priceWC   Float    @default(0)
+  h_priceA  Float    @default(0)
+  h_priceB  Float    @default(0)
+  h_priceC  Float    @default(0)
   nameA     String   @default("A")
   nameB     String   @default("B")
   nameC     String   @default("C")
+  stayTime  Int      @default(90)
+  orderTime Int      @default(90)
   archived  Boolean  @default(false)
   createdAt DateTime @default(now())
 }

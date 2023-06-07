@@ -71,7 +71,7 @@ export default function TableContainerUpdate({ data }: Props) {
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md mx-auto">
       {loading ? (
         <DataLoading />
       ) : (

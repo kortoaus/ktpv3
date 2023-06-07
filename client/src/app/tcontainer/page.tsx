@@ -37,7 +37,7 @@ export default function TContainerListPage() {
   }, []);
 
   return (
-    <main className="fccc">
+    <main className="">
       {loading && (
         <div className="h-full fccc">
           <CircularProgress />

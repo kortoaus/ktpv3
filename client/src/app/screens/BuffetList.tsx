@@ -1,20 +1,20 @@
 "use client";
 
-import CategoryListCard from "@/components/CategoryListCard";
+import BuffetListCard from "@/components/BuffetListCard";
 import PlusIcon from "@/components/icons/PlusIcon";
-import { CategoryWithProductCount } from "@/types/Product";
+import { BuffetClass } from "@/types/model";
 import Link from "next/link";
 import React from "react";
 
 type Props = {
-  list: CategoryWithProductCount[];
+  list: BuffetClass[];
 };
 
-export default function CategoryList({ list }: Props) {
+export default function BuffetList({ list }: Props) {
   return (
-    <div className="ListContainer max-w-xl mx-auto">
-      <div className="ToolbarContainer pb-4 border-b ">
-        <Link href="/category/new">
+    <div className="ListContainer max-w-md mx-auto">
+      <div className="ToolbarContainer pb-4">
+        <Link href="/buffet/new">
           <button className="BasicBtn bg-purple-500 text-white border-purple-500">
             <PlusIcon />
             <span>Add New</span>
@@ -23,7 +23,7 @@ export default function CategoryList({ list }: Props) {
       </div>
       <div className="List">
         {list.map((data) => {
-          return <CategoryListCard key={data.id} data={data} />;
+          return <BuffetListCard key={data.id} data={data} />;
         })}
       </div>
     </div>

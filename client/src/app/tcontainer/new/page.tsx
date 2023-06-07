@@ -5,7 +5,7 @@ type Props = {};
 
 export default function TContainerDetailPage({}: Props) {
   return (
-    <main className="fccc">
+    <main className="">
       <TableContainerUpdate />
     </main>
   );

@@ -1,12 +1,12 @@
 "use client";
 import { ApiResultType } from "@/types/api";
-import { TableContainer } from "@/types/model";
+import { BuffetClass } from "@/types/model";
 import React, { useEffect, useState } from "react";
-import TableContainerUpdate from "@/app/screens/TableContainerUpdate";
 import DataLoading from "@/components/ui/DataLoading";
+import BuffetUpdate from "@/app/screens/BuffetUpdate";
 
 type ResultProps = ApiResultType & {
-  result?: TableContainer;
+  result?: BuffetClass;
 };
 
 type Props = {
@@ -15,16 +15,14 @@ type Props = {
   };
 };
 
-export default function TContainerDetailPage({ params: { id } }: Props) {
-  const [data, setData] = useState<TableContainer>();
+export default function BuffetDetailPage({ params: { id } }: Props) {
+  const [data, setData] = useState<BuffetClass>();
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
   useEffect(() => {
     const getData = async () => {
-      const { ok, result, msg }: ResultProps = await fetch(
-        `/api/tcontainer/${id}`
-      )
+      const { ok, result, msg }: ResultProps = await fetch(`/api/buffet/${id}`)
         .then((res) => res.json())
         .then((data) => data)
         .finally(() => setLoading(false));
@@ -48,7 +46,7 @@ export default function TContainerDetailPage({ params: { id } }: Props) {
     <main className="">
       {loading && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
-      {!loading && data && <TableContainerUpdate data={data} />}
+      {!loading && data && <BuffetUpdate data={data} />}
     </main>
   );
 }

@@ -19,6 +19,32 @@ h1{
   @apply text-3xl font-semibold;
 }
 
+h2{
+  @apply text-2xl font-semibold;
+}
+
+h3{
+  @apply text-xl font-semibold;
+}
+
+table{
+  @apply w-full border-collapse;
+  thead{
+    @apply bg-gray-100;
+  }
+  th{
+    @apply font-medium text-left text-sm;
+  }
+  th, td{
+    @apply border p-1;
+  }
+  td{
+    &.number{
+      @apply text-right;
+    }
+  }
+}
+
 .fccc {
   display: flex;
   flex-direction: column;

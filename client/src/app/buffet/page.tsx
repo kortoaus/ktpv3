@@ -1,30 +1,22 @@
 "use client";
 import { ApiResultType } from "@/types/api";
-import { TableContainer } from "@/types/model";
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import TableContainerUpdate from "@/app/screens/TableContainerUpdate";
-import DataLoading from "@/components/ui/DataLoading";
+import BuffetList from "../screens/BuffetList";
+import { BuffetClass } from "@/types/model";
 
 type ResultProps = ApiResultType & {
-  result?: TableContainer;
+  result: BuffetClass[];
 };
 
-type Props = {
-  params: {
-    id: string;
-  };
-};
-
-export default function TContainerDetailPage({ params: { id } }: Props) {
-  const [data, setData] = useState<TableContainer>();
+export default function BuffetListPage() {
+  const [data, setData] = useState<BuffetClass[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
   useEffect(() => {
     const getData = async () => {
-      const { ok, result, msg }: ResultProps = await fetch(
-        `/api/tcontainer/${id}`
-      )
+      const { ok, result, msg }: ResultProps = await fetch("/api/buffet")
         .then((res) => res.json())
         .then((data) => data)
         .finally(() => setLoading(false));
@@ -37,18 +29,22 @@ export default function TContainerDetailPage({ params: { id } }: Props) {
       if (!ok && msg) {
         setErr(msg);
       }
-      setData(undefined);
+      setData([]);
       return;
     };
 
     getData();
-  }, [id]);
+  }, []);
 
   return (
     <main className="">
-      {loading && <DataLoading />}
+      {loading && (
+        <div className="h-full fccc">
+          <CircularProgress />
+        </div>
+      )}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
-      {!loading && data && <TableContainerUpdate data={data} />}
+      {!loading && <BuffetList list={data} />}
     </main>
   );
 }

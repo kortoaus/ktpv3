@@ -66,6 +66,7 @@ export type Category = {
   updatedAt: Date;
   name: string;
   index: number;
+  archived: boolean;
 };
 
 /**
@@ -77,14 +78,16 @@ export type BuffetClass = {
   mId: number | null;
   name: string;
   priceA: number;
-  priceWA: number;
+  h_priceA: number;
   priceB: number;
-  priceWB: number;
+  h_priceB: number;
   priceC: number;
-  priceWC: number;
+  h_priceC: number;
   nameA: string;
   nameB: string;
   nameC: string;
+  stayTime: number;
+  orderTime: number;
   archived: boolean;
   createdAt: Date;
 };

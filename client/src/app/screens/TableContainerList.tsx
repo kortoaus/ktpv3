@@ -11,7 +11,7 @@ type Props = {
 
 export default function TableContainerList({ list }: Props) {
   return (
-    <div className="ListContainer max-w-xl">
+    <div className="ListContainer max-w-xl mx-auto">
       <div className="ToolbarContainer pb-4 border-b ">
         <Link href="/tcontainer/new">
           <button className="BasicBtn bg-purple-500 text-white border-purple-500">

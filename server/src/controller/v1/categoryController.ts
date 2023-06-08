@@ -18,7 +18,7 @@ export const updateCategory = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
   }
 
-  if (!getRole(staff.permission, "isCategory")) {
+  if (!getRole(staff.permission, "isProduct")) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission." });
@@ -48,7 +48,7 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const getCategories = async (req: Request, res: Response) => {
   const staff: Staff = res.locals.staff;
-  if (!getRole(staff.permission, "isCategory")) {
+  if (!getRole(staff.permission, "isProduct")) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission." });
@@ -87,7 +87,7 @@ export const getCategory = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
   }
 
-  if (!getRole(staff.permission, "isCategory")) {
+  if (!getRole(staff.permission, "isProduct")) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission." });

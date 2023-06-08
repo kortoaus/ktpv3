@@ -21,10 +21,12 @@ export default function TextInput({
 }: Props) {
   return (
     <div className="form-element-group">
-      <label>
-        {label}
-        {required && <Required />}
-      </label>
+      {label && (
+        <label>
+          {label}
+          {required && <Required />}
+        </label>
+      )}
       <input
         type="text"
         {...register}

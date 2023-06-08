@@ -2,9 +2,7 @@ type StaffRole = {
   [key: string]: boolean;
 };
 
-//  {"isOpen":true,"isDirector":true, "isTable":true, "isCategory":true, "isBuffet":true}
-
-type Key = "isOpen" | "isDirector" | "isTable" | "isCategory" | "isBuffet";
+type Key = "isOpen" | "isDirector" | "isTable" | "isProduct" | "isBuffet";
 // {"isOpen":true}
 const getRole = (role: string, key: Key) => {
   try {

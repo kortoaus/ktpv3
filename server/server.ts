@@ -14,6 +14,7 @@ import shiftRouter from "@routes/v1/shiftRouter";
 import tableRouter from "@routes/v1/tableRouter";
 import categoryRouter from "@routes/v1/categoryRouter";
 import buffetRouter from "@routes/v1/buffetRouter";
+import productRouter from "@routes/v1/productRouter";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -49,6 +50,7 @@ app.use(`${apiRoot}/v1/shift`, shiftRouter);
 app.use(`${apiRoot}/v1/table`, tableRouter);
 app.use(`${apiRoot}/v1/category`, categoryRouter);
 app.use(`${apiRoot}/v1/buffet`, buffetRouter);
+app.use(`${apiRoot}/v1/product`, productRouter);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

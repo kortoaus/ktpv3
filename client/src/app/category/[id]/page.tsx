@@ -3,7 +3,7 @@ import { ApiResultType } from "@/types/api";
 import { Category } from "@/types/model";
 import React, { useEffect, useState } from "react";
 import DataLoading from "@/components/ui/DataLoading";
-import CategoryUpdate from "@/app/screens/CategoryUpdate";
+import CategoryUpdate from "@/screens/CategoryUpdate";
 
 type ResultProps = ApiResultType & {
   result?: Category;

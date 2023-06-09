@@ -3,7 +3,7 @@ import { ApiResultType } from "@/types/api";
 import { TableContainer } from "@/types/model";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import TableContainerList from "../screens/TableContainerList";
+import TableContainerList from "../../screens/TableContainerList";
 
 type ResultProps = ApiResultType & {
   result: TableContainer[];

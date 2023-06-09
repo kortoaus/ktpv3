@@ -83,23 +83,21 @@ model BuffetClass {
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  mId           Int?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  categoryId    Int?
-  category      Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  name          String
-  subName       String?
-  regular_price Float
-  sale_price    Float
-  const         Float     @default(0)
-  printer       String    @default("[]")
-  options       String    @default("[]") @db.Text
-  buffetOnly    Boolean   @default(true)
-  buffetPrice   String    @default("{}")
-  bClasses      String    @default("[]")
-  index         Int       @default(999)
+  id          Int       @id @default(autoincrement())
+  mId         Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name        String
+  price       Float
+  cost        Float     @default(0)
+  isBuffet    Boolean   @default(false)
+  buffetPrice String    @default("{}")
+  printerIds  String    @default("[]")
+  buffetIds   String    @default("[]")
+  options     String    @default("[]") @db.Text
+  index       Int       @default(999)
 
   @@index([categoryId])
 }

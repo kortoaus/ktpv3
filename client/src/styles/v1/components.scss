@@ -71,3 +71,22 @@
 .BasicBtn {
   @apply flex items-center gap-1 border px-4 py-1 rounded-md;
 }
+
+.ProductOptionGroupEditor{
+  .OptionHeader{
+    @apply grid grid-cols-12 gap-2 border-b mb-2 pb-2;
+    .col{
+      @apply flex flex-col;
+      label{
+        @apply mb-1 text-sm font-medium;
+      }
+      input{
+        @apply border-gray-300 p-1;
+        &[type="number"]{
+          @apply text-right;
+        }
+      }
+    }
+
+  }
+}

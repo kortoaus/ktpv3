@@ -8,3 +8,8 @@ export type idCtx = {
     id: string;
   };
 };
+
+export type PopUpProps = {
+  open: boolean;
+  onClose: () => void;
+};

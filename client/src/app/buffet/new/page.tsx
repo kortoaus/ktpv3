@@ -1,4 +1,4 @@
-import BuffetUpdate from "@/app/screens/BuffetUpdate";
+import BuffetUpdate from "@/screens/BuffetUpdate";
 import React from "react";
 
 export default function NewCategoryPage() {

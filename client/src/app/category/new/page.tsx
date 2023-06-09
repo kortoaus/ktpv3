@@ -1,4 +1,4 @@
-import CategoryUpdate from "@/app/screens/CategoryUpdate";
+import CategoryUpdate from "@/screens/CategoryUpdate";
 import React from "react";
 
 export default function NewCategoryPage() {

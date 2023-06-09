@@ -2,7 +2,7 @@
 import { ApiResultType } from "@/types/api";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CategoryList from "../screens/CategoryList";
+import CategoryList from "../../screens/CategoryList";
 import { CategoryWithProductCount } from "@/types/Product";
 
 type ResultProps = ApiResultType & {

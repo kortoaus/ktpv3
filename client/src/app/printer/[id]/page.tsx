@@ -3,7 +3,7 @@ import { ApiResultType } from "@/types/api";
 import { Printer } from "@/types/model";
 import React, { useEffect, useState } from "react";
 import DataLoading from "@/components/ui/DataLoading";
-import PrinterUpdate from "@/app/screens/PrinterUpdate";
+import PrinterUpdate from "@/screens/PrinterUpdate";
 
 type ResultProps = ApiResultType & {
   result?: Printer;

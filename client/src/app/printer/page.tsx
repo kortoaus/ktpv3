@@ -2,9 +2,9 @@
 import { ApiResultType } from "@/types/api";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CategoryList from "../screens/CategoryList";
+import CategoryList from "../../screens/CategoryList";
 import { Printer } from "@/types/model";
-import PrinterList from "../screens/PrinterList";
+import PrinterList from "../../screens/PrinterList";
 
 type ResultProps = ApiResultType & {
   result: Printer[];

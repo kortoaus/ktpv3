@@ -2,7 +2,7 @@
 import { ApiResultType } from "@/types/api";
 import { TableContainer } from "@/types/model";
 import React, { useEffect, useState } from "react";
-import TableContainerUpdate from "@/app/screens/TableContainerUpdate";
+import TableContainerUpdate from "@/screens/TableContainerUpdate";
 import DataLoading from "@/components/ui/DataLoading";
 
 type ResultProps = ApiResultType & {

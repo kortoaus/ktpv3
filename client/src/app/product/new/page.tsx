@@ -1,5 +1,5 @@
 "use client";
-import ProductUpdate from "@/app/screens/ProductUpdate";
+import ProductUpdate from "@/screens/ProductUpdate";
 import DataLoading from "@/components/ui/DataLoading";
 import { ProductOption } from "@/types/Product";
 import { ApiResultType } from "@/types/api";

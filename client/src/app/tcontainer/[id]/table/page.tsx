@@ -1,5 +1,5 @@
 "use client";
-import TableManager from "@/app/screens/TableManager";
+import TableManager from "@/screens/TableManager";
 import DataLoading from "@/components/ui/DataLoading";
 import { TableContainerWithTables } from "@/types/Table";
 import { ApiResultType } from "@/types/api";

@@ -3,7 +3,7 @@ import { ApiResultType } from "@/types/api";
 import { BuffetClass } from "@/types/model";
 import React, { useEffect, useState } from "react";
 import DataLoading from "@/components/ui/DataLoading";
-import BuffetUpdate from "@/app/screens/BuffetUpdate";
+import BuffetUpdate from "@/screens/BuffetUpdate";
 
 type ResultProps = ApiResultType & {
   result?: BuffetClass;

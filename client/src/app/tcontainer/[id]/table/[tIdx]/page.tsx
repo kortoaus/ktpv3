@@ -1,5 +1,5 @@
 "use client";
-import TableUpdate from "@/app/screens/TableUpdate";
+import TableUpdate from "@/screens/TableUpdate";
 import DataLoading from "@/components/ui/DataLoading";
 import { ApiResultType } from "@/types/api";
 import { Table } from "@/types/model";

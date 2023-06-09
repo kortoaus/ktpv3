@@ -2,7 +2,7 @@
 import { ApiResultType } from "@/types/api";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import BuffetList from "../screens/BuffetList";
+import BuffetList from "../../screens/BuffetList";
 import { BuffetClass } from "@/types/model";
 
 type ResultProps = ApiResultType & {

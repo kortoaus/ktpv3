@@ -1,5 +1,5 @@
 import React from "react";
-import TableContainerUpdate from "@/app/screens/TableContainerUpdate";
+import TableContainerUpdate from "@/screens/TableContainerUpdate";
 
 type Props = {};
 

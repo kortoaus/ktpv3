@@ -1,4 +1,4 @@
-import PrinterUpdate from "@/app/screens/PrinterUpdate";
+import PrinterUpdate from "@/screens/PrinterUpdate";
 import React from "react";
 
 export default function NewCategoryPage() {

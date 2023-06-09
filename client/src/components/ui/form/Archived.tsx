@@ -6,11 +6,13 @@ type Props = {
   label?: string;
 };
 
-export default function Archived({ register, label = "" }: Props) {
+export default function Archived({ register, label = "Archived" }: Props) {
   return (
     <div className="form-element-group">
-      <label className="text-red-500">{label}</label>
-      <input type="checkbox" {...register} />
+      <div className="flex items-center gap-2">
+        <input type="checkbox" {...register} />
+        <label className="text-red-500 !mb-0">{label}</label>
+      </div>
     </div>
   );
 }

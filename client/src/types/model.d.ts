@@ -30,7 +30,6 @@ export type Shop = {
  */
 export type Printer = {
   id: number;
-  shopId: number;
   label: string;
   ip: string;
   port: number;
@@ -78,10 +77,10 @@ export type BuffetClass = {
   mId: number | null;
   name: string;
   priceA: number;
-  h_priceA: number;
   priceB: number;
-  h_priceB: number;
   priceC: number;
+  h_priceA: number;
+  h_priceB: number;
   h_priceC: number;
   nameA: string;
   nameB: string;

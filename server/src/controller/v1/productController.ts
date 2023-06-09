@@ -42,11 +42,19 @@ export const getProductOptions = async (req: Request, res: Response) => {
     },
   });
 
+  const printers = await client.printer.findMany({
+    where,
+    orderBy: {
+      label: "asc",
+    },
+  });
+
   return res.json({
     ok: true,
     result: {
       categories,
       buffets,
+      printers,
     },
   });
 };

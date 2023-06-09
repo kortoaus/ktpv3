@@ -14,7 +14,7 @@ export default function NewProductPage() {
   const { data, isLoading } = useSWR<ResultProps>(`/api/product/option`);
 
   return (
-    <main className="py-16">
+    <main className="pb-16">
       {isLoading ? (
         <DataLoading />
       ) : (

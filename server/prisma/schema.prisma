@@ -31,17 +31,15 @@ model Shop {
 
 model Printer {
   id        Int     @id @default(autoincrement())
-  shopId    Int
   label     String
   ip        String
   port      Int
   isMain    Boolean @default(false)
   isSplit   Boolean @default(false)
-  isLabel   Boolean @default(false)
   hasDrawer Boolean @default(false)
   archived  Boolean @default(false)
 
-  @@index([shopId])
+  @@index([id])
 }
 
 model Staff {

@@ -21,6 +21,7 @@ type FormData = {
   categoryId: number;
   isBuffet: boolean;
   buffetIds: number[];
+  printerIds: number[];
   price: number;
   buffetPrice: BuffetPrice;
 };
@@ -30,7 +31,7 @@ type Props = {
 };
 
 export default function ProductUpdate({
-  option: { categories, buffets },
+  option: { categories, buffets, printers },
 }: Props) {
   const [imgFile, setImgFile] = useState<null | File>(null);
 
@@ -43,6 +44,7 @@ export default function ProductUpdate({
   } = useForm<FormData>({
     defaultValues: {
       buffetIds: [],
+      printerIds: [],
       buffetPrice: {},
       isBuffet: true,
     },
@@ -51,8 +53,15 @@ export default function ProductUpdate({
   const data = watch();
   console.log(data);
 
-  const buffetIdHandler = (id: number) => {
-    const prev = watch("buffetIds");
+  const MultipleHandler = (
+    id: number,
+    taregt: "buffetIds" | "printerIds" = "buffetIds"
+  ) => {
+    const prev = watch(taregt);
+
+    if (!prev) {
+      return;
+    }
     let newVal: number[] = [];
 
     if (Boolean(prev.find((bId) => bId === id))) {
@@ -60,7 +69,7 @@ export default function ProductUpdate({
     } else {
       newVal = [...prev, id];
     }
-    setValue("buffetIds", newVal);
+    setValue(taregt, newVal);
     return;
   };
 
@@ -81,7 +90,7 @@ export default function ProductUpdate({
   return (
     <div className="w-full max-w-2xl mx-auto">
       <section className="grid grid-cols-3 gap-4 relative">
-        <div className="col-span-2 border-r pr-4">
+        <div className="col-span-2 border-r pr-4 pt-8">
           <ImgInput
             label="Product Image"
             required
@@ -89,6 +98,7 @@ export default function ProductUpdate({
             setVal={(val) => setImgFile(val)}
           />
 
+          {/* Category and Name */}
           <form
             className="defaultForm mt-4"
             onSubmit={handleSubmit(updateHandler)}
@@ -142,6 +152,7 @@ export default function ProductUpdate({
             </form>
           ) : (
             <div className="defaultForm mt-4">
+              <h3>Buffet Classes</h3>
               {buffets.map((bf) => {
                 return (
                   <div key={bf.id} className="grid grid-cols-2 gap-4">
@@ -153,7 +164,7 @@ export default function ProductUpdate({
                           data.buffetIds.find((bId) => bId === bf.id)
                         )}
                         value={bf.id}
-                        onChange={(val) => buffetIdHandler(val)}
+                        onChange={(val) => MultipleHandler(val)}
                       />
                     </div>
 
@@ -168,6 +179,24 @@ export default function ProductUpdate({
               })}
             </div>
           )}
+          {/* Printers */}
+          <div className="defaultForm mt-4">
+            <h3>Printers</h3>
+            <div className="grid grid-cols-2 gap-2">
+              {printers.map((pt) => (
+                <MultipleCheckbox
+                  key={pt.id}
+                  id={pt.label}
+                  label={pt.label}
+                  checked={Boolean(
+                    data.printerIds.find((bId) => bId === pt.id)
+                  )}
+                  value={pt.id}
+                  onChange={(val) => MultipleHandler(val, "printerIds")}
+                />
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Preview */}
@@ -206,7 +235,7 @@ export default function ProductUpdate({
                   {data.isBuffet ? (
                     <span className="text-red-500">{`Buffet`}</span>
                   ) : (
-                    <span>{`$${data.price.toFixed(2)}`}</span>
+                    <span>{`$${data?.price?.toFixed(2) || "0"}`}</span>
                   )}
                 </div>
               </div>

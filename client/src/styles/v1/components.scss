@@ -73,20 +73,34 @@
 }
 
 .ProductOptionGroupEditor{
+  @apply border rounded-md p-4;
+
+  .EditorHeader{
+    @apply mb-2 pb-2 border-b flex items-center justify-between;
+  }
   .OptionHeader{
-    @apply grid grid-cols-12 gap-2 border-b mb-2 pb-2;
-    .col{
-      @apply flex flex-col;
-      label{
-        @apply mb-1 text-sm font-medium;
+    @apply grid grid-cols-12 border-b mb-2 pb-2 gap-2;
+  }
+  .OptionLine{
+    @apply mb-2 pb-2;
+    .OptionLineWrapper{
+      @apply py-2 grid grid-cols-12 gap-2;
+    }
+  }
+
+  .col{
+    @apply flex flex-col;
+    label{
+      @apply mb-1 text-sm font-medium;
+    }
+    input{
+      @apply border-gray-300 p-1 text-sm;
+      &[type="number"]{
+        @apply text-right;
       }
-      input{
-        @apply border-gray-300 p-1;
-        &[type="number"]{
-          @apply text-right;
-        }
+      &:disabled{
+        @apply bg-gray-100;
       }
     }
-
   }
 }

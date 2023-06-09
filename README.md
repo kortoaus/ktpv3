@@ -7,8 +7,9 @@
 - [x] Manage Printer
 - [x] Manage Product Part Two (Printer)
 - [x] Product Option Drawer Part One(Header)
-- [ ] Product Option Drawer PArt Two(Lines)
-- [ ] Manage Product Part Three (Options, Kisok Option)
+- [x] Product Option Drawer PArt Two(Lines)
+- [x] Manage Product Part Three (Options)
+- [ ] Manage Product Part Four (Kisok Option)
 - [ ] Product Preview
 - [ ] Searching Query
 - [ ] Pagination

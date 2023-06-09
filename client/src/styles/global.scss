@@ -59,4 +59,7 @@ table{
 .f-inline{
   @apply flex items-center
 }
+.f-btw{
+  @apply flex items-center justify-between;
+}
 

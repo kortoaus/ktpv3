@@ -8,12 +8,12 @@ import ToggleCheckbox, {
   MultipleCheckbox,
 } from "@/components/ui/form/ToggleCheckbox";
 import { RequiredField } from "@/libs/Messages";
-import { ProductOption } from "@/types/Product";
-import Image from "next/image";
+import { ProductOption, ProductOptionGroup } from "@/types/Product";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { isBuffer } from "util";
 import ProductOptionDrawer from "./ProductOptionDrawer";
+import TuneIcon from "@/components/icons/TuneIcon";
+import { ProductOptionListCard } from "@/components/ProductOptionListCard";
 
 type BuffetPrice = {
   [key: number]: number;
@@ -27,6 +27,7 @@ type FormData = {
   printerIds: number[];
   price: number;
   buffetPrice: BuffetPrice;
+  options: ProductOptionGroup[];
 };
 
 type Props = {
@@ -37,6 +38,7 @@ export default function ProductUpdate({
   option: { categories, buffets, printers },
 }: Props) {
   const [imgFile, setImgFile] = useState<null | File>(null);
+  const [isOptionDrawerOpen, setIsOptionDrawerOpen] = useState(false);
 
   const {
     register,
@@ -50,6 +52,7 @@ export default function ProductUpdate({
       printerIds: [],
       buffetPrice: {},
       isBuffet: false,
+      options: [],
     },
   });
 
@@ -184,6 +187,23 @@ export default function ProductUpdate({
                 })}
               </div>
             )}
+
+            {/* Options */}
+            <div className="defaultForm mt-4">
+              <h3>Options</h3>
+              <button
+                onClick={() => setIsOptionDrawerOpen(true)}
+                className="BasicBtn justify-center"
+              >
+                <TuneIcon size={24} />
+                <span>Open Option Editor</span>
+              </button>
+
+              {data.options.map((opt) => {
+                return <ProductOptionListCard data={opt} key={opt.id} />;
+              })}
+            </div>
+
             {/* Printers */}
             <div className="defaultForm mt-4">
               <h3>Printers</h3>
@@ -223,7 +243,12 @@ export default function ProductUpdate({
           </div>
         </section>
       </div>
-      <ProductOptionDrawer open={true} onClose={() => null} />
+      <ProductOptionDrawer
+        val={data.options}
+        setValue={(val) => setValue("options", val)}
+        open={isOptionDrawerOpen}
+        onClose={() => setIsOptionDrawerOpen(false)}
+      />
     </>
   );
 }

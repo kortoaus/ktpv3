@@ -1,15 +1,10 @@
 "use client";
-import { ApiResultType, PaginationResult, PagingProps } from "@/types/api";
+import { PaginationResult, PagingProps } from "@/types/api";
 import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import CategoryList from "../../screens/CategoryList";
-import { Printer } from "@/types/model";
-import PrinterList from "../../screens/PrinterList";
+import { Product } from "@/types/model";
+import ProductList from "@/screens/ProductList";
 import ListWrapper from "@/components/ListWrapper";
-
-type ResultProps = ApiResultType & {
-  result: Printer[];
-};
 
 type Props = {
   searchParams: {
@@ -18,10 +13,10 @@ type Props = {
   };
 };
 
-export default function CategoryListPage({
+export default function ProductListPage({
   searchParams: { page, keyword },
 }: Props) {
-  const [data, setData] = useState<Printer[]>([]);
+  const [data, setData] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [paging, setPaging] = useState<null | PagingProps>(null);
@@ -35,8 +30,8 @@ export default function CategoryListPage({
         hasNext,
         hasPrev,
         totalPages,
-      }: PaginationResult<Printer> = await fetch(
-        encodeURI(`/api/printer?page=${page || 1}&keyword=${keyword || ""}`)
+      }: PaginationResult<Product> = await fetch(
+        encodeURI(`/api/product?page=${page || 1}&keyword=${keyword || ""}`)
       )
         .then((res) => res.json())
         .then((data) => data)
@@ -72,8 +67,8 @@ export default function CategoryListPage({
       )}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && data && paging && (
-        <ListWrapper paging={paging} basePath="/printer">
-          <PrinterList paging={paging} list={data} />
+        <ListWrapper paging={paging} basePath="/product">
+          <ProductList paging={paging} list={data} />
         </ListWrapper>
       )}
     </main>

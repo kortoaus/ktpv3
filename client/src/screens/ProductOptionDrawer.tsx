@@ -108,8 +108,7 @@ export default function ProductOptionDrawer({
           ...group,
           min: group.mode === "radio" ? 1 : group.min,
           max,
-          required:
-            group.mode === "radio" || group.min !== 0 ? true : group.required,
+          required: group.mode === "radio" ? true : group.required,
         };
       });
 

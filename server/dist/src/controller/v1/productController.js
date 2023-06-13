@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProduct = exports.updateProduct = exports.getProductOptions = void 0;
+exports.getProducts = exports.getProduct = exports.updateProduct = exports.getProductOptions = void 0;
 var prismaClient_1 = __importDefault(require("@libs/prismaClient"));
 var getRole_1 = __importDefault(require("@libs/getRole"));
 var getProductOptions = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
@@ -188,3 +188,53 @@ var getProduct = function (req, res) { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.getProduct = getProduct;
+var getProducts = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, _b, page, _c, keyword, _d, offset, searchKeywords, where, totalCount, totalPages, currentPage, result, hasPrev, hasNext;
+    return __generator(this, function (_e) {
+        switch (_e.label) {
+            case 0:
+                _a = req.query, _b = _a.page, page = _b === void 0 ? 1 : _b, _c = _a.keyword, keyword = _c === void 0 ? "" : _c, _d = _a.offset, offset = _d === void 0 ? 1 : _d;
+                searchKeywords = keyword.split(" ").filter(Boolean);
+                where = {
+                    AND: [
+                        {
+                            OR: searchKeywords.map(function (keyword) { return ({
+                                name: {
+                                    contains: keyword + "",
+                                    mode: "insensitive",
+                                },
+                            }); }),
+                        },
+                        {
+                            archived: false,
+                        },
+                    ],
+                };
+                return [4 /*yield*/, prismaClient_1.default.product.count({
+                        where: where,
+                    })];
+            case 1:
+                totalCount = _e.sent();
+                totalPages = totalCount ? Math.ceil(totalCount / offset) : 1;
+                currentPage = Math.min(Math.max(1, parseInt(page.toString())), totalPages);
+                return [4 /*yield*/, prismaClient_1.default.product.findMany({
+                        where: where,
+                        skip: (currentPage - 1) * offset,
+                        take: offset,
+                    })];
+            case 2:
+                result = _e.sent();
+                hasPrev = currentPage > 1;
+                hasNext = currentPage < totalPages;
+                return [2 /*return*/, res.json({
+                        ok: true,
+                        result: result,
+                        hasPrev: hasPrev,
+                        hasNext: hasNext,
+                        totalPages: totalPages,
+                        pageSize: offset,
+                    })];
+        }
+    });
+}); };
+exports.getProducts = getProducts;

@@ -13,9 +13,16 @@ type Props = {
   params: {
     id: string;
   };
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
 };
 
-export default function CategoryDetailPage({ params: { id } }: Props) {
+export default function PrinterDetailPage({
+  params: { id },
+  searchParams,
+}: Props) {
   const [data, setData] = useState<Printer>();
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -46,7 +53,7 @@ export default function CategoryDetailPage({ params: { id } }: Props) {
     <main className="">
       {loading && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
-      {!loading && data && <PrinterUpdate data={data} />}
+      {!loading && data && <PrinterUpdate query={searchParams} data={data} />}
     </main>
   );
 }

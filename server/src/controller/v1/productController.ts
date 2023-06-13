@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import client from "@libs/prismaClient";
-import { Staff } from "@prisma/client";
+import { Product, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
+import { PaginationParams, PaginationResponse } from "../../type/pagination";
 
 type ProductFormData = {
   imgId: null | string;
@@ -159,4 +160,57 @@ export const getProduct = async (req: Request, res: Response) => {
   }
 
   return res.json({ ok: true, result });
+};
+
+export const getProducts = async (
+  req: Request<{}, {}, {}, PaginationParams>,
+  res: Response<PaginationResponse<Product>>
+) => {
+  const { page = 1, keyword = "", offset = 20 } = req.query;
+
+  const searchKeywords = keyword.split(" ").filter(Boolean);
+
+  const where: any = {
+    AND: [
+      {
+        OR: searchKeywords.map((keyword) => ({
+          name: {
+            contains: keyword + "",
+            mode: "insensitive",
+          },
+        })),
+      },
+      {
+        archived: false,
+      },
+    ],
+  };
+
+  const totalCount = await client.product.count({
+    where: where,
+  });
+
+  const totalPages = totalCount ? Math.ceil(totalCount / offset) : 1;
+  const currentPage = Math.min(
+    Math.max(1, parseInt(page.toString())),
+    totalPages
+  );
+
+  const result = await client.product.findMany({
+    where: where,
+    skip: (currentPage - 1) * offset,
+    take: offset,
+  });
+
+  const hasPrev = currentPage > 1;
+  const hasNext = currentPage < totalPages;
+
+  return res.json({
+    ok: true,
+    result,
+    hasPrev,
+    hasNext,
+    totalPages,
+    pageSize: offset,
+  });
 };

@@ -22,7 +22,7 @@ export const ProductOptionListCard = ({
             {`${mode.toUpperCase()} / Min: ${min} / Max: ${max}`}
           </span>
         </div>
-        {min !== 0 && (
+        {required && (
           <div className="text-white bg-red-500 rounded-md p-1 text-xs">
             Required
           </div>

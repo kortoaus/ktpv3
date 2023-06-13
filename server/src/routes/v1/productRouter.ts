@@ -1,6 +1,7 @@
 import {
   getProduct,
   getProductOptions,
+  getProducts,
   updateProduct,
 } from "@controller/v1/productController";
 import { authMid } from "@middlewares/auth";
@@ -10,7 +11,7 @@ const productRouter = express.Router();
 
 productRouter.route("/option").get(authMid, getProductOptions);
 
-productRouter.route("/").post(authMid, updateProduct);
+productRouter.route("/").post(authMid, updateProduct).get(authMid, getProducts);
 
 productRouter
   .route("/:id(\\d+)")

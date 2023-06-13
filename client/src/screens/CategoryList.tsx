@@ -3,29 +3,21 @@
 import CategoryListCard from "@/components/CategoryListCard";
 import PlusIcon from "@/components/icons/PlusIcon";
 import { CategoryWithProductCount } from "@/types/Product";
+import { PagingProps } from "@/types/api";
 import Link from "next/link";
 import React from "react";
 
 type Props = {
   list: CategoryWithProductCount[];
+  paging: PagingProps;
 };
 
-export default function CategoryList({ list }: Props) {
+export default function CategoryList({ list, paging }: Props) {
   return (
-    <div className="ListContainer max-w-xl mx-auto">
-      <div className="ToolbarContainer pb-4 border-b ">
-        <Link href="/category/new">
-          <button className="BasicBtn bg-purple-500 text-white border-purple-500">
-            <PlusIcon />
-            <span>Add New</span>
-          </button>
-        </Link>
-      </div>
-      <div className="List">
-        {list.map((data) => {
-          return <CategoryListCard key={data.id} data={data} />;
-        })}
-      </div>
+    <div className="List">
+      {list.map((data) => {
+        return <CategoryListCard paging={paging} key={data.id} data={data} />;
+      })}
     </div>
   );
 }

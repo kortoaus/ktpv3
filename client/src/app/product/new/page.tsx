@@ -10,7 +10,16 @@ type ResultProps = ApiResultType & {
   result: ProductOption;
 };
 
-export default function NewProductPage() {
+type Props = {
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
+};
+
+export default function NewProductPage({
+  searchParams: { keyword, page },
+}: Props) {
   const { data, isLoading } = useSWR<ResultProps>(`/api/product/option`);
 
   return (
@@ -18,7 +27,11 @@ export default function NewProductPage() {
       {isLoading ? (
         <DataLoading />
       ) : (
-        <>{data && data.ok && <ProductUpdate option={data.result} />}</>
+        <>
+          {data && data.ok && (
+            <ProductUpdate query={{ keyword, page }} option={data.result} />
+          )}
+        </>
       )}
     </main>
   );

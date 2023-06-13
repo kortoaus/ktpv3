@@ -13,9 +13,16 @@ type Props = {
   params: {
     id: string;
   };
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
 };
 
-export default function CategoryDetailPage({ params: { id } }: Props) {
+export default function CategoryDetailPage({
+  params: { id },
+  searchParams,
+}: Props) {
   const [data, setData] = useState<Category>();
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
@@ -48,7 +55,7 @@ export default function CategoryDetailPage({ params: { id } }: Props) {
     <main className="">
       {loading && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
-      {!loading && data && <CategoryUpdate data={data} />}
+      {!loading && data && <CategoryUpdate query={searchParams} data={data} />}
     </main>
   );
 }

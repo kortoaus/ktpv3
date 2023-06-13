@@ -42,11 +42,16 @@ type FormData = {
 type Props = {
   data?: Product | undefined;
   option: ProductOption;
+  query: {
+    keyword: number;
+    page: string;
+  };
 };
 
 export default function ProductUpdate({
   data,
   option: { categories, buffets, printers },
+  query,
 }: Props) {
   const [imgFile, setImgFile] = useState<null | File>(null);
   const [isOptionDrawerOpen, setIsOptionDrawerOpen] = useState(false);
@@ -159,13 +164,15 @@ export default function ProductUpdate({
   // Update Response
   useEffect(() => {
     if (result && result.ok) {
-      router.push(`/product`);
+      router.push(
+        `/product?page=${query.page || 1}&keyword=${query.keyword || ""}`
+      );
     }
 
     if (result && !result.ok) {
       window.alert(result.msg || "Failed Update!");
     }
-  }, [result, router]);
+  }, [result, router, query]);
 
   // Load Previous
   useEffect(() => {

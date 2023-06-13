@@ -1,10 +1,17 @@
 import CategoryUpdate from "@/screens/CategoryUpdate";
 import React from "react";
 
-export default function NewCategoryPage() {
+type Props = {
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
+};
+
+export default function NewCategoryPage({ searchParams }: Props) {
   return (
     <main className="">
-      <CategoryUpdate />
+      <CategoryUpdate query={searchParams} />
     </main>
   );
 }

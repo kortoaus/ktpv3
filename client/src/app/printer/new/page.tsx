@@ -1,10 +1,18 @@
-import PrinterUpdate from "@/screens/PrinterUpdate";
+"use client";
 import React from "react";
+import PrinterUpdate from "@/screens/PrinterUpdate";
 
-export default function NewCategoryPage() {
+type Props = {
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
+};
+
+export default function NewPrinterPage({ searchParams }: Props) {
   return (
     <main className="">
-      <PrinterUpdate />
+      <PrinterUpdate query={searchParams} />
     </main>
   );
 }

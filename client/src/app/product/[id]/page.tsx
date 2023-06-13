@@ -19,9 +19,16 @@ type Props = {
   params: {
     id: string;
   };
+  searchParams: {
+    page: string;
+    keyword: number;
+  };
 };
 
-export default function ProductDetailPage({ params: { id } }: Props) {
+export default function ProductDetailPage({
+  params: { id },
+  searchParams,
+}: Props) {
   const { data: optionData, isLoading } =
     useSWR<OptionProps>(`/api/product/option`);
   const [data, setData] = useState<Product>();
@@ -55,7 +62,11 @@ export default function ProductDetailPage({ params: { id } }: Props) {
       {(loading || isLoading) && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && !isLoading && data && optionData && (
-        <ProductUpdate data={data} option={optionData.result} />
+        <ProductUpdate
+          query={searchParams}
+          data={data}
+          option={optionData.result}
+        />
       )}
     </main>
   );

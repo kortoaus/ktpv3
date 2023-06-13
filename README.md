@@ -12,8 +12,8 @@
 - [x] Manage Product Part Four (Kisok Option)
 - [x] Setting multer
 - [x] Serving Image
+- [x] Searching Query
+- [x] Pagination
 - [ ] Product Preview
-- [ ] Searching Query
-- [ ] Pagination
 - [ ] Manage Menu
 - [ ] Remote Image

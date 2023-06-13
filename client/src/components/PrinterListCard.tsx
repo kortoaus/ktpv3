@@ -4,18 +4,26 @@ import React from "react";
 import StarIcon from "./icons/StarIcon";
 import PaymentIcon from "./icons/PaymentIcon";
 import ReceiptIcon from "./icons/ReceiptIcon";
+import { PagingProps } from "@/types/api";
 
 type Props = {
   data: Printer;
+  paging: PagingProps;
 };
 
 export default function PrinterListCard({
   data: { id, label, ip, port, isMain, hasDrawer, isSplit },
+  paging,
 }: Props) {
+  const { current, keyword } = paging;
+
   return (
     <div className="grid grid-cols-12 border-b py-4">
       <div className="col-span-6 flex items-center justify-start">
-        <Link href={`/printer/${id}`} prefetch={false}>
+        <Link
+          href={`/printer/${id}?page=${current}&keyword=${keyword}`}
+          prefetch={false}
+        >
           <div className="font-medium">{label}</div>
           <div className="text-sm text-gray-500">{`${ip}:${port}`}</div>
         </Link>
@@ -41,7 +49,10 @@ export default function PrinterListCard({
         )}
       </div>
       <div className="col-span-2 fccc text-blue-500">
-        <Link href={`/printer/${id}`} prefetch={false}>
+        <Link
+          href={`/printer/${id}?page=${current}&keyword=${keyword}`}
+          prefetch={false}
+        >
           Update
         </Link>
       </div>

@@ -14,6 +14,10 @@ import { useForm } from "react-hook-form";
 
 type Props = {
   data?: Printer;
+  query: {
+    keyword: number;
+    page: string;
+  };
 };
 
 type FormDataProps = {
@@ -37,8 +41,7 @@ const initValue: FormDataProps = {
   archived: false,
 };
 
-export default function PrinterUpdate({ data }: Props) {
-  console.log(data);
+export default function PrinterUpdate({ data, query }: Props) {
   const router = useRouter();
   const {
     register,
@@ -60,13 +63,15 @@ export default function PrinterUpdate({ data }: Props) {
 
   useEffect(() => {
     if (result && result.ok) {
-      router.push(`/printer`);
+      router.push(
+        `/printer?page=${query.page || 1}&keyword=${query.keyword || ""}`
+      );
     }
 
     if (result && !result.ok) {
       window.alert(result.msg || "Failed Update!");
     }
-  }, [result, router]);
+  }, [result, router, query]);
 
   const updateHandler = (data: FormDataProps) => {
     if (loading) {

@@ -11,6 +11,10 @@ import { useForm } from "react-hook-form";
 
 type Props = {
   data?: Category;
+  query: {
+    keyword: number;
+    page: string;
+  };
 };
 
 type FormDataProps = {
@@ -26,7 +30,7 @@ const initValue: FormDataProps = {
   index: 999,
 };
 
-export default function CategoryUpdate({ data }: Props) {
+export default function CategoryUpdate({ data, query }: Props) {
   const router = useRouter();
   const {
     register,
@@ -48,13 +52,15 @@ export default function CategoryUpdate({ data }: Props) {
 
   useEffect(() => {
     if (result && result.ok) {
-      router.push(`/category`);
+      router.push(
+        `/category?page=${query.page || 1}&keyword=${query.keyword || ""}`
+      );
     }
 
     if (result && !result.ok) {
       window.alert(result.msg || "Failed Update!");
     }
-  }, [result, router]);
+  }, [result, router, query]);
 
   const updateHandler = (data: FormDataProps) => {
     if (loading) {

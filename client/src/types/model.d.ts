@@ -35,7 +35,6 @@ export type Printer = {
   port: number;
   isMain: boolean;
   isSplit: boolean;
-  isLabel: boolean;
   hasDrawer: boolean;
   archived: boolean;
 };
@@ -98,20 +97,21 @@ export type BuffetClass = {
 export type Product = {
   id: number;
   mId: number | null;
+  imgId: string | null;
   createdAt: Date;
   updatedAt: Date;
   categoryId: number | null;
   name: string;
-  subName: string | null;
-  regular_price: number;
-  sale_price: number;
-  const: number;
-  printer: string;
-  options: string;
-  buffetOnly: boolean;
+  price: number;
+  cost: number;
+  isBuffet: boolean;
   buffetPrice: string;
-  bClasses: string;
+  printerIds: string;
+  buffetIds: string;
+  options: string;
   index: number;
+  hideKiosk: boolean;
+  archived: boolean;
 };
 
 /**

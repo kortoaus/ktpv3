@@ -7,10 +7,13 @@
 - [x] Manage Printer
 - [x] Manage Product Part Two (Printer)
 - [x] Product Option Drawer Part One(Header)
-- [x] Product Option Drawer PArt Two(Lines)
+- [x] Product Option Drawer Part Two(Lines)
 - [x] Manage Product Part Three (Options)
-- [ ] Manage Product Part Four (Kisok Option)
+- [x] Manage Product Part Four (Kisok Option)
+- [x] Setting multer
+- [x] Serving Image
 - [ ] Product Preview
 - [ ] Searching Query
 - [ ] Pagination
 - [ ] Manage Menu
+- [ ] Remote Image

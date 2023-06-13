@@ -7,19 +7,26 @@ import TextInput from "@/components/ui/form/TextInput";
 import ToggleCheckbox, {
   MultipleCheckbox,
 } from "@/components/ui/form/ToggleCheckbox";
-import { RequiredField } from "@/libs/Messages";
+import { BeDisabled, RequiredField, StillUpdating } from "@/libs/Messages";
 import { ProductOption, ProductOptionGroup } from "@/types/Product";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import ProductOptionDrawer from "./ProductOptionDrawer";
 import TuneIcon from "@/components/icons/TuneIcon";
 import { ProductOptionListCard } from "@/components/ProductOptionListCard";
+import { uploadFile, urlToFile } from "@/libs/util";
+import useMutation from "@/libs/useMutation";
+import { Product } from "@/types/model";
+import { ApiResultType } from "@/types/api";
+import { useRouter } from "next/navigation";
+import Archived from "@/components/ui/form/Archived";
 
 type BuffetPrice = {
   [key: number]: number;
 };
 
 type FormData = {
+  imgId: null | string;
   name: string;
   categoryId: number;
   isBuffet: boolean;
@@ -28,17 +35,22 @@ type FormData = {
   price: number;
   buffetPrice: BuffetPrice;
   options: ProductOptionGroup[];
+  hideKiosk: boolean;
+  archived: boolean;
 };
 
 type Props = {
+  data?: Product | undefined;
   option: ProductOption;
 };
 
 export default function ProductUpdate({
+  data,
   option: { categories, buffets, printers },
 }: Props) {
   const [imgFile, setImgFile] = useState<null | File>(null);
   const [isOptionDrawerOpen, setIsOptionDrawerOpen] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -56,7 +68,7 @@ export default function ProductUpdate({
     },
   });
 
-  const data = watch();
+  const formData = watch();
 
   const MultipleHandler = (
     id: number,
@@ -87,10 +99,139 @@ export default function ProductUpdate({
     setValue("buffetPrice", newVal);
   };
 
-  const updateHandler = (data: FormData) => {
-    console.log(data);
+  const [update, { result, loading }] = useMutation<ApiResultType>(
+    `/api/product${data ? `/${data.id}` : ""}`
+  );
+
+  const updateHandler = async (data: FormData) => {
+    if (loading) {
+      window.alert(StillUpdating);
+      return;
+    }
+
+    if (Boolean(data.archived)) {
+      const msg = `${data.name} ${BeDisabled}`;
+      if (!window.confirm(msg)) {
+        return;
+      }
+    }
+
+    // Validate
+    const { categoryId, isBuffet, buffetIds } = data;
+
+    if (!Boolean(categoryId)) {
+      const msg = `Please select a category`;
+      window.alert(msg);
+      return;
+    }
+
+    if (isBuffet && buffetIds.length === 0) {
+      const msg = `Please select at least one class.`;
+      window.alert(msg);
+      return;
+    }
+
+    let imgId = data.imgId;
+
+    if (imgFile && imgId === null) {
+      const { ok, id: rImgId }: { ok: boolean; id: string | null } =
+        await uploadFile(imgFile);
+      if (ok && rImgId) {
+        imgId = rImgId;
+      }
+    }
+
+    const sanitized = {
+      ...data,
+      imgId,
+      options: JSON.stringify(data.options),
+      buffetIds: JSON.stringify(data.buffetIds),
+      buffetPrice: JSON.stringify(data.buffetPrice),
+      printerIds: JSON.stringify(data.printerIds),
+    };
+
+    // OK
+
+    update({ ...sanitized });
     return;
   };
+
+  // Update Response
+  useEffect(() => {
+    if (result && result.ok) {
+      router.push(`/product`);
+    }
+
+    if (result && !result.ok) {
+      window.alert(result.msg || "Failed Update!");
+    }
+  }, [result, router]);
+
+  // Load Previous
+  useEffect(() => {
+    const getImg = async (imgId: string) => {
+      const image = await urlToFile(`http://localhost:3000/imgs/${imgId}`);
+
+      if (image) {
+        setImgFile(image);
+      }
+    };
+
+    if (data) {
+      const {
+        categoryId,
+        name,
+        price,
+        isBuffet,
+        buffetIds,
+        buffetPrice,
+        printerIds,
+        options,
+        hideKiosk,
+        archived,
+        imgId,
+      } = data;
+
+      if (categoryId) {
+        setValue("categoryId", categoryId);
+      }
+
+      if (name) {
+        setValue("name", name);
+      }
+      if (isBuffet) {
+        setValue("isBuffet", isBuffet);
+      }
+      if (price) {
+        setValue("price", price);
+      } else {
+        setValue("price", 0);
+      }
+
+      if (buffetIds) {
+        setValue("buffetIds", JSON.parse(buffetIds));
+      }
+      if (buffetPrice) {
+        setValue("buffetPrice", JSON.parse(buffetPrice));
+      }
+      if (printerIds) {
+        setValue("printerIds", JSON.parse(printerIds));
+      }
+      if (options) {
+        setValue("options", JSON.parse(options));
+      }
+      if (hideKiosk) {
+        setValue("hideKiosk", hideKiosk);
+      }
+      if (archived) {
+        setValue("archived", archived);
+      }
+
+      if (imgId) {
+        getImg(imgId);
+      }
+    }
+  }, [data, setValue, urlToFile]);
 
   return (
     <>
@@ -101,7 +242,10 @@ export default function ProductUpdate({
               label="Product Image"
               required
               val={imgFile}
-              setVal={(val) => setImgFile(val)}
+              setVal={(val) => {
+                setValue("imgId", null);
+                setImgFile(val);
+              }}
             />
 
             {/* Category and Name */}
@@ -116,6 +260,11 @@ export default function ProductUpdate({
                 register={register("categoryId", {
                   required: RequiredField,
                   setValueAs: (val) => Number(val),
+                  validate: (val) => {
+                    if (!val || !Boolean(val)) {
+                      return `Please select a category`;
+                    }
+                  },
                 })}
                 options={categories.map((opt) => ({
                   name: opt.name,
@@ -137,13 +286,18 @@ export default function ProductUpdate({
                 id="isBuffet"
                 label="Buffet Product"
                 register={register("isBuffet", {
-                  setValueAs: (val) => Boolean(val),
+                  setValueAs: (val) => {
+                    if (val && !formData.price) {
+                      setValue("price", 0);
+                    }
+                    return Boolean(val);
+                  },
                 })}
               />
             </form>
 
             {/* Pricing */}
-            {!data.isBuffet ? (
+            {!formData.isBuffet ? (
               <form
                 className="defaultForm mt-4"
                 onSubmit={handleSubmit(updateHandler)}
@@ -154,6 +308,7 @@ export default function ProductUpdate({
                     required: RequiredField,
                     setValueAs: (val) => Math.abs(Number(val)),
                   })}
+                  error={errors.price}
                 />
               </form>
             ) : (
@@ -167,7 +322,7 @@ export default function ProductUpdate({
                           id={bf.name}
                           label={bf.name}
                           checked={Boolean(
-                            data.buffetIds.find((bId) => bId === bf.id)
+                            formData.buffetIds.find((bId) => bId === bf.id)
                           )}
                           value={bf.id}
                           onChange={(val) => MultipleHandler(val)}
@@ -175,10 +330,10 @@ export default function ProductUpdate({
                       </div>
 
                       {Boolean(
-                        data.buffetIds.find((bId) => +bId === bf.id)
+                        formData.buffetIds.find((bId) => +bId === bf.id)
                       ) && (
                         <BuffetPriceInput
-                          value={data.buffetPrice[bf.id] || 0}
+                          value={formData.buffetPrice[bf.id] || 0}
                           onChange={(val) => buffetPriceHandler(bf.id, val)}
                         />
                       )}
@@ -199,7 +354,7 @@ export default function ProductUpdate({
                 <span>Open Option Editor</span>
               </button>
 
-              {data.options.map((opt) => {
+              {formData.options.map((opt) => {
                 return <ProductOptionListCard data={opt} key={opt.id} />;
               })}
             </div>
@@ -214,7 +369,7 @@ export default function ProductUpdate({
                     id={pt.label}
                     label={pt.label}
                     checked={Boolean(
-                      data.printerIds.find((bId) => bId === pt.id)
+                      formData.printerIds.find((bId) => bId === pt.id)
                     )}
                     value={pt.id}
                     onChange={(val) => MultipleHandler(val, "printerIds")}
@@ -222,6 +377,26 @@ export default function ProductUpdate({
                 ))}
               </div>
             </div>
+
+            <form
+              className="defaultForm mt-4"
+              onSubmit={handleSubmit(updateHandler)}
+            >
+              <h4>Misc Options</h4>
+              <ToggleCheckbox
+                id="hide_kiosk"
+                label="Hide on customer's screens"
+                register={register("hideKiosk", {
+                  setValueAs: (val) => Boolean(val),
+                })}
+              />
+
+              {data !== undefined && (
+                <Archived register={register("archived")} />
+              )}
+
+              <button>Submit</button>
+            </form>
           </div>
 
           {/* Preview */}
@@ -231,20 +406,21 @@ export default function ProductUpdate({
               <ProductPreview
                 img={imgFile ? URL.createObjectURL(imgFile) : undefined}
                 category={
-                  data.categoryId
-                    ? categories.find((ct) => ct.id === data.categoryId)?.name
+                  formData.categoryId
+                    ? categories.find((ct) => ct.id === formData.categoryId)
+                        ?.name
                     : undefined
                 }
-                name={data.name}
-                isBuffet={data.isBuffet}
-                price={data.price}
+                name={formData.name}
+                isBuffet={formData.isBuffet}
+                price={formData.price}
               />
             </div>
           </div>
         </section>
       </div>
       <ProductOptionDrawer
-        val={data.options}
+        val={formData.options}
         setValue={(val) => setValue("options", val)}
         open={isOptionDrawerOpen}
         onClose={() => setIsOptionDrawerOpen(false)}

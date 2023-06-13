@@ -3,10 +3,17 @@ import client from "@libs/prismaClient";
 import { Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 
-type CategoryDataProps = {
-  id?: number;
+type ProductFormData = {
+  imgId: null | string;
   name: string;
-  index: number;
+  categoryId: number;
+  isBuffet: boolean;
+  buffetIds: string;
+  printerIds: string;
+  price: number;
+  buffetPrice: string;
+  options: string;
+  hideKiosk: boolean;
   archived: boolean;
 };
 
@@ -57,4 +64,99 @@ export const getProductOptions = async (req: Request, res: Response) => {
       printers,
     },
   });
+};
+
+export const updateProduct = async (req: Request, res: Response) => {
+  const id = req.params.id ? Math.abs(+req.params.id) : 0;
+  const staff: Staff = res.locals.staff;
+
+  if (isNaN(id)) {
+    return res.status(400).json({ ok: false, msg: "Invalid Request!" });
+  }
+
+  if (!getRole(staff.permission, "isProduct")) {
+    return res
+      .status(403)
+      .json({ ok: false, msg: "You do not have permission." });
+  }
+
+  try {
+    const {
+      imgId,
+      name,
+      categoryId,
+      isBuffet,
+      buffetIds,
+      printerIds,
+      price,
+      buffetPrice,
+      options,
+      hideKiosk,
+      archived,
+    }: ProductFormData = req.body;
+
+    await client.product.upsert({
+      where: {
+        id,
+      },
+      update: {
+        imgId,
+        name,
+        categoryId,
+        isBuffet,
+        buffetIds,
+        printerIds,
+        price,
+        buffetPrice,
+        options,
+        hideKiosk,
+        archived,
+      },
+      create: {
+        imgId,
+        name,
+        categoryId,
+        isBuffet,
+        buffetIds,
+        printerIds,
+        price,
+        buffetPrice,
+        options,
+        hideKiosk,
+        archived,
+      },
+    });
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Update PRoduct" });
+  }
+};
+
+export const getProduct = async (req: Request, res: Response) => {
+  const id = req.params.id ? Math.abs(+req.params.id) : 0;
+  const staff: Staff = res.locals.staff;
+
+  if (isNaN(id)) {
+    return res.status(400).json({ ok: false, msg: "Invalid Request!" });
+  }
+
+  if (!getRole(staff.permission, "isProduct")) {
+    return res
+      .status(403)
+      .json({ ok: false, msg: "You do not have permission." });
+  }
+
+  const result = await client.product.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!result) {
+    return res.json({ ok: false, msg: "Product Not Found!" });
+  }
+
+  return res.json({ ok: true, result });
 };

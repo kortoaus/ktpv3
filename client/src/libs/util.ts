@@ -26,3 +26,27 @@ export const signOut = () => {
 
   fetch("/api/auth/signout");
 };
+
+export const uploadFile = async (file: Blob) => {
+  if (!file) {
+    return null;
+  }
+
+  const form = new FormData();
+  form.append("file", file);
+
+  const result = await fetch("/api/file", {
+    method: "POST",
+    body: form,
+  }).then((res) => res.json());
+
+  return result;
+};
+
+export const urlToFile = async (url: string) => {
+  const image = await fetch(url).then((res) => res.blob());
+  if (image) {
+    return new File([image], image.name, { type: image.type });
+  }
+  return null;
+};

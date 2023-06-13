@@ -9,7 +9,7 @@ export async function GET(
   const id = Math.abs(+context.params.id);
   const key = cookies().get("accessToken")?.value || "";
 
-  const data = await fetch(`${apiURL}/v1/category/${id}`, {
+  const data = await fetch(`${apiURL}/v1/product/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export async function POST(
     });
   }
 
-  const data = await fetch(`${apiURL}/v1/category/${id}`, {
+  const data = await fetch(`${apiURL}/v1/product/${id}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

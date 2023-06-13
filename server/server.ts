@@ -16,6 +16,7 @@ import categoryRouter from "@routes/v1/categoryRouter";
 import buffetRouter from "@routes/v1/buffetRouter";
 import productRouter from "@routes/v1/productRouter";
 import printerRouter from "@routes/v1/printerRouter";
+import fileRouter from "@routes/v1/fileRouter";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -53,6 +54,7 @@ app.use(`${apiRoot}/v1/category`, categoryRouter);
 app.use(`${apiRoot}/v1/buffet`, buffetRouter);
 app.use(`${apiRoot}/v1/product`, productRouter);
 app.use(`${apiRoot}/v1/printer`, printerRouter);
+app.use(`${apiRoot}/v1/file`, fileRouter);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

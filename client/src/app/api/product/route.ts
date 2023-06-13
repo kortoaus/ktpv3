@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const key = cookies().get("accessToken")?.value || "";
 
-  const data = await fetch(`${apiURL}/v1/category`, {
+  const data = await fetch(`${apiURL}/v1/product`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const data = await fetch(`${apiURL}/v1/category`, {
+  const data = await fetch(`${apiURL}/v1/product`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -34,7 +34,9 @@ export const ProductOptionListCard = ({
           key={`${name}_${opt.id}`}
           className="f-btw pt-2 mt-2 border-t text-sm"
         >
-          <div>{opt.name}</div>
+          <div>{`${opt.name}${
+            opt.value ? `(+$${opt.value.toFixed(2)})` : ""
+          }`}</div>
           <div>
             {mode === "radio" && <RadioComponent />}
             {mode === "checkbox" && <CheckBoxComponent />}

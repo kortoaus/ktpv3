@@ -85,6 +85,7 @@ model BuffetClass {
 model Product {
   id          Int       @id @default(autoincrement())
   mId         Int?
+  imgId       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   categoryId  Int?
@@ -98,6 +99,8 @@ model Product {
   buffetIds   String    @default("[]")
   options     String    @default("[]") @db.Text
   index       Int       @default(999)
+  hideKiosk   Boolean   @default(false)
+  archived    Boolean   @default(false)
 
   @@index([categoryId])
 }

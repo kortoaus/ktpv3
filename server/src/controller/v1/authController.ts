@@ -11,6 +11,10 @@ type SignInDataType = {
 export const signIn = async (req: Request, res: Response) => {
   const { phone, code }: SignInDataType = req.body;
 
+  if (phone > 500000000) {
+    return res.status(403).json({ ok: false, msg: "Not Registered!" });
+  }
+
   const staff = await client.staff.findFirst({
     where: {
       phone,

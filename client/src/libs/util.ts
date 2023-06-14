@@ -1,3 +1,5 @@
+import { Staff } from "@/types/model";
+
 export const isMobile = (val: string | number) => {
   const input = val + "";
   const isValid =
@@ -8,7 +10,12 @@ export const isMobile = (val: string | number) => {
 
   const replaced = input.replace("+61", "");
 
-  if (!isValid || input.length < 9 || isNaN(Number(replaced))) {
+  if (
+    !isValid ||
+    input.length < 9 ||
+    isNaN(Number(replaced)) ||
+    Number(replaced) > 500000000
+  ) {
     return false;
   }
 
@@ -50,3 +57,33 @@ export const urlToFile = async (url: string) => {
   }
   return null;
 };
+
+type StaffRole = {
+  [key: string]: boolean;
+};
+
+type Key =
+  | "isOpen"
+  | "isDirector"
+  | "isTable"
+  | "isProduct"
+  | "isBuffet"
+  | "isStaff";
+
+export const getRole = (staff: Staff | undefined = undefined, key: Key) => {
+  if (!staff) {
+    return false;
+  }
+  try {
+    const parsed: StaffRole = JSON.parse(staff.permission);
+    if (parsed["isDirector"]) {
+      return true;
+    }
+    return Boolean(parsed[key]);
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+};
+
+export default getRole;

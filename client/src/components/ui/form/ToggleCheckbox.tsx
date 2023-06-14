@@ -47,7 +47,37 @@ export function MultipleCheckbox({
           id={id}
           type="checkbox"
           checked={checked}
+          name={id}
           onChange={(e) => onChange(value)}
+        />
+        <label htmlFor={id} className="!mb-0">
+          {label}
+        </label>
+      </div>
+    </div>
+  );
+}
+
+type HandlerCheckboxProps = Props & {
+  checked: boolean;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export function HandlerCheckbox({
+  id,
+  label = "",
+  onChange,
+  checked,
+}: HandlerCheckboxProps) {
+  return (
+    <div className="form-element-group">
+      <div className="flex items-center gap-2">
+        <input
+          id={id}
+          type="checkbox"
+          checked={checked}
+          name={id}
+          onChange={(e) => onChange(e)}
         />
         <label htmlFor={id} className="!mb-0">
           {label}

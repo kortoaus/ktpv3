@@ -238,7 +238,7 @@ export default function ProductUpdate({
         getImg(imgId);
       }
     }
-  }, [data, setValue, urlToFile]);
+  }, [data, setValue]);
 
   return (
     <>

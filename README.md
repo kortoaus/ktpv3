@@ -14,6 +14,10 @@
 - [x] Serving Image
 - [x] Searching Query
 - [x] Pagination
+- [x] Manage Staff
+- [x] Title Screen
+- [x] Role Parser
 - [ ] Product Preview
 - [ ] Manage Menu
 - [ ] Remote Image
+- [ ] Convert tailwindcss to scss in styles

@@ -111,6 +111,7 @@ export type Product = {
   options: string;
   index: number;
   hideKiosk: boolean;
+  outOfStock: boolean;
   archived: boolean;
 };
 

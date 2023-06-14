@@ -46,7 +46,7 @@ model Staff {
   id         Int      @id @default(autoincrement())
   name       String
   code       String
-  phone      Int      @unique
+  phone      Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   permission String   @default("{}")
@@ -100,6 +100,7 @@ model Product {
   options     String    @default("[]") @db.Text
   index       Int       @default(999)
   hideKiosk   Boolean   @default(false)
+  outOfStock  Boolean   @default(false)
   archived    Boolean   @default(false)
 
   @@index([categoryId])

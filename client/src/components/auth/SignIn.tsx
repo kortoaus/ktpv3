@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import SignInForm from "./SignInForm";
 import { useRouter } from "next/navigation";
+import DataLoading from "../ui/DataLoading";
 
 export type SignInData = {
   phone: number;
@@ -29,20 +30,22 @@ export default function SignIn() {
       .then((res) => res.json())
       .then((data: ResultProps) => {
         if (data.ok) {
-          router.push("/");
+          setTimeout(() => router.push("/"), 2000);
         } else {
           window.alert(data.msg || "Failed Sign In!");
+          setLoading(false);
         }
       })
       .catch((e) => {
         console.log(e);
         window.alert("Failed Sign In!");
-      })
-      .finally(() => setLoading(false));
+        setLoading(false);
+      });
   };
 
   return (
     <div className="w-full h-full fccc">
+      {loading && <DataLoading />}
       {!loading && <SignInForm update={(val) => signInHandler(val)} />}
     </div>
   );

@@ -3,15 +3,17 @@ import client from "@libs/prismaClient";
 import { Category, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 
-type CategoryDataProps = {
-  id?: number;
+type FormDataProps = {
   name: string;
-  index: number;
+  code: string;
+  phone: number;
+  permission: string;
   archived: boolean;
 };
 
-export const updateCategory = async (req: Request, res: Response) => {
+export const updateStaff = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
   const staff: Staff = res.locals.staff;
 
@@ -19,35 +21,66 @@ export const updateCategory = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
   }
 
-  if (!getRole(staff.permission, "isProduct")) {
+  if (!getRole(staff.permission, "isStaff")) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission." });
   }
 
   try {
-    const { name, index, archived }: CategoryDataProps = req.body;
+    const { name, code, phone, permission, archived }: FormDataProps = req.body;
 
-    await client.category.upsert({
+    const exist = await client.staff.findFirst({
+      where: {
+        code,
+      },
+    });
+
+    if (id === 0 && exist) {
+      return res
+        .status(403)
+        .json({ ok: false, msg: "The code already exists!" });
+    }
+
+    if (id !== 0 && exist && exist.id !== id) {
+      return res
+        .status(403)
+        .json({ ok: false, msg: "The code already exists!" });
+    }
+
+    await client.staff.upsert({
       where: {
         id,
       },
       update: {
         name,
-        index,
+        code,
+        phone,
+        permission,
         archived,
       },
-      create: { name, index },
+      create: {
+        name,
+        code,
+        phone,
+        permission,
+      },
     });
 
     return res.json({ ok: true });
-  } catch (e) {
+  } catch (e: PrismaClientKnownRequestError | any) {
+    let msg = undefined;
+
     console.log(e);
-    return res.json({ ok: false, msg: "Failed Update Category" });
+    if (e.code === "P2002" && e.meta["target"].join("") === "phone") {
+      msg = "The phone number already exists!";
+    }
+
+    return res.json({ ok: false, msg: msg || "Failed Update Staff" });
   }
 };
 
-export const getCategory = async (req: Request, res: Response) => {
+export const getStaff = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
   const staff: Staff = res.locals.staff;
 
@@ -55,28 +88,28 @@ export const getCategory = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
   }
 
-  if (!getRole(staff.permission, "isProduct")) {
+  if (!getRole(staff.permission, "isStaff")) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission." });
   }
 
-  const result = await client.category.findUnique({
+  const result = await client.staff.findUnique({
     where: {
       id,
     },
   });
 
   if (!result) {
-    return res.json({ ok: false, msg: "Category Not Found!" });
+    return res.json({ ok: false, msg: "Staff Not Found!" });
   }
 
   return res.json({ ok: true, result });
 };
 
-export const getCategories = async (
+export const getStaffs = async (
   req: Request<{}, {}, {}, PaginationParams>,
-  res: Response<PaginationResponse<Category>>
+  res: Response<PaginationResponse<Staff>>
 ) => {
   const { page = 1, keyword = "", offset = 20 } = req.query;
 
@@ -98,7 +131,7 @@ export const getCategories = async (
     ],
   };
 
-  const totalCount = await client.category.count({
+  const totalCount = await client.staff.count({
     where: where,
   });
 
@@ -108,15 +141,8 @@ export const getCategories = async (
     totalPages
   );
 
-  const result = await client.category.findMany({
+  const result = await client.staff.findMany({
     where: where,
-    include: {
-      _count: {
-        select: {
-          Product: true,
-        },
-      },
-    },
     skip: (currentPage - 1) * offset,
     take: offset,
   });
@@ -126,10 +152,7 @@ export const getCategories = async (
 
   return res.json({
     ok: true,
-    result: result.map((result) => ({
-      ...result,
-      productCount: result._count.Product,
-    })),
+    result,
     hasPrev,
     hasNext,
     totalPages,

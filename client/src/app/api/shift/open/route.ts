@@ -1,17 +1,24 @@
+import apiURL from "@/libs/apiURL";
 import { cookies } from "next/dist/client/components/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-const apiURL = process.env.API_URL || "";
-
-export async function GET(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const key = cookies().get("accessToken")?.value || "";
 
-  const data = await fetch(encodeURI(`${apiURL}/v1/shift/current`), {
-    method: "GET",
+  if (!key) {
+    return NextResponse.json({
+      ok: false,
+      msg: "Unauthorized!(c)",
+    });
+  }
+
+  const data = await fetch(`${apiURL}/v1/shift/open`, {
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${key}`,
     },
+    body: JSON.stringify(await req.json()),
   })
     .then((res) => res.json())
     .catch((e) => {

@@ -17,6 +17,9 @@
 - [x] Manage Staff
 - [x] Title Screen
 - [x] Role Parser
+- [x] Cash Counter Component
+- [x] Shift Open
+- [ ] Shift Close
 - [ ] Product Preview
 - [ ] Manage Menu
 - [ ] Remote Image

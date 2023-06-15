@@ -149,8 +149,16 @@ model Table {
 // }
 
 model Shift {
-  id        Int       @id @default(autoincrement())
-  openAt    DateTime  @default(now())
-  closedAt  DateTime?
-  updatedAt DateTime  @updatedAt
+  id           Int       @id @default(autoincrement())
+  openStaffId  Int       @default(0)
+  closeStaffId Int       @default(0)
+  openStaff    String    @default("")
+  closeStaff   String    @default("")
+  openCash     Float     @default(0)
+  closeCash    Float     @default(0)
+  openNote     String    @default("") @db.Text
+  closeNote    String    @default("") @db.Text
+  openAt       DateTime  @default(now())
+  closedAt     DateTime?
+  updatedAt    DateTime  @updatedAt
 }

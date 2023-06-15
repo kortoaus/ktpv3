@@ -162,6 +162,14 @@ export type Table = {
  */
 export type Shift = {
   id: number;
+  openStaffId: number;
+  closeStaffId: number;
+  openStaff: string;
+  closeStaff: string;
+  openCash: number;
+  closeCash: number;
+  openNote: string;
+  closeNote: string;
   openAt: Date;
   closedAt: Date | null;
   updatedAt: Date;

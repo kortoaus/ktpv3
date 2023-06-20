@@ -5,6 +5,7 @@ import {
   getTableContainerWithTables,
   updateTable,
   getTable,
+  getAllTables,
 } from "@controller/v1/tableController";
 import { authMid } from "@middlewares/auth";
 import express from "express";
@@ -29,5 +30,7 @@ tableRouter
   .route("/container/:id(\\d+)/table/:tIdx(\\d+)")
   .post(authMid, updateTable)
   .get(authMid, getTable);
+
+tableRouter.route("/all").get(authMid, getAllTables);
 
 export default tableRouter;

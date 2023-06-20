@@ -18,6 +18,7 @@ import productRouter from "@routes/v1/productRouter";
 import printerRouter from "@routes/v1/printerRouter";
 import fileRouter from "@routes/v1/fileRouter";
 import staffRouter from "@routes/v1/staffRouter";
+import deviceRouter from "@routes/v1/deviceRouter";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -57,6 +58,7 @@ app.use(`${apiRoot}/v1/product`, productRouter);
 app.use(`${apiRoot}/v1/printer`, printerRouter);
 app.use(`${apiRoot}/v1/staff`, staffRouter);
 app.use(`${apiRoot}/v1/file`, fileRouter);
+app.use(`${apiRoot}/v1/device`, deviceRouter);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

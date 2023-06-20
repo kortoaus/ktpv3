@@ -126,27 +126,39 @@ model TableContainer {
 }
 
 model Table {
-  id          Int             @id @default(autoincrement())
+  id          Int            @id @default(autoincrement())
   name        String
   index       Int
-  key         String          @default("")
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  containerId Int?
-  container   TableContainer? @relation(fields: [containerId], references: [id], onDelete: SetNull)
-  archived    Boolean         @default(false)
+  key         String         @default("")
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  containerId Int
+  container   TableContainer @relation(fields: [containerId], references: [id], onDelete: Cascade)
+  archived    Boolean        @default(false)
 }
 
-// model DeviceToken {
-//   id        Int      @id @default(autoincrement())
-//   payload   String   @unique
-//   device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
-//   deviceId  Int
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model Device {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  type      String        @default("POS")
+  name      String
+  ip        String?
+  tableId   Int?
+  archived  Boolean       @default(false)
+  tokens    DeviceToken[]
+}
 
-//   @@index([deviceId])
-// }
+model DeviceToken {
+  id        Int      @id @default(autoincrement())
+  payload   String   @unique
+  device    Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  deviceId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([deviceId])
+}
 
 model Shift {
   id           Int       @id @default(autoincrement())

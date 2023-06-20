@@ -191,12 +191,6 @@ export const getTable = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
   }
 
-  if (!getRole(staff.permission, "isTable")) {
-    return res
-      .status(403)
-      .json({ ok: false, msg: "You do not have permission." });
-  }
-
   const result = await client.table.findFirst({
     where: {
       index: tIdx,
@@ -205,4 +199,24 @@ export const getTable = async (req: Request, res: Response) => {
   });
 
   return res.json({ ok: true, result });
+};
+
+export const getAllTables = async (req: Request, res: Response) => {
+  try {
+    const result = await client.tableContainer.findMany({
+      where: {
+        archived: false,
+      },
+      include: {
+        tables: true,
+      },
+      orderBy: {
+        index: "asc",
+      },
+    });
+    return res.json({ ok: true, result });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Load Tables" });
+  }
 };

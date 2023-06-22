@@ -44,3 +44,37 @@ export const authMid = async (
 
   next();
 };
+
+export const authDeviceMid = async (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  const key = req.headers.authorization;
+
+  if (key === undefined) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  const [_, ip] = key?.split(" ");
+
+  const device = await client.device.findFirst({
+    where: {
+      archived: false,
+      // ip,
+      type: "POS",
+    },
+  });
+
+  if (!device) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  // if (type && device.type !== type) {
+  //   return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  // }
+
+  res.locals.device = device;
+
+  next();
+};

@@ -174,3 +174,23 @@ model Shift {
   closedAt     DateTime?
   updatedAt    DateTime  @updatedAt
 }
+
+model Sale {
+  id            String    @id @default(uuid())
+  note          String    @default("") @db.Text
+  shiftId       Int       @default(0)
+  tableId       Int
+  ppA           Int
+  ppB           Int
+  ppC           Int
+  pp            Int
+  buffetId      Int?
+  buffetStarted DateTime?
+  openStaffId   Int       @default(0)
+  closeStaffId  Int       @default(0)
+  openStaff     String    @default("")
+  closeStaff    String    @default("")
+  openAt        DateTime  @default(now())
+  closedAt      DateTime?
+  updatedAt     DateTime  @updatedAt
+}

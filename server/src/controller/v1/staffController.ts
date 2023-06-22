@@ -82,16 +82,9 @@ export const updateStaff = async (req: Request, res: Response) => {
 
 export const getStaff = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
-  const staff: Staff = res.locals.staff;
 
   if (isNaN(id)) {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });
-  }
-
-  if (!getRole(staff.permission, "isStaff")) {
-    return res
-      .status(403)
-      .json({ ok: false, msg: "You do not have permission." });
   }
 
   const result = await client.staff.findUnique({
@@ -158,4 +151,21 @@ export const getStaffs = async (
     totalPages,
     pageSize: offset,
   });
+};
+
+export const getStaffByCode = async (req: Request, res: Response) => {
+  const { code }: { code: string } = req.body;
+
+  const result = await client.staff.findFirst({
+    where: {
+      code,
+      archived: false,
+    },
+  });
+
+  if (!result) {
+    return res.json({ ok: false, msg: "Staff Not Found!" });
+  }
+
+  return res.json({ ok: true, result });
 };

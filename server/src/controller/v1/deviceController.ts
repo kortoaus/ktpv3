@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import client from "@libs/prismaClient";
-import { Device, Staff } from "@prisma/client";
+import { Device, Sale, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
@@ -11,6 +11,21 @@ type FormDataProps = {
   type: string;
   archived: boolean;
   tableId?: number;
+  ip: string;
+};
+
+export type BuffetDataType = {
+  id?: number;
+  ppA: number;
+  ppB: number;
+  ppC: number;
+};
+
+type OpenTableDataProps = {
+  staffId: number;
+  tableId: number;
+  buffetData: BuffetDataType;
+  pp: number;
 };
 
 export const updateDevice = async (req: Request, res: Response) => {
@@ -28,7 +43,7 @@ export const updateDevice = async (req: Request, res: Response) => {
   }
 
   try {
-    const { name, type, archived, tableId }: FormDataProps = req.body;
+    const { name, type, archived, tableId, ip }: FormDataProps = req.body;
 
     await client.device.upsert({
       where: {
@@ -39,11 +54,13 @@ export const updateDevice = async (req: Request, res: Response) => {
         type: type.toUpperCase(),
         archived,
         tableId: tableId ? tableId : null,
+        ip,
       },
       create: {
         name,
         type: type.toUpperCase(),
         tableId: tableId ? tableId : null,
+        ip,
       },
     });
 
@@ -154,4 +171,117 @@ export const getDevices = async (
     totalPages,
     pageSize: offset,
   });
+};
+
+export const deviceMe = async (req: Request, res: Response) => {
+  return res.json({ ok: true, result: res.locals.device });
+};
+
+export const getTableData = async (req: Request, res: Response) => {
+  const id = req.params.id ? Math.abs(+req.params.id) : 0;
+
+  const shift = await client.shift.findFirst({
+    where: {
+      closedAt: null,
+    },
+  });
+
+  const table = await client.table.findFirst({
+    where: {
+      id,
+      archived: false,
+    },
+  });
+
+  if (!table) {
+    return res.status(404).json({ ok: false, msg: "Table Not Found" });
+  }
+
+  let sale: null | Sale = null;
+
+  if (shift) {
+    sale = await client.sale.findFirst({
+      where: {
+        shiftId: shift.id,
+        closedAt: null,
+        tableId: table.id,
+      },
+    });
+  }
+
+  return res.json({ ok: true, table, sale });
+};
+
+export const openTable = async (req: Request, res: Response) => {
+  const id = req.params.id ? Math.abs(+req.params.id) : 0;
+
+  const {
+    staffId,
+    tableId,
+    buffetData: { id: buffetId, ppA, ppB, ppC },
+    pp,
+  }: OpenTableDataProps = req.body;
+
+  const staff = await client.staff.findFirst({
+    where: {
+      id: staffId,
+      archived: false,
+    },
+  });
+
+  if (!staff) {
+    return res
+      .status(403)
+      .json({ ok: false, msg: "You do not have permission." });
+  }
+
+  const shift = await client.shift.findFirst({
+    where: {
+      closedAt: null,
+    },
+  });
+
+  if (!shift) {
+    return res.status(404).json({ ok: false, msg: "Shop is closed!" });
+  }
+
+  const table = await client.table.findFirst({
+    where: {
+      id: tableId,
+      archived: false,
+    },
+  });
+
+  if (!table || (table && table.id !== id)) {
+    return res.status(404).json({ ok: false, msg: "Table Not Found" });
+  }
+
+  const exist = await client.sale.count({
+    where: {
+      shiftId: shift.id,
+      tableId: table.id,
+      closedAt: null,
+    },
+  });
+
+  if (exist !== 0) {
+    return res.status(400).json({ ok: false, msg: "Already Opened!" });
+  }
+
+  const result = await client.sale.create({
+    data: {
+      shiftId: shift.id,
+      tableId: table.id,
+      openStaffId: staff.id,
+      openStaff: `${staff.name}(${staff.id})`,
+      ppA,
+      ppB,
+      ppC,
+      pp,
+      buffetId,
+      buffetStarted: buffetId ? new Date() : null,
+    },
+  });
+
+  return res.json({ ok: true, result });
 };

@@ -1,5 +1,6 @@
 import getRole from "@libs/getRole";
 import client from "@libs/prismaClient";
+import saleData from "@libs/saleData";
 import { Staff } from "@prisma/client";
 import { Response, Request } from "express";
 
@@ -14,9 +15,19 @@ export const getCurrentShift = async (req: Request, res: Response) => {
       closedAt: null,
     },
   });
-
   if (shift) {
-    return res.json({ ok: true, shift });
+    const sl = await client.sale.findMany({
+      where: {
+        shiftId: shift.id,
+        closedAt: null,
+      },
+    });
+
+    const sales = await Promise.all(
+      sl.map(async (sale) => ({ ...(await saleData(sale)) }))
+    );
+
+    return res.json({ ok: true, shift, sales });
   } else {
     return res.json({ ok: true, shift: null });
   }

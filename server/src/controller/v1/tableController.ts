@@ -208,12 +208,17 @@ export const getAllTables = async (req: Request, res: Response) => {
         archived: false,
       },
       include: {
-        tables: true,
+        tables: {
+          where: {
+            archived: false,
+          },
+        },
       },
       orderBy: {
         index: "asc",
       },
     });
+
     return res.json({ ok: true, result });
   } catch (e) {
     console.log(e);

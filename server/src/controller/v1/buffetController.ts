@@ -95,13 +95,6 @@ export const updateBuffetClass = async (req: Request, res: Response) => {
 };
 
 export const getBuffetClasses = async (req: Request, res: Response) => {
-  const staff: Staff = res.locals.staff;
-  if (!getRole(staff.permission, "isBuffet")) {
-    return res
-      .status(403)
-      .json({ ok: false, msg: "You do not have permission." });
-  }
-
   const result = await client.buffetClass.findMany({
     where: {
       archived: false,

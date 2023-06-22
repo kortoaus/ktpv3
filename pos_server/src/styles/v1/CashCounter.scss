@@ -1,0 +1,16 @@
+.CashCounter{
+  @apply w-full grid grid-cols-2 gap-4 hover:cursor-pointer;
+
+  .LineContainer{
+    @apply flex flex-col ;
+    .CashLine{
+      @apply border-b grid grid-cols-12 gap-2 p-2;
+      .col{
+        @apply flex items-center;
+      }
+      &.selected{
+        @apply bg-gray-100;
+      }
+    }
+  }
+}

@@ -19,6 +19,13 @@
 - [x] Role Parser
 - [x] Cash Counter Component
 - [x] Shift Open
+- [x] Manage Device
+- [x] Deivce Table Drawer
+- [x] Deivce IP Parser
+- [x] POS Data(Shift, Tables, Sales)
+- [x] POS Sign Staff
+- [x] POS Open Table
+- [ ] POS Sale Screen
 - [ ] Shift Close
 - [ ] Product Preview
 - [ ] Manage Menu

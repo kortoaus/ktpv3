@@ -201,3 +201,27 @@ export type Shift = {
   closedAt: Date | null;
   updatedAt: Date;
 };
+
+/**
+ * Model Sale
+ *
+ */
+export type Sale = {
+  id: string;
+  note: string;
+  shiftId: number;
+  tableId: number;
+  ppA: number;
+  ppB: number;
+  ppC: number;
+  pp: number;
+  buffetId: number | null;
+  buffetStarted: Date | null;
+  openStaffId: number;
+  closeStaffId: number;
+  openStaff: string;
+  closeStaff: string;
+  openAt: Date;
+  closedAt: Date | null;
+  updatedAt: Date;
+};

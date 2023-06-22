@@ -29,6 +29,7 @@ deviceRouter.route("/buffet").get(authDeviceMid, getBuffetClasses);
 deviceRouter.route("/staff").post(authDeviceMid, getStaffByCode);
 
 deviceRouter.route("/table").get(authDeviceMid, getAllTables);
+
 deviceRouter
   .route("/table/:id(\\d+)")
   .get(authDeviceMid, getTableData)

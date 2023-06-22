@@ -1,6 +1,10 @@
 "use client";
 import DataLoading from "@/components/ui/DataLoading";
+import Archived from "@/components/ui/form/Archived";
+import IntInput from "@/components/ui/form/IntInput";
 import Required from "@/components/ui/form/Required";
+import TextInput from "@/components/ui/form/TextInput";
+import ToggleCheckbox from "@/components/ui/form/ToggleCheckbox";
 import { BeDisabled, RequiredField, StillUpdating } from "@/libs/Messages";
 import useMutation from "@/libs/useMutation";
 import { ApiResultType } from "@/types/api";
@@ -21,6 +25,7 @@ type FormDataProps = {
   id?: number;
   name: string;
   index: number;
+  hoc: boolean;
   archived: boolean;
 };
 
@@ -28,6 +33,7 @@ const initValue: FormDataProps = {
   name: "",
   archived: false,
   index: 999,
+  hoc: false,
 };
 
 export default function CategoryUpdate({ data, query }: Props) {
@@ -84,40 +90,27 @@ export default function CategoryUpdate({ data, query }: Props) {
         <DataLoading />
       ) : (
         <form className="defaultForm" onSubmit={handleSubmit(updateHandler)}>
-          <div className="form-element-group">
-            <label>
-              Name
-              <Required />
-            </label>
-            <input
-              type="text"
-              {...register("name", { required: RequiredField })}
-            />
-            {errors.name?.message && (
-              <p className="err">{errors.name.message}</p>
-            )}
-          </div>
+          <TextInput
+            required
+            register={register("name", { required: RequiredField })}
+            label="Category Name"
+            error={errors.name}
+          />
 
-          <div className="form-element-group">
-            <label>
-              Index
-              <Required />
-            </label>
-            <input
-              type="number"
-              {...register("index", { required: RequiredField })}
-            />
-            {errors.index?.message && (
-              <p className="err">{errors.index.message}</p>
-            )}
-          </div>
+          <IntInput
+            label="Index"
+            required
+            register={register("index", { required: RequiredField })}
+            error={errors.index}
+          />
 
-          {data !== undefined && (
-            <div className="form-element-group">
-              <label className="text-red-500">Disabled</label>
-              <input type="checkbox" {...register("archived")} />
-            </div>
-          )}
+          <ToggleCheckbox
+            id={`hoc`}
+            label={`Hide on Kiosk`}
+            register={register("hoc")}
+          />
+
+          {data !== undefined && <Archived register={register("archived")} />}
 
           <button>Update</button>
         </form>

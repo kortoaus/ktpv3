@@ -4,6 +4,8 @@ import { Device, Sale, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
+import { Catalogue } from "../../type/combination";
+import { filterCatalogue } from "@libs/saleData";
 
 type FormDataProps = {
   id?: number;
@@ -179,6 +181,7 @@ export const deviceMe = async (req: Request, res: Response) => {
 
 export const getTableData = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
+  const device: Device = res.locals.device;
 
   const shift = await client.shift.findFirst({
     where: {
@@ -209,7 +212,36 @@ export const getTableData = async (req: Request, res: Response) => {
     });
   }
 
-  return res.json({ ok: true, table, sale });
+  let catalogue: Catalogue[] = [];
+
+  if (sale) {
+    catalogue = await client.category.findMany({
+      where: {
+        archived: false,
+        hoc: device.type === "POS" ? {} : false,
+      },
+      include: {
+        products: {
+          where: {
+            hideKiosk: device.type === "POS" ? {} : false,
+            archived: false,
+          },
+        },
+      },
+      orderBy: {
+        index: "asc",
+      },
+    });
+    catalogue = filterCatalogue(catalogue, sale.buffetId);
+  }
+
+  const buffets = await client.buffetClass.findMany({
+    where: {
+      archived: false,
+    },
+  });
+
+  return res.json({ ok: true, table, sale, catalogue, buffets });
 };
 
 export const openTable = async (req: Request, res: Response) => {

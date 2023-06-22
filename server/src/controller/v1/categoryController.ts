@@ -8,6 +8,7 @@ type CategoryDataProps = {
   id?: number;
   name: string;
   index: number;
+  hoc: boolean;
   archived: boolean;
 };
 
@@ -26,7 +27,7 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 
   try {
-    const { name, index, archived }: CategoryDataProps = req.body;
+    const { name, index, archived, hoc }: CategoryDataProps = req.body;
 
     await client.category.upsert({
       where: {
@@ -36,8 +37,9 @@ export const updateCategory = async (req: Request, res: Response) => {
         name,
         index,
         archived,
+        hoc,
       },
-      create: { name, index },
+      create: { name, index, hoc },
     });
 
     return res.json({ ok: true });
@@ -113,7 +115,7 @@ export const getCategories = async (
     include: {
       _count: {
         select: {
-          Product: true,
+          products: true,
         },
       },
     },
@@ -128,7 +130,7 @@ export const getCategories = async (
     ok: true,
     result: result.map((result) => ({
       ...result,
-      productCount: result._count.Product,
+      productCount: result._count.products,
     })),
     hasPrev,
     hasNext,

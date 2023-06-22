@@ -64,6 +64,7 @@ export type Category = {
   updatedAt: Date;
   name: string;
   index: number;
+  hoc: boolean;
   archived: boolean;
 };
 

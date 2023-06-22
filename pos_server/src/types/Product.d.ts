@@ -1,4 +1,4 @@
-import { BuffetClass, Category, Printer } from "./model";
+import { BuffetClass, Category, Printer, Product } from "./model";
 
 export type CategoryWithProductCount = Category & {
   productCount: number;
@@ -26,4 +26,8 @@ export type ProductOptionGroup = {
   min: number;
   max: number;
   options: ProductOptionValue[];
+};
+
+export type Catalogue = Category & {
+  products: Product[];
 };

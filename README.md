@@ -3,13 +3,13 @@
 - [x] Manage Table and Container
 - [x] Manage Category
 - [x] Manage Buffet Class
-- [x] Manage Product Part One (Image, Category, Name, Buffet Class, Pricing)
+- [x] Manage Product Part1(Image, Category, Name, Buffet Class, Pricing)
 - [x] Manage Printer
-- [x] Manage Product Part Two (Printer)
-- [x] Product Option Drawer Part One(Header)
-- [x] Product Option Drawer Part Two(Lines)
-- [x] Manage Product Part Three (Options)
-- [x] Manage Product Part Four (Kisok Option)
+- [x] Manage Product Part2(Printer)
+- [x] Product Option Drawer Part1(Header)
+- [x] Product Option Drawer Part2(Lines)
+- [x] Manage Product Part3(Options)
+- [x] Manage Product Part4(Kisok Option)
 - [x] Setting multer
 - [x] Serving Image
 - [x] Searching Query
@@ -25,7 +25,10 @@
 - [x] POS Data(Shift, Tables, Sales)
 - [x] POS Sign Staff
 - [x] POS Open Table
-- [ ] POS Sale Screen
+- [x] POS Sale Screen Part1(Table Data, Catalouge, Buffets)
+- [ ] POS Sale Screen Part2(Set Buffet, Extratime, Upgrade Class)
+- [ ] POS Sale Screen Part3(Catalogue Component)
+- [ ] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount)
 - [ ] Shift Close
 - [ ] Product Preview
 - [ ] Manage Menu

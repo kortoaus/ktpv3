@@ -59,8 +59,9 @@ model Category {
   updatedAt DateTime  @updatedAt
   name      String
   index     Int       @default(999)
+  hoc       Boolean   @default(false)
   archived  Boolean   @default(false)
-  Product   Product[]
+  products  Product[]
 }
 
 model BuffetClass {

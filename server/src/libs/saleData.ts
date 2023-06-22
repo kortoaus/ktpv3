@@ -1,6 +1,7 @@
 import { Sale } from "@prisma/client";
 import client from "./prismaClient";
 import Decimal from "decimal.js";
+import { BuffetPrice, Catalogue } from "../type/combination";
 
 export default async function saleData(sale: Sale) {
   const { buffetId, ppA, ppB, ppC } = sale;
@@ -34,4 +35,47 @@ export default async function saleData(sale: Sale) {
   }
 
   return { ...sale, total: total.toNumber() };
+}
+
+export function filterCatalogue(
+  catalogues: Catalogue[],
+  buffetId: number | null
+) {
+  const filtered: Catalogue[] = [];
+
+  catalogues.forEach((cat) => {
+    const now = { ...cat };
+
+    let products = now.products;
+
+    if (buffetId) {
+      products = products.filter((pd) => {
+        if (pd.isBuffet && buffetId) {
+          const buffets: number[] = JSON.parse(pd.buffetIds);
+          return buffets.findIndex((bfs) => bfs === buffetId) !== -1;
+        } else {
+          return true;
+        }
+      });
+
+      products = products.map((pd) => {
+        const { isBuffet, price, buffetPrice: rawBPs } = pd;
+        const bps: BuffetPrice = JSON.parse(rawBPs);
+        const bp = bps[buffetId] ? bps[buffetId] : 0;
+        return { ...pd, price: isBuffet ? bp : price };
+      });
+    } else {
+      products = products.filter((pd) => {
+        return !pd.isBuffet;
+      });
+    }
+
+    now.products = products;
+
+    if (now.products.length > 0) {
+      filtered.push(now);
+    }
+  });
+
+  return filtered;
 }

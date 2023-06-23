@@ -317,3 +317,71 @@ export const openTable = async (req: Request, res: Response) => {
 
   return res.json({ ok: true, result });
 };
+
+type UpdateBuffetDataType = {
+  id: string;
+  buffetId: number;
+  ppA: number;
+  ppB: number;
+  ppC: number;
+  pp: number;
+  staffId: number;
+  log: string;
+};
+export const updateBuffetData = async (req: Request, res: Response) => {
+  const {
+    id,
+    buffetId,
+    ppA,
+    ppB,
+    ppC,
+    pp,
+    staffId,
+    log,
+  }: UpdateBuffetDataType = req.body;
+
+  const staff = await client.staff.findFirst({
+    where: {
+      id: staffId,
+      archived: false,
+    },
+  });
+
+  if (!staff) {
+    return res
+      .status(403)
+      .json({ ok: false, msg: "You do not have permission" });
+  }
+
+  const sale = await client.sale.findFirst({
+    where: {
+      id,
+      closedAt: null,
+    },
+  });
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found" });
+  }
+
+  try {
+    const updated = await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        buffetId,
+        ppA,
+        ppB,
+        ppC,
+        pp,
+        buffetStarted: sale.buffetStarted ? sale.buffetStarted : new Date(),
+        logs: sale.logs + log,
+      },
+    });
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Update Buffet Data!" });
+  }
+};

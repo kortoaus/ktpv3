@@ -1,5 +1,6 @@
 "use client";
 import DataLoading from "@/components/ui/DataLoading";
+import useAutoReload from "@/libs/useAutoReload";
 import useTable from "@/libs/useTable";
 import OpenSale from "@/screens/OpenSale";
 import SaleScreen from "@/screens/SaleScreen";
@@ -14,6 +15,7 @@ type Props = {
 };
 
 export default function TablePage({ params: { id } }: Props) {
+  useAutoReload();
   const [staff, setStaff] = useState<null | Staff>(null);
   const { table, sale, catalogue, buffets, isLoading: l1 } = useTable(id);
   const loading = l1;
@@ -33,7 +35,8 @@ export default function TablePage({ params: { id } }: Props) {
                     <SaleScreen
                       table={table}
                       sale={sale}
-                      catalgoue={catalogue ? catalogue : []}
+                      staff={staff}
+                      catalogue={catalogue ? catalogue : []}
                       buffets={buffets ? buffets : []}
                     />
                   ) : (

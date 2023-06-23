@@ -11,7 +11,7 @@ export default function useAutoReload() {
       }
 
       const newTimeoutId = setTimeout(() => {
-        window.location.reload();
+        window.location.href = "/";
       }, 1000 * 60 * 5); // 30000 milliseconds = 30 seconds
       setTimeoutId(newTimeoutId);
     };

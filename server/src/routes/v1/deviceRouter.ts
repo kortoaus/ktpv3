@@ -5,6 +5,7 @@ import {
   getDevices,
   getTableData,
   openTable,
+  updateBuffetData,
   updateDevice,
 } from "@controller/v1/deviceController";
 import { getCurrentShift } from "@controller/v1/shiftController";
@@ -34,5 +35,9 @@ deviceRouter
   .route("/table/:id(\\d+)")
   .get(authDeviceMid, getTableData)
   .post(authDeviceMid, openTable);
+
+deviceRouter
+  .route("/table/:id(\\d+)/buffet")
+  .post(authDeviceMid, updateBuffetData);
 
 export default deviceRouter;

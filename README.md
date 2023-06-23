@@ -26,10 +26,14 @@
 - [x] POS Sign Staff
 - [x] POS Open Table
 - [x] POS Sale Screen Part1(Table Data, Catalouge, Buffets)
-- [ ] POS Sale Screen Part2(Set Buffet, Extratime, Upgrade Class)
+- [x] POS Sale Screen Part2(Set Buffet, Upgrade Class)
 - [ ] POS Sale Screen Part3(Catalogue Component)
-- [ ] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount)
+- [ ] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount, Extratime)
+- [ ] Websocket Setup
+- [ ] Print Driver Part1(Order Ticket)
+- [ ] Print Driver Part2(Receipt, Bill)
 - [ ] Shift Close
+- [ ] Print Driver Part3(Shift)
 - [ ] Product Preview
 - [ ] Manage Menu
 - [ ] Remote Image

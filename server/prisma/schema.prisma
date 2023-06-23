@@ -194,4 +194,5 @@ model Sale {
   openAt        DateTime  @default(now())
   closedAt      DateTime?
   updatedAt     DateTime  @updatedAt
+  logs          String    @default("") @db.Text
 }

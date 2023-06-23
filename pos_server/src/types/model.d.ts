@@ -225,4 +225,5 @@ export type Sale = {
   openAt: Date;
   closedAt: Date | null;
   updatedAt: Date;
+  logs: string;
 };

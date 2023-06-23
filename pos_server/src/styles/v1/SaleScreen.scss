@@ -1,0 +1,21 @@
+.SaleScreen{
+  .HeaderContainer{
+    @apply border-b h-16 bg-white flex items-center px-4 gap-4 w-full fixed top-0;
+    .HomeBtn{
+      @apply bg-blue-500 text-white text-2xl p-2 rounded-md;
+    }
+  }
+
+  .ContentContainer{
+    @apply pt-16 gap-4;
+    height: 100vh;
+    display:  grid;
+    grid-template-columns: 1fr 300px;
+    .CatalogeContainer{
+      @apply overflow-scroll pt-4;
+    }
+    .ReceiptContainer{
+      @apply border-l;
+    }
+  }
+}

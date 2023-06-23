@@ -1,48 +1,65 @@
+"use client";
+import { BuffetDataType } from "@/components/BuffetPPForm";
+import CatalogueComp from "@/components/Catalogue";
+import HomeIcon from "@/components/icons/HomeIcon";
+import TimerIcon from "@/components/icons/TimerIcon";
+import SaleBuffetDrawer from "@/components/parts/SaleBuffetUpdateDrawer";
 import { Catalogue } from "@/types/Product";
-import { SaleWithTotal } from "@/types/Sale";
-import { BuffetClass, Sale, Table } from "@/types/model";
-import React from "react";
+import { BuffetClass, Sale, Staff, Table } from "@/types/model";
+import Link from "next/link";
+import React, { useState } from "react";
 
 type Props = {
   sale: Sale;
   table: Table;
-  catalgoue: Catalogue[];
+  staff: Staff;
+  catalogue: Catalogue[];
   buffets: BuffetClass[];
 };
 
 export default function SaleScreen({
-  sale: { buffetId },
+  sale,
   table,
-  catalgoue,
+  catalogue,
   buffets,
+  staff,
 }: Props) {
-  const buffet = buffets.find((bf) => bf.id === buffetId);
+  const [openBuffetDrawer, setOpenBuffetDrawer] = useState(false);
+  const buffet = buffets.find((bf) => bf.id === sale.buffetId);
 
   return (
-    <div>
-      <div className="border-b h-16 bg-white flex items-center px-4 gap-4">
-        <div>Table #{table.name}</div>
-        <div>{buffet?.name}</div>
+    <div className="SaleScreen">
+      {/* Header */}
+      <div className="HeaderContainer">
+        <Link href="/" prefetch={false} className="fccc">
+          <button className="HomeBtn">
+            <HomeIcon />
+          </button>
+        </Link>
+        <h2>Table #{table.name}</h2>
+        <button
+          onClick={() => setOpenBuffetDrawer(true)}
+          className={`BasicBtn ${buffet ? "bg-purple-500 text-white" : ""}`}
+        >
+          <TimerIcon />
+          <span>{buffet?.name || "A la carte"}</span>
+        </button>
+        <SaleBuffetDrawer
+          open={openBuffetDrawer}
+          sale={sale}
+          table={table}
+          buffets={buffets}
+          onClose={() => setOpenBuffetDrawer(false)}
+          staff={staff}
+        />
       </div>
 
-      <div className="mt-4 p-4">
-        {catalgoue.map(({ id, name, products }) => {
-          return (
-            <div key={id} className="border mb-4">
-              <div className="h-12 border-b fccc">{name}</div>
-              <div className="grid grid-cols-5 p-4 gap-4">
-                {products.map((pd) => {
-                  return (
-                    <div key={`pd_${pd.id}`} className="border p-4">
-                      <div>{pd.name}</div>
-                      <div>{`$${pd.price.toFixed(2)}`}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+      {/* Catalogue */}
+      <div className="ContentContainer">
+        <div className="CatalogeContainer">
+          <CatalogueComp data={catalogue} />
+        </div>
+        <div className="ReceiptContainer">asdf</div>
       </div>
     </div>
   );

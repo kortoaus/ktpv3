@@ -5,9 +5,8 @@ import MenuIcon from "@/components/icons/MenuIcon";
 import useAutoReload from "@/libs/useAutoReload";
 import { SaleWithTotal } from "@/types/Sale";
 import { TableContainerWithTables } from "@/types/Table";
-import { Device, Sale, Table } from "@/types/model";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { Device } from "@/types/model";
+import React, { useState } from "react";
 
 type Props = {
   device: Device;
@@ -16,10 +15,10 @@ type Props = {
 };
 
 export default function TableScreen({ device, containers, sales }: Props) {
+  useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
   const placeholders = Array(100).fill(0);
-  const timeout = useAutoReload();
 
   const reload = () => {
     if (!window) {

@@ -6,7 +6,6 @@ import useDevice from "@/libs/useDevice";
 import useShift from "@/libs/useShift";
 import TableScreen from "@/screens/TableScreen";
 import { TableContainerWithTables } from "@/types/Table";
-import { useEffect, useState } from "react";
 import useSWR from "swr";
 
 type ResultProps = {
@@ -16,7 +15,7 @@ type ResultProps = {
 
 export default function TitlePage() {
   const { device, isLoading: l1 } = useDevice();
-  const { data, isLoading: l2, mutate } = useSWR<ResultProps>(`/api/table`);
+  const { data, isLoading: l2 } = useSWR<ResultProps>(`/api/table`);
   const { shift, sales, shiftLoading: l3 } = useShift();
 
   const isLoading = l1 || l2 || l3;

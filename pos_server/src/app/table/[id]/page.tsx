@@ -46,12 +46,7 @@ export default function TablePage({ params: { id } }: Props) {
                   )}
                 </>
               ) : (
-                <SignStaff
-                  signIn={(val) => {
-                    console.log(val.name);
-                    setStaff(val);
-                  }}
-                />
+                <SignStaff signIn={setStaff} />
               )}
             </>
           ) : (

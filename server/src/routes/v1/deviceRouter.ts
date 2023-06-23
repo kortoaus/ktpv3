@@ -6,6 +6,7 @@ import {
   getTableData,
   openTable,
   updateBuffetData,
+  updateBuffetTime,
   updateDevice,
 } from "@controller/v1/deviceController";
 import { getCurrentShift } from "@controller/v1/shiftController";
@@ -39,5 +40,9 @@ deviceRouter
 deviceRouter
   .route("/table/:id(\\d+)/buffet")
   .post(authDeviceMid, updateBuffetData);
+
+deviceRouter
+  .route("/table/:id(\\d+)/btime")
+  .post(authDeviceMid, updateBuffetTime);
 
 export default deviceRouter;

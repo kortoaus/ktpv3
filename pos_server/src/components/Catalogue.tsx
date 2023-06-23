@@ -1,4 +1,5 @@
 import { Catalogue } from "@/types/Product";
+import Image from "next/image";
 import React from "react";
 
 type Props = {
@@ -7,18 +8,32 @@ type Props = {
 
 export default function CatalogueComp({ data }: Props) {
   return (
-    <div>
+    <div className="p-4">
       {data.map(({ id, name, products }) => {
         return (
-          <div key={id} className="border mb-4">
-            <div className="h-12 border-b fccc">{name}</div>
+          <div key={id} className="mb-4">
+            <div className="h-12 fccc font-medium border">{name}</div>
             <div className="grid grid-cols-5 p-4 gap-4">
               {products.map((pd) => {
                 return (
-                  <div key={`pd_${pd.id}`} className="border p-4">
-                    <div>{pd.name}</div>
-                    <div>{`$${pd.price.toFixed(2)}`}</div>
-                  </div>
+                  <button key={`pd_${pd.id}`} className="bg-white text-left">
+                    {pd.imgId ? (
+                      <div className="SquareImg">
+                        <Image
+                          alt={name}
+                          src={`http://localhost:3000/imgs/${pd.imgId}`}
+                          width={512}
+                          height={512}
+                        />
+                      </div>
+                    ) : (
+                      <div className="SquareImg bg-gray-100"></div>
+                    )}
+                    <div className="px-2">
+                      <div className="text-sm font-medium">{pd.name}</div>
+                      <div>{`$${pd.price.toFixed(2)}`}</div>
+                    </div>
+                  </button>
                 );
               })}
             </div>

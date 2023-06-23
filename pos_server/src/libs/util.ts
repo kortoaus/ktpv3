@@ -60,3 +60,44 @@ export const buffetSummary = (
     pp: new Decimal(ppA).plus(ppB).plus(ppC).toNumber(),
   };
 };
+
+export function howOld(started: Date) {
+  const ms = new Date().getTime() - new Date(started).getTime();
+  const ss = ms / 1000;
+  const mn = ss / 60;
+  const rem = Math.ceil(mn);
+
+  return rem;
+}
+
+export type PhaseType = "order" | "stay" | "over";
+export function buffetTimerMsg(
+  phase: PhaseType,
+  orderR: number,
+  stayR: number
+) {
+  let pos = ``;
+  let kiosk = ``;
+
+  switch (phase) {
+    case "order":
+      pos = `Can order for ${orderR}mins`;
+      kiosk = `You still have ${orderR}mins left to place your order`;
+      break;
+    case "stay":
+      pos = `Can stay for ${stayR}mins`;
+      kiosk = `Order time has ended, but you can still enjoy the buffet for ${stayR}mins more`;
+      break;
+    case "over":
+      pos = `Occupied for ${stayR * -1}mins`;
+      kiosk = `Your allocated stay time has ended (${
+        stayR * -1
+      }mins). We kindly request you to kindly give up the table. Thank you for your understanding`;
+      break;
+    default:
+      pos = ``;
+      kiosk = ``;
+  }
+
+  return { pos, kiosk };
+}

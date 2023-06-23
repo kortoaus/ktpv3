@@ -26,7 +26,7 @@
 - [x] POS Sign Staff
 - [x] POS Open Table
 - [x] POS Sale Screen Part1(Table Data, Catalouge, Buffets)
-- [x] POS Sale Screen Part2(Set Buffet, Upgrade Class)
+- [x] POS Sale Screen Part2(Set Buffet, Upgrade Class, Adjust Buffet Time)
 - [ ] POS Sale Screen Part3(Catalogue Component)
 - [ ] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount, Extratime)
 - [ ] Websocket Setup

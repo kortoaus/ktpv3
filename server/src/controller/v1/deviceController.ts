@@ -6,6 +6,7 @@ import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Catalogue } from "../../type/combination";
 import { filterCatalogue } from "@libs/saleData";
+import { captureRejectionSymbol } from "events";
 
 type FormDataProps = {
   id?: number;
@@ -365,7 +366,7 @@ export const updateBuffetData = async (req: Request, res: Response) => {
   }
 
   try {
-    const updated = await client.sale.update({
+    await client.sale.update({
       where: {
         id: sale.id,
       },
@@ -376,6 +377,68 @@ export const updateBuffetData = async (req: Request, res: Response) => {
         ppC,
         pp,
         buffetStarted: sale.buffetStarted ? sale.buffetStarted : new Date(),
+        logs: sale.logs + log,
+      },
+    });
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Update Buffet Data!" });
+  }
+};
+
+type UpdateBuffetTimeProps = {
+  id: string;
+  staffId: number;
+  amount: number;
+  log: string;
+};
+
+export const updateBuffetTime = async (req: Request, res: Response) => {
+  const { id, staffId, amount, log }: UpdateBuffetTimeProps = req.body;
+
+  const staff = await client.staff.findFirst({
+    where: {
+      id: staffId,
+      archived: false,
+    },
+  });
+
+  if (!staff) {
+    return res
+      .status(403)
+      .json({ ok: false, msg: "You do not have permission" });
+  }
+
+  const sale = await client.sale.findFirst({
+    where: {
+      id,
+      closedAt: null,
+      buffetStarted: {
+        not: null,
+      },
+    },
+  });
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found" });
+  }
+
+  try {
+    if (!sale.buffetStarted) {
+      return res.status(400).json({ ok: false, msg: "Inivalid Request!" });
+    }
+
+    const before = new Date(sale.buffetStarted).getTime();
+    const amountM = Math.ceil(amount * 1000 * 60);
+    const newVal = before + amountM;
+
+    await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        buffetStarted: new Date(newVal),
         logs: sale.logs + log,
       },
     });

@@ -12,6 +12,7 @@ import useSWR from "swr";
 type Props = {
   table: Table;
   staff: Staff;
+  buffets: BuffetClass[];
 };
 
 const BuffetInit = {
@@ -20,11 +21,9 @@ const BuffetInit = {
   ppC: 0,
 };
 
-export default function OpenSale({ table, staff }: Props) {
+export default function OpenSale({ table, staff, buffets }: Props) {
   const router = useRouter();
-  const { data } = useSWR<{ ok: boolean; result: BuffetClass[] }>(
-    "/api/buffet"
-  );
+
   const [isBuffet, setIsBuffet] = useState(true);
   const [buffetData, setBuffetData] = useState<BuffetDataType>(BuffetInit);
   const [pp, setPP] = useState("");
@@ -79,7 +78,7 @@ export default function OpenSale({ table, staff }: Props) {
     }
   }, [result, router]);
 
-  const buffetClasses = data?.result || [];
+  const buffetClasses = buffets;
 
   return (
     <div className="flex flex-col items-center justify-start h-screen">

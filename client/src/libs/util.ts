@@ -1,4 +1,8 @@
 import { Staff } from "@/types/model";
+import moment, { MomentInput } from "moment-timezone";
+
+export const time = (input: MomentInput) =>
+  moment(input).tz("Australia/Sydney");
 
 export const isMobile = (val: string | number) => {
   const input = val + "";

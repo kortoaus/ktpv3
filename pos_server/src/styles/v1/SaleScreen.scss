@@ -12,10 +12,30 @@
     display:  grid;
     grid-template-columns: 1fr 300px;
     .CatalogeContainer{
-      @apply overflow-scroll ;
+      @apply overflow-hidden;
     }
     .ReceiptContainer{
+      display: grid;
+      grid-template-rows: 750 64px 1fr;
+
+      @media screen and (max-width: 1400px) {
+        grid-template-rows: 650px 64px 1fr;
+      }
+      @media screen and (max-width: 1200px) {
+        grid-template-rows: 600px 64px 1fr;
+      }
+    
       @apply border-l;
+      .ReceiptLineContainer{
+        @apply overflow-scroll pb-32 relative;
+      }
+
+      .FunctionContainer{
+        @apply grid grid-cols-4 p-1 gap-1;
+        button{
+          @apply border text-sm;
+        }
+      }
     }
   }
 }

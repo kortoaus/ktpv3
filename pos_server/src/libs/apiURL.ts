@@ -24,3 +24,20 @@ export const getData = async (
 
   return data;
 };
+
+export const mutation = async (url: string, body: any) => {
+  const data = await fetch(encodeURI(`${url}`), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+    .then((res) => res.json())
+    .catch((e) => {
+      console.log(e);
+      return { ok: false, msg: "Communication Failed! Please Check Server!" };
+    });
+
+  return data;
+};

@@ -173,26 +173,58 @@ model Shift {
   closeNote    String    @default("") @db.Text
   openAt       DateTime  @default(now())
   closedAt     DateTime?
+  holiday      Boolean   @default(false)
   updatedAt    DateTime  @updatedAt
 }
 
 model Sale {
-  id            String    @id @default(uuid())
-  note          String    @default("") @db.Text
-  shiftId       Int       @default(0)
-  tableId       Int
-  ppA           Int
-  ppB           Int
-  ppC           Int
-  pp            Int
-  buffetId      Int?
-  buffetStarted DateTime?
-  openStaffId   Int       @default(0)
-  closeStaffId  Int       @default(0)
-  openStaff     String    @default("")
-  closeStaff    String    @default("")
-  openAt        DateTime  @default(now())
-  closedAt      DateTime?
-  updatedAt     DateTime  @updatedAt
-  logs          String    @default("") @db.Text
+  id               String     @id @default(uuid())
+  note             String     @default("") @db.Text
+  shiftId          Int        @default(0)
+  tableId          Int
+  tableName        String     @default("")
+  ppA              Int
+  ppB              Int
+  ppC              Int
+  pp               Int
+  buffetId         Int?
+  buffetStarted    DateTime?
+  openStaffId      Int        @default(0)
+  closeStaffId     Int        @default(0)
+  openStaff        String     @default("")
+  closeStaff       String     @default("")
+  openAt           DateTime   @default(now())
+  closedAt         DateTime?
+  updatedAt        DateTime   @updatedAt
+  logs             String     @default("") @db.Text
+  subTotal         Float      @default(0)
+  charged          Float      @default(0)
+  total            Float      @default(0)
+  cash             Float      @default(0)
+  credit           Float      @default(0)
+  creditSurcharge  Float      @default(0)
+  creditPaid       Float      @default(0)
+  cashPaid         Float      @default(0)
+  discount         Float      @default(0)
+  change           Float      @default(0)
+  customerProperty String     @default("")
+  lines            SaleLine[]
+}
+
+model SaleLine {
+  id        Int      @id @default(autoincrement())
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId Int
+  staff     String
+  desc      String
+  price     Float
+  qty       Int
+  discount  Float
+  total     Float
+  options   String   @default("[]")
+  cancelled Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  note      String   @default("")
 }

@@ -27,3 +27,12 @@ export type ProductOptionGroup = {
   max: number;
   options: ProductOptionValue[];
 };
+
+export type SelectedOptionType = {
+  gId: number;
+  oId: number;
+  id: number;
+  name: string;
+  value: number;
+  qty: number;
+};

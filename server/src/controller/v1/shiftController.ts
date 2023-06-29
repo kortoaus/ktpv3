@@ -7,6 +7,7 @@ import { Response, Request } from "express";
 type OpenFormData = {
   openCash: number;
   openNote: string;
+  holiday: boolean;
 };
 
 export const getCurrentShift = async (req: Request, res: Response) => {
@@ -21,10 +22,11 @@ export const getCurrentShift = async (req: Request, res: Response) => {
         shiftId: shift.id,
         closedAt: null,
       },
+      include: { lines: { where: { cancelled: false } } },
     });
 
     const sales = await Promise.all(
-      sl.map(async (sale) => ({ ...(await saleData(sale)) }))
+      sl.map(async (sale) => ({ ...(await saleData(sale, shift.holiday)) }))
     );
 
     return res.json({ ok: true, shift, sales });
@@ -55,7 +57,7 @@ export const openShift = async (req: Request, res: Response) => {
   }
 
   try {
-    const { openCash, openNote }: OpenFormData = req.body;
+    const { openCash, openNote, holiday }: OpenFormData = req.body;
 
     await client.shift.create({
       data: {
@@ -63,6 +65,7 @@ export const openShift = async (req: Request, res: Response) => {
         openNote,
         openStaff: `${staff.name}(${staff.id})`,
         openStaffId: staff.id,
+        holiday,
       },
     });
 

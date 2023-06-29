@@ -135,7 +135,7 @@ export default function TitleScreen({ staff, shift }: Props) {
           {getRole(staff, "isDirector") && (
             <LinkBtn
               className="bg-orange-500"
-              href="/printer"
+              href="/receipt"
               label={"Receipts"}
               icon={<ReceiptIcon size={iconSize} />}
             />

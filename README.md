@@ -18,7 +18,7 @@
 - [x] Title Screen
 - [x] Role Parser
 - [x] Cash Counter Component
-- [x] Shift Open
+- [x] Shift Open Part1
 - [x] Manage Device
 - [x] Deivce Table Drawer
 - [x] Deivce IP Parser
@@ -27,14 +27,21 @@
 - [x] POS Open Table
 - [x] POS Sale Screen Part1(Table Data, Catalouge, Buffets)
 - [x] POS Sale Screen Part2(Set Buffet, Upgrade Class, Adjust Buffet Time)
-- [ ] POS Sale Screen Part3(Catalogue Component)
-- [ ] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount, Extratime)
-- [ ] Websocket Setup
-- [ ] Print Driver Part1(Order Ticket)
-- [ ] Print Driver Part2(Receipt, Bill)
+- [x] POS Sale Screen Part3(Catalogue Component)
+- [x] POS Sale Screen Part4(Ordering, Cancel, Modify, Discount, Extratime)
+- [x] POS Sale Screen Part5(Product Option Panel)
+- [x] POS Payment Drawer(Components, Discount, Surcharge, Handlers)
+- [x] Remote Image
+- [x] Product Preview
+- [x] Manage Detail
+- [ ] Shift Open Part2(Holiday Price)
 - [ ] Shift Close
-- [ ] Print Driver Part3(Shift)
-- [ ] Product Preview
+- [ ] Refund
+- [ ] Print Driver
+- [ ] Print Ticket
+- [ ] Print Receipt
+- [ ] Print Bill
+- [ ] Cash In, Out
 - [ ] Manage Menu
-- [ ] Remote Image
+- [ ] Websocket Setup
 - [ ] Convert tailwindcss to scss in styles

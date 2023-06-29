@@ -8,7 +8,7 @@ type Props = {
   started: Date | null;
 };
 
-type ReturnDataProps = {
+export type ReturnBuffetTimerDataProps = {
   orderRem: number;
   stayRem: number;
   stay: number;
@@ -16,7 +16,7 @@ type ReturnDataProps = {
 };
 
 export default function useBuffetTimer({ buffet, started }: Props) {
-  const [data, setData] = useState<ReturnDataProps | null>(null);
+  const [data, setData] = useState<ReturnBuffetTimerDataProps | null>(null);
 
   useEffect(() => {
     const getPhase = (stay: number): PhaseType => {

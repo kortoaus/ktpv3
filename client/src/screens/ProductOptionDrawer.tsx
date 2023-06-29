@@ -33,8 +33,8 @@ export default function ProductOptionDrawer({
       mode,
       name: "New Group",
       required: mode === "radio" ? true : false,
-      min: 1,
-      max: 1,
+      min: mode === "radio" ? 1 : 0,
+      max: mode === "radio" ? 1 : 0,
       options: [],
     };
     setGroups((prev) => [...prev, newGroup]);
@@ -54,12 +54,12 @@ export default function ProductOptionDrawer({
         window.alert(msg);
         return false;
       }
-      if (min > max) {
+      if (min > max && mode !== "count") {
         const msg = `[${name}] Min can not be greater than Max!`;
         window.alert(msg);
         return false;
       }
-      if (max < 1) {
+      if (mode !== "count" && max < 1) {
         const msg = `[${name}] Max can not be less than 1!`;
         window.alert(msg);
         return false;
@@ -108,7 +108,7 @@ export default function ProductOptionDrawer({
           ...group,
           min: group.mode === "radio" ? 1 : group.min,
           max,
-          required: group.mode === "radio" ? true : group.required,
+          required: Boolean(group.min),
         };
       });
 

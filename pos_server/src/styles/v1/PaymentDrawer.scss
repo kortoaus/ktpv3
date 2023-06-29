@@ -1,0 +1,10 @@
+.PaymentDrawer{
+  @apply grid grid-cols-2 w-[700px] p-4 gap-4;
+
+  .PayBtns{
+    @apply grid grid-cols-2 gap-2 mt-4;
+    button{
+      @apply border rounded-md h-16;
+    }
+  }
+}

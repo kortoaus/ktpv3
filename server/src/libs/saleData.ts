@@ -1,14 +1,15 @@
-import { Sale } from "@prisma/client";
+import { Sale, SaleLine } from "@prisma/client";
 import client from "./prismaClient";
 import Decimal from "decimal.js";
 import { BuffetPrice, Catalogue } from "../type/combination";
 
-export default async function saleData(sale: Sale) {
-  const { buffetId, ppA, ppB, ppC } = sale;
+export default async function saleData(
+  sale: Sale & { lines: SaleLine[] },
+  holiday: boolean = false
+) {
+  const { buffetId, ppA, ppB, ppC, lines } = sale;
   let total = new Decimal(0);
   // Line Total
-  const lines: { qty: number; price: number; discount: number }[] = [];
-
   lines.forEach((line) => {
     const { qty, price, discount } = line;
     const linePrice = new Decimal(qty).mul(price).minus(discount);
@@ -19,13 +20,21 @@ export default async function saleData(sale: Sale) {
 
   // Buffet Total
   if (buffetId) {
-    const buffet = await client.buffetClass.findUnique({
+    let buffet = await client.buffetClass.findUnique({
       where: {
         id: buffetId,
       },
     });
 
     if (buffet) {
+      if (holiday) {
+        buffet = {
+          ...buffet,
+          priceA: buffet.h_priceA,
+          priceB: buffet.h_priceB,
+          priceC: buffet.h_priceC,
+        };
+      }
       const { priceA, priceB, priceC } = buffet;
       const A = new Decimal(ppA).mul(priceA);
       const B = new Decimal(ppB).mul(priceB);

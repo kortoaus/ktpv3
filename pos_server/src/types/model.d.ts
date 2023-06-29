@@ -200,6 +200,7 @@ export type Shift = {
   closeNote: string;
   openAt: Date;
   closedAt: Date | null;
+  holiday: boolean;
   updatedAt: Date;
 };
 
@@ -212,6 +213,7 @@ export type Sale = {
   note: string;
   shiftId: number;
   tableId: number;
+  tableName: string;
   ppA: number;
   ppB: number;
   ppC: number;
@@ -226,4 +228,36 @@ export type Sale = {
   closedAt: Date | null;
   updatedAt: Date;
   logs: string;
+  subTotal: number;
+  charged: number;
+  total: number;
+  cash: number;
+  credit: number;
+  creditSurcharge: number;
+  creditPaid: number;
+  cashPaid: number;
+  discount: number;
+  change: number;
+  customerProperty: string;
+};
+
+/**
+ * Model SaleLine
+ *
+ */
+export type SaleLine = {
+  id: number;
+  saleId: string;
+  productId: number;
+  staff: string;
+  desc: string;
+  price: number;
+  qty: number;
+  discount: number;
+  total: number;
+  options: string;
+  cancelled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  note: string;
 };

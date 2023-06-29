@@ -6,7 +6,25 @@ import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Catalogue } from "../../type/combination";
 import { filterCatalogue } from "@libs/saleData";
-import { captureRejectionSymbol } from "events";
+import { SaleLineType } from "../../type/Sale";
+
+async function getSaleAndStaff(saleId: string, staffId: number) {
+  const sale = await client.sale.findFirst({
+    where: {
+      id: saleId,
+      closedAt: null,
+    },
+  });
+
+  const staff = await client.staff.findFirst({
+    where: {
+      id: staffId,
+      archived: false,
+    },
+  });
+
+  return { sale, staff };
+}
 
 type FormDataProps = {
   id?: number;
@@ -210,6 +228,13 @@ export const getTableData = async (req: Request, res: Response) => {
         closedAt: null,
         tableId: table.id,
       },
+      include: {
+        lines: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
     });
   }
 
@@ -236,11 +261,20 @@ export const getTableData = async (req: Request, res: Response) => {
     catalogue = filterCatalogue(catalogue, sale.buffetId);
   }
 
-  const buffets = await client.buffetClass.findMany({
+  let buffets = await client.buffetClass.findMany({
     where: {
       archived: false,
     },
   });
+
+  if (shift && shift.holiday) {
+    buffets = buffets.map((bf) => ({
+      ...bf,
+      priceA: bf.h_priceA,
+      priceB: bf.h_priceB,
+      priceC: bf.h_priceC,
+    }));
+  }
 
   return res.json({ ok: true, table, sale, catalogue, buffets });
 };
@@ -305,6 +339,7 @@ export const openTable = async (req: Request, res: Response) => {
     data: {
       shiftId: shift.id,
       tableId: table.id,
+      tableName: table.name,
       openStaffId: staff.id,
       openStaff: `${staff.name}(${staff.id})`,
       ppA,
@@ -329,6 +364,7 @@ type UpdateBuffetDataType = {
   staffId: number;
   log: string;
 };
+
 export const updateBuffetData = async (req: Request, res: Response) => {
   const {
     id,
@@ -341,25 +377,13 @@ export const updateBuffetData = async (req: Request, res: Response) => {
     log,
   }: UpdateBuffetDataType = req.body;
 
-  const staff = await client.staff.findFirst({
-    where: {
-      id: staffId,
-      archived: false,
-    },
-  });
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
 
   if (!staff) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission" });
   }
-
-  const sale = await client.sale.findFirst({
-    where: {
-      id,
-      closedAt: null,
-    },
-  });
 
   if (!sale) {
     return res.status(404).json({ ok: false, msg: "Sale Not Found" });
@@ -397,28 +421,13 @@ type UpdateBuffetTimeProps = {
 export const updateBuffetTime = async (req: Request, res: Response) => {
   const { id, staffId, amount, log }: UpdateBuffetTimeProps = req.body;
 
-  const staff = await client.staff.findFirst({
-    where: {
-      id: staffId,
-      archived: false,
-    },
-  });
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
 
   if (!staff) {
     return res
       .status(403)
       .json({ ok: false, msg: "You do not have permission" });
   }
-
-  const sale = await client.sale.findFirst({
-    where: {
-      id,
-      closedAt: null,
-      buffetStarted: {
-        not: null,
-      },
-    },
-  });
 
   if (!sale) {
     return res.status(404).json({ ok: false, msg: "Sale Not Found" });
@@ -447,4 +456,208 @@ export const updateBuffetTime = async (req: Request, res: Response) => {
     console.log(e);
     return res.json({ ok: false, msg: "Failed Update Buffet Data!" });
   }
+};
+
+type PlaceOrderDataType = {
+  staffId: number;
+  lines: SaleLineType[];
+};
+
+export const placeOrder = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { staffId, lines }: PlaceOrderDataType = req.body;
+
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
+
+  if (!staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  try {
+    // New Sales
+    await client.saleLine.createMany({
+      data: lines.map((line) => {
+        const {
+          description: desc,
+          productId,
+          price,
+          qty,
+          discount,
+          options,
+          total,
+        } = line;
+        return {
+          saleId: sale.id,
+          staff: `${staff.name}(${staff.id})`,
+          productId,
+          desc,
+          price,
+          qty,
+          discount,
+          options: JSON.stringify(options),
+          total,
+        };
+      }),
+    });
+
+    // Printing
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Place Order!" });
+  }
+};
+
+export const cancelOrder = async (req: Request, res: Response) => {
+  const device: Device = res.locals.device;
+
+  if (!device || (device && device.type !== "POS")) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  const { id } = req.params;
+  const {
+    staffId,
+    lineId,
+    log,
+  }: { staffId: number; lineId: number; log: string } = req.body;
+
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
+
+  if (!staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  try {
+    await client.saleLine.update({
+      where: {
+        id: lineId,
+      },
+      data: {
+        cancelled: true,
+      },
+    });
+
+    await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        logs: sale.logs + log,
+      },
+    });
+
+    // Printing
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Cancel Order!" });
+  }
+};
+
+// 뷔페 가격은 고정
+// 뷔페 가격 0 일 때 State로 관리
+// 테이블 이동 필요
+// 뷔페 남은 시간 순서대로 보여주는 화면
+// 직원 호출 종류 => 티켓, hold 15sec
+
+type PaymentDataType = {
+  subTotal: number;
+  charged: number;
+  discount: number;
+  total: number;
+  cash: number;
+  credit: number;
+  creditSurcharge: number;
+  rest: number;
+  change: number;
+  creditPaid: number;
+  cashPaid: number;
+  customerProperty: string;
+  staffId: number;
+};
+
+export const payment = async (req: Request, res: Response) => {
+  const device: Device = res.locals.device;
+
+  if (!device || (device && device.type !== "POS")) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  const { id } = req.params;
+  const {
+    subTotal,
+    charged,
+    discount,
+    total,
+    cash,
+    credit,
+    creditSurcharge,
+    change,
+    creditPaid,
+    cashPaid,
+    customerProperty,
+    staffId,
+  }: PaymentDataType = req.body;
+
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
+
+  if (!staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  try {
+    await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        subTotal,
+        charged,
+        discount,
+        total,
+        cash,
+        credit,
+        creditSurcharge,
+        change,
+        creditPaid,
+        cashPaid,
+        customerProperty,
+        closedAt: new Date(),
+        closeStaffId: staff.id,
+        closeStaff: `${staff.name}(${staff.id})`,
+      },
+    });
+
+    // Printing
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Payment!" });
+  }
+};
+
+export const shopData = async (req: Request, res: Response) => {
+  const result = await client.shop.findFirst();
+
+  if (!result) {
+    return res.status(404).json({ ok: false, msg: "Shop Not Found" });
+  }
+
+  return res.json({ ok: true, result });
 };

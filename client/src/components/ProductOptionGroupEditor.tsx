@@ -38,18 +38,6 @@ export const ProductOptionGroupEditor = ({ group, setVal, remove }: Props) => {
     setVal(newGroup);
   };
 
-  const requireHandler = () => {
-    if (group.mode === "radio") {
-      return;
-    }
-    const newGroup = {
-      ...group,
-      required: !group.required,
-    };
-
-    setVal(newGroup);
-  };
-
   const addLineHandler = () => {
     const newOption: ProductOptionValue = {
       id: new Date().getTime(),
@@ -138,7 +126,7 @@ export const ProductOptionGroupEditor = ({ group, setVal, remove }: Props) => {
 
       {/* Group Header */}
       <form onSubmit={(e) => e.preventDefault()} className="OptionHeader">
-        <div className="col-span-6 col">
+        <div className="col-span-8 col">
           <label>Group Name</label>
           <input
             name="name"
@@ -147,7 +135,7 @@ export const ProductOptionGroupEditor = ({ group, setVal, remove }: Props) => {
             onChange={(e) => onChangeHandler(e)}
           />
         </div>
-        <div className="col-span-2 col">
+        {/* <div className="col-span-2 col">
           <label>Required</label>
           <div
             onClick={() => requireHandler()}
@@ -159,7 +147,7 @@ export const ProductOptionGroupEditor = ({ group, setVal, remove }: Props) => {
               <UncheckedIcon size={24} />
             )}
           </div>
-        </div>
+        </div> */}
         <div className="col-span-2 col">
           <label>Min</label>
           <input

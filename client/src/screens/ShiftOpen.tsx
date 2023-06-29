@@ -1,6 +1,7 @@
 "use client";
 import CashCounter from "@/components/CashCounter";
 import DataLoading from "@/components/ui/DataLoading";
+import { HandlerCheckbox } from "@/components/ui/form/ToggleCheckbox";
 import { StillUpdating } from "@/libs/Messages";
 import useMutation from "@/libs/useMutation";
 import { ApiResultType } from "@/types/api";
@@ -10,12 +11,14 @@ import React, { useEffect, useState } from "react";
 type FormData = {
   openCash: number;
   openNote: string;
+  holiday: boolean;
 };
 
 export default function ShiftOpen() {
   const router = useRouter();
   const [cash, setCash] = useState(0);
   const [note, setNote] = useState("");
+  const [holiday, setHoliday] = useState(false);
 
   const [update, { result, loading }] =
     useMutation<ApiResultType>(`/api/shift/open`);
@@ -29,6 +32,7 @@ export default function ShiftOpen() {
     const data: FormData = {
       openCash: cash,
       openNote: note,
+      holiday,
     };
 
     update({ ...data });
@@ -46,7 +50,6 @@ export default function ShiftOpen() {
 
   return (
     <div className="w-full max-w-xl mx-auto py-8">
-      {cash}
       <div className="mb-4">
         <h2 className="mb-2 pb-2 border-b-2">Cash Drawer</h2>
         <CashCounter setVal={setCash} />
@@ -60,6 +63,14 @@ export default function ShiftOpen() {
           value={note}
           onChange={(e) => setNote(e.target.value)}
           maxLength={150}
+        />
+
+        <h2 className="mb-2">Use Holiday Price</h2>
+        <HandlerCheckbox
+          id="is_holiday"
+          checked={holiday}
+          onChange={() => setHoliday((prev) => !prev)}
+          label="Public Holiday"
         />
       </div>
 

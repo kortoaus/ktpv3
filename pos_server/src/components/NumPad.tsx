@@ -4,9 +4,15 @@ type Props = {
   val: string;
   setVal: (val: string) => void;
   useDot?: boolean;
+  useDZ?: boolean;
 };
 
-export default function NumPad({ val, setVal, useDot = true }: Props) {
+export default function NumPad({
+  val,
+  setVal,
+  useDot = true,
+  useDZ = false,
+}: Props) {
   const setValHandler = (e: SyntheticEvent, input: string) => {
     switch (input) {
       case "bs":
@@ -36,12 +42,15 @@ export default function NumPad({ val, setVal, useDot = true }: Props) {
       <button onClick={(e) => setValHandler(e, "9")}>9</button>
       <button onClick={(e) => setValHandler(e, "bs")}>BS</button>
       <button
-        className={!useDot ? "col-span-2" : ""}
+        className={!useDot && !useDZ ? "col-span-2" : ""}
         onClick={(e) => setValHandler(e, "0")}
       >
         0
       </button>
       {useDot && <button onClick={(e) => setValHandler(e, ".")}>.</button>}
+      {!useDot && useDZ && (
+        <button onClick={(e) => setValHandler(e, "00")}>00</button>
+      )}
     </div>
   );
 }

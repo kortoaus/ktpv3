@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function TablePage({ params: { id } }: Props) {
-  useAutoReload();
+  // useAutoReload();
   const [staff, setStaff] = useState<null | Staff>(null);
   const { table, sale, catalogue, buffets, isLoading: l1 } = useTable(id);
   const loading = l1;
@@ -41,7 +41,11 @@ export default function TablePage({ params: { id } }: Props) {
                     />
                   ) : (
                     <>
-                      <OpenSale staff={staff} table={table} />
+                      <OpenSale
+                        buffets={buffets ? buffets : []}
+                        staff={staff}
+                        table={table}
+                      />
                     </>
                   )}
                 </>

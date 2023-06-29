@@ -172,7 +172,7 @@ export default function SaleBuffetDrawer({
             <BuffetPPForm
               val={buffetData}
               buffet={buffets.find((bfc) => bfc.id === buffetData.id)}
-              setVal={(val) => setBuffetData(val)}
+              setVal={(val) => setBuffetData({ ...val, id: buffetData.id })}
             />
           </>
         )}

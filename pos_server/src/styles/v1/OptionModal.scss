@@ -1,0 +1,22 @@
+.OptionModal{
+  @apply z-50 fixed top-0 w-full h-screen bg-black/25 flex flex-col items-center justify-start;
+  .OptionModalContainer{
+    @apply w-full bg-white mt-8 p-4 rounded-md shadow-xl;
+    .HeaderContainer{
+      @apply f-btw mb-4 border-b pb-4;
+    }
+
+    .BodyContainer{
+      &.hasOption{
+        display:  grid;
+        grid-template-columns: 1fr 250px;
+      }
+      .QtyContainer{
+        @apply flex items-center justify-around mt-2 mb-8;
+        button{
+          @apply text-blue-500;
+        }
+      }
+    }
+  }
+}

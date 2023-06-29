@@ -16,6 +16,7 @@ export default function RootLayout({
       <SWRContext>
         <body className={inter.className}>
           <Layout>{children}</Layout>
+          <div id="portal"></div>
         </body>
       </SWRContext>
     </html>

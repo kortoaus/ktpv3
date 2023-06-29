@@ -1,12 +1,13 @@
 "use client";
 import { Catalogue } from "@/types/Product";
+import { SaleWithLines } from "@/types/Sale";
 import { BuffetClass, Sale, Shift, Table } from "@/types/model";
 import useSWR from "swr";
 
 type ResultProps = {
   ok: boolean;
   table?: Table;
-  sale?: Sale | null;
+  sale?: SaleWithLines | null;
   catalogue: Catalogue[];
   buffets: BuffetClass[];
   msg?: string;

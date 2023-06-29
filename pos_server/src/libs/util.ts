@@ -1,5 +1,6 @@
 import { BuffetDataType } from "@/components/BuffetPPForm";
-import { BuffetClass, Staff } from "@/types/model";
+import { SaleLineType } from "@/types/Sale";
+import { BuffetClass, Sale } from "@/types/model";
 import Decimal from "decimal.js";
 import moment, { MomentInput } from "moment-timezone";
 
@@ -101,3 +102,95 @@ export function buffetTimerMsg(
 
   return { pos, kiosk };
 }
+
+export function SaleLineTotal(line: SaleLineType) {
+  const { options, price, qty, discount } = line;
+  let origin = new Decimal(price).mul(qty);
+  let optionPrice = new Decimal(0);
+  options.forEach((opt) => {
+    const { value: oPrice, qty: oQty } = opt;
+    const optPrice = new Decimal(oPrice).mul(oQty);
+    optionPrice = optionPrice.plus(optPrice);
+  });
+
+  const unitPrice = optionPrice.plus(price);
+  const subTotal = origin.plus(optionPrice);
+  const total = subTotal.minus(discount);
+
+  return {
+    unitPrice: unitPrice.toNumber(),
+    subTotal: subTotal.toNumber(),
+    total: total.toNumber(),
+  };
+}
+
+export const buffetReceiptLine = (
+  sale: Sale,
+  buffet: BuffetClass | undefined
+) => {
+  if (!buffet) {
+    return [];
+  }
+
+  console.log("tock");
+  const { ppA, ppB, ppC } = sale;
+  const { name, priceA, priceB, priceC, nameA, nameB, nameC, id } = buffet;
+
+  const lines: SaleLineType[] = [];
+
+  if (ppA) {
+    const line: SaleLineType = {
+      id: new Date().getTime(),
+      description: `${name}(${nameA})`,
+      price: priceA,
+      qty: ppA,
+      discount: 0,
+      total: new Decimal(priceA).mul(ppA).toNumber(),
+      staff: "",
+      note: "",
+      productId: id,
+      cancelled: false,
+      options: [],
+      printerIds: [],
+    };
+    lines.push(line);
+  }
+
+  if (ppB) {
+    const line: SaleLineType = {
+      id: new Date().getTime(),
+      description: `${name}(${nameB})`,
+      price: priceB,
+      qty: ppB,
+      discount: 0,
+      total: new Decimal(priceB).mul(ppB).toNumber(),
+      staff: "",
+      note: "",
+      productId: id,
+      cancelled: false,
+      options: [],
+      printerIds: [],
+    };
+    lines.push(line);
+  }
+
+  if (ppC) {
+    const line: SaleLineType = {
+      id: new Date().getTime(),
+      description: `${name}(${nameC})`,
+      price: priceC,
+      qty: ppC,
+      discount: 0,
+      total: new Decimal(priceC).mul(ppC).toNumber(),
+      staff: "",
+      note: "",
+      productId: id,
+      cancelled: false,
+      options: [],
+      printerIds: [],
+    };
+    lines.push(line);
+  }
+
+  return lines;
+};

@@ -19,6 +19,8 @@ import printerRouter from "@routes/v1/printerRouter";
 import fileRouter from "@routes/v1/fileRouter";
 import staffRouter from "@routes/v1/staffRouter";
 import deviceRouter from "@routes/v1/deviceRouter";
+import { migrate } from "@controller/migrate";
+import saleRouter from "@routes/v1/saleRouter";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -40,7 +42,9 @@ app.options("*", cors(corsOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use((req, _, next) => {
-  console.log(req.method, req.url);
+  if (!req.url.startsWith("/imgs")) {
+    console.log(req.method, req.url);
+  }
   next();
 });
 
@@ -57,8 +61,11 @@ app.use(`${apiRoot}/v1/buffet`, buffetRouter);
 app.use(`${apiRoot}/v1/product`, productRouter);
 app.use(`${apiRoot}/v1/printer`, printerRouter);
 app.use(`${apiRoot}/v1/staff`, staffRouter);
+app.use(`${apiRoot}/v1/sale`, saleRouter);
 app.use(`${apiRoot}/v1/file`, fileRouter);
 app.use(`${apiRoot}/v1/device`, deviceRouter);
+
+app.get("/", migrate);
 
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

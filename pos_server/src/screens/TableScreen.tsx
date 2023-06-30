@@ -18,7 +18,6 @@ export default function TableScreen({ device, containers, sales }: Props) {
   useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
-  const placeholders = Array(100).fill(0);
 
   const reload = () => {
     if (!window) {
@@ -29,6 +28,7 @@ export default function TableScreen({ device, containers, sales }: Props) {
   };
 
   const getTables = () => {
+    const placeholders = Array(100).fill(0);
     const tbs = placeholders.map((_, idx) => {
       return selected.tables.find((tb) => tb.index === idx + 1);
     });

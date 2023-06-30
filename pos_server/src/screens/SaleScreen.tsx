@@ -7,6 +7,7 @@ import PaymentDrawer, {
 import SaleBuffetTimeUpdateDrawer from "@/components/parts/SaleBuffetTimeUpdateDrawer";
 import SaleBuffetDrawer from "@/components/parts/SaleBuffetUpdateDrawer";
 import SaleScreenHeader from "@/components/parts/SaleScreenHeader";
+import TableMoveDrawer from "@/components/parts/TableMoveDrawer";
 import { mutation } from "@/libs/apiURL";
 import useBuffetTimer from "@/libs/useBuffetTimer";
 import { SaleLineTotal, buffetReceiptLine, time } from "@/libs/util";
@@ -35,8 +36,9 @@ export default function SaleScreen({
 }: Props) {
   const router = useRouter();
   const [openBuffetDrawer, setOpenBuffetDrawer] = useState(false);
-  const [openPay, setOpenPay] = useState(false);
   const [openBuffetTime, setOpenBuffetTime] = useState(false);
+  const [openPay, setOpenPay] = useState(false);
+  const [openMove, setOpenMove] = useState(false);
   const [newLines, setNewLines] = useState<SaleLineType[]>([]);
   const [placedLine, setPlacedLine] = useState<SaleLineType[]>([]);
   const [buffetLines, setBuffetLines] = useState<SaleLineType[]>([]);
@@ -137,6 +139,25 @@ export default function SaleScreen({
     });
 
     return total.toNumber();
+  };
+
+  const moveTableHandler = async (id: number) => {
+    const result: ApiResultType = await mutation(`/api/sale/${sale.id}/move`, {
+      staffId: staff.id,
+      tableId: id,
+    });
+
+    if (result && result.ok) {
+      router.push("/");
+      return;
+    }
+
+    if (result && !result.ok) {
+      window.alert(result?.msg || "Failed!");
+      return;
+    }
+
+    return;
   };
 
   const receiptTotal = getTotal();
@@ -298,9 +319,8 @@ export default function SaleScreen({
               <div>Pay</div>
               <div>{receiptTotal.toFixed(2)}</div>
             </button>
-            <button>b</button>
-            <button>c</button>
-            <button>d</button>
+            <button>Bill</button>
+            <button onClick={() => setOpenMove(true)}>Move</button>
           </div>
         </div>
       </div>
@@ -329,6 +349,11 @@ export default function SaleScreen({
         pay={(val) => paymentHandler(val)}
         open={openPay}
         onClose={() => setOpenPay(false)}
+      />
+      <TableMoveDrawer
+        open={openMove}
+        onClose={() => setOpenMove(false)}
+        move={(val) => moveTableHandler(val)}
       />
     </div>
   );

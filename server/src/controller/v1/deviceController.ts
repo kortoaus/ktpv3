@@ -252,6 +252,9 @@ export const getTableData = async (req: Request, res: Response) => {
             hideKiosk: device.type === "POS" ? {} : false,
             archived: false,
           },
+          orderBy: {
+            index: "asc",
+          },
         },
       },
       orderBy: {
@@ -565,6 +568,69 @@ export const cancelOrder = async (req: Request, res: Response) => {
   }
 };
 
+export const moveTable = async (req: Request, res: Response) => {
+  const device: Device = res.locals.device;
+
+  if (!device || (device && device.type !== "POS")) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  const { id } = req.params;
+  const { staffId, tableId }: { staffId: number; tableId: number } = req.body;
+
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
+
+  const table = await client.table.findFirst({
+    where: {
+      id: tableId,
+      archived: false,
+    },
+  });
+
+  if (!staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  if (!table) {
+    return res.status(404).json({ ok: false, msg: "Table Not Found!" });
+  }
+
+  const exist = await client.sale.findFirst({
+    where: {
+      shiftId: sale.shiftId,
+      tableId: table.id,
+      closedAt: null,
+    },
+  });
+
+  if (exist) {
+    return res.json({ ok: false, msg: "The table already exists!" });
+  }
+
+  try {
+    await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        tableName: table.name,
+        tableId: tableId,
+      },
+    });
+
+    // Printing
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Cancel Order!" });
+  }
+};
+
 // 뷔페 가격은 고정
 // 뷔페 가격 0 일 때 State로 관리
 // 테이블 이동 필요
@@ -660,4 +726,57 @@ export const shopData = async (req: Request, res: Response) => {
   }
 
   return res.json({ ok: true, result });
+};
+
+export const getAllProducts = async (req: Request, res: Response) => {
+  const result = await client.category.findMany({
+    where: {
+      archived: false,
+    },
+    include: {
+      products: {
+        where: {
+          archived: false,
+        },
+        orderBy: {
+          index: "asc",
+        },
+      },
+    },
+    orderBy: {
+      index: "asc",
+    },
+  });
+
+  return res.json({ ok: true, result });
+};
+
+export const toggleOOS = async (req: Request, res: Response) => {
+  const id: number = +req.params.id || 0;
+
+  const target = await client.product.findFirst({
+    where: {
+      id,
+      archived: false,
+    },
+  });
+
+  if (!target) {
+    return res.json({ ok: false, msg: "Product Not Found" });
+  }
+
+  try {
+    await client.product.update({
+      where: {
+        id: target.id,
+      },
+      data: {
+        outOfStock: !target.outOfStock,
+      },
+    });
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Toggle Out of stock " });
+  }
 };

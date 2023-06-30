@@ -1,6 +1,5 @@
 .CashCounter{
-  @apply w-full grid grid-cols-2 gap-4 hover:cursor-pointer;
-
+  @apply w-full grid grid-cols-2 gap-4;
   .LineContainer{
     @apply flex flex-col ;
     .CashLine{

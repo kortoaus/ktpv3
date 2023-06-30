@@ -67,3 +67,11 @@ table{
   @apply flex items-center justify-between;
 }
 
+
+.Sidebar{
+  @apply p-4;
+
+  h2{
+    @apply border-b pb-2 mb-2;
+  }
+}

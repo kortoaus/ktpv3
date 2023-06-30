@@ -202,6 +202,24 @@ export type Shift = {
   closedAt: Date | null;
   holiday: boolean;
   updatedAt: Date;
+  ppA: number;
+  ppB: number;
+  ppC: number;
+  pp: number;
+  subTotal: number;
+  charged: number;
+  total: number;
+  credit: number;
+  creditSurcharge: number;
+  creditPaid: number;
+  cashPaid: number;
+  discount: number;
+  c_ms: number;
+  c_fs: number;
+  c_my: number;
+  c_fy: number;
+  c_mm: number;
+  c_fm: number;
 };
 
 /**

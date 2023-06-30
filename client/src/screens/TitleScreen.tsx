@@ -12,18 +12,19 @@ import TableIcon from "@/components/icons/TableIcon";
 import TagIcon from "@/components/icons/TagIcon";
 import TimerIcon from "@/components/icons/TimerIcon";
 import getRole from "@/libs/util";
-import { Shift, Staff } from "@/types/model";
+import { Sale, Shift, Staff } from "@/types/model";
 import Link from "next/link";
 import React from "react";
 
 type Props = {
   staff?: Staff;
   shift?: Shift | null;
+  sales: Sale[];
 };
 
 const iconSize = 48;
 
-export default function TitleScreen({ staff, shift }: Props) {
+export default function TitleScreen({ staff, shift, sales }: Props) {
   return (
     <div className="p-4 bg-gray-100 h-full grid grid-cols-2 gap-4">
       {/* Not Signed */}
@@ -33,13 +34,28 @@ export default function TitleScreen({ staff, shift }: Props) {
             {getRole(staff, "isOpen") && (
               <>
                 {shift ? (
-                  <LinkBtn
-                    row={false}
-                    className="bg-blue-500"
-                    href="/shift/close"
-                    label={`Close Shop`}
-                    icon={<HomeIcon size={iconSize} />}
-                  />
+                  <>
+                    {sales && sales.length === 0 ? (
+                      <LinkBtn
+                        row={false}
+                        className="bg-blue-500"
+                        href="/shift/close"
+                        label={`Close Shop`}
+                        icon={<HomeIcon size={iconSize} />}
+                      />
+                    ) : (
+                      <LinkBtn
+                        row={false}
+                        className="bg-blue-500"
+                        href="/"
+                        label={`${sales.length} Tables / ${sales.reduce(
+                          (a, b) => a + b.pp,
+                          0
+                        )} pp left`}
+                        icon={<HomeIcon size={iconSize} />}
+                      />
+                    )}
+                  </>
                 ) : (
                   <LinkBtn
                     row={false}

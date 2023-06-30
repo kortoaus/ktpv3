@@ -15,7 +15,7 @@ type Props = {
 
 export default function ItemBtn({ pd, add }: Props) {
   const [openOption, setOpenOption] = useState(false);
-  const { id, name, price, imgId, options: pOptions } = pd;
+  const { id, name, price, imgId, options: pOptions, outOfStock } = pd;
 
   const addLine = (qty: number, options: SelectedOptionType[]) => {
     const data: SaleLineType = {
@@ -39,8 +39,13 @@ export default function ItemBtn({ pd, add }: Props) {
     <>
       <button
         key={`pd_${id}`}
-        className="bg-white text-left w-full"
+        className={`relative bg-white text-left w-full ${
+          outOfStock ? "opacity-50" : ""
+        }`}
         onClick={() => {
+          if (outOfStock) {
+            return;
+          }
           setOpenOption(true);
           // if (hasOption) {
           // } else {
@@ -64,7 +69,14 @@ export default function ItemBtn({ pd, add }: Props) {
           <div className="text-sm font-medium">{name}</div>
           <div>{`$${price.toFixed(2)}`}</div>
         </div>
+
+        {outOfStock && (
+          <div className="w-full h-full absolute top-0 fccc z-10 ">
+            <span className="bg-white/50 p-1">Sold Out</span>
+          </div>
+        )}
       </button>
+
       {openOption && (
         <ModalPortal>
           <OptionModal
@@ -74,6 +86,45 @@ export default function ItemBtn({ pd, add }: Props) {
           />
         </ModalPortal>
       )}
+    </>
+  );
+}
+export function ItemHandlerBtn({
+  pd,
+  handler,
+}: Props & {
+  handler: (val: number) => void;
+}) {
+  const { id, name, price, imgId, outOfStock } = pd;
+
+  return (
+    <>
+      <button
+        key={`pd_${id}`}
+        className={`bg-white text-left w-full ${
+          outOfStock ? "opacity-50" : ""
+        }`}
+        onClick={() => {
+          handler(id);
+        }}
+      >
+        {imgId ? (
+          <div className="SquareImg z-0">
+            <Image
+              alt={name}
+              src={`http://localhost:3000/imgs/${imgId}`}
+              width={512}
+              height={512}
+            />
+          </div>
+        ) : (
+          <div className="SquareImg bg-gray-100"></div>
+        )}
+        <div className="px-2 text-center">
+          <div className="text-sm font-medium">{name}</div>
+          <div>{`$${price.toFixed(2)}`}</div>
+        </div>
+      </button>
     </>
   );
 }

@@ -162,19 +162,40 @@ model DeviceToken {
 }
 
 model Shift {
-  id           Int       @id @default(autoincrement())
-  openStaffId  Int       @default(0)
-  closeStaffId Int       @default(0)
-  openStaff    String    @default("")
-  closeStaff   String    @default("")
-  openCash     Float     @default(0)
-  closeCash    Float     @default(0)
-  openNote     String    @default("") @db.Text
-  closeNote    String    @default("") @db.Text
-  openAt       DateTime  @default(now())
-  closedAt     DateTime?
-  holiday      Boolean   @default(false)
-  updatedAt    DateTime  @updatedAt
+  id              Int       @id @default(autoincrement())
+  openStaffId     Int       @default(0)
+  closeStaffId    Int       @default(0)
+  openStaff       String    @default("")
+  closeStaff      String    @default("")
+  openCash        Float     @default(0)
+  closeCash       Float     @default(0)
+  openNote        String    @default("") @db.Text
+  closeNote       String    @default("") @db.Text
+  openAt          DateTime  @default(now())
+  closedAt        DateTime?
+  holiday         Boolean   @default(false)
+  updatedAt       DateTime  @updatedAt
+  // Sales Data
+  ppA             Int       @default(0)
+  ppB             Int       @default(0)
+  ppC             Int       @default(0)
+  pp              Int       @default(0)
+  subTotal        Float     @default(0)
+  charged         Float     @default(0)
+  total           Float     @default(0)
+  credit          Float     @default(0)
+  creditSurcharge Float     @default(0)
+  creditPaid      Float     @default(0)
+  cashPaid        Float     @default(0)
+  discount        Float     @default(0)
+  differ          Float     @default(0)
+  tables          Int       @default(0)
+  c_ms            Int       @default(0)
+  c_fs            Int       @default(0)
+  c_my            Int       @default(0)
+  c_fy            Int       @default(0)
+  c_mm            Int       @default(0)
+  c_fm            Int       @default(0)
 }
 
 model Sale {

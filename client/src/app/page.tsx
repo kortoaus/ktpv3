@@ -9,7 +9,7 @@ import TitleScreen from "@/screens/TitleScreen";
 
 export default function TitlePage() {
   const { staff, staffLoading } = useStaff();
-  const { shift, shiftLoading } = useShift();
+  const { shift, sales, shiftLoading } = useShift();
 
   const loading = staffLoading || shiftLoading;
   return (
@@ -19,7 +19,9 @@ export default function TitlePage() {
           <DataLoading />
         </div>
       )}
-      {!loading && <TitleScreen staff={staff} shift={shift} />}
+      {!loading && (
+        <TitleScreen sales={sales ? sales : []} staff={staff} shift={shift} />
+      )}
     </>
   );
 }

@@ -214,3 +214,30 @@ export const getProducts = async (
     pageSize: offset,
   });
 };
+
+export const getAllOos = async (req: Request, res: Response) => {
+  try {
+    let result = await client.product.findMany({
+      where: {
+        archived: false,
+        outOfStock: true,
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    result = result.map((re) => ({
+      ...re,
+      name: `${re.category?.name} / ${re.name}`,
+    }));
+    return res.json({ ok: true, result });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Fetch OOS!" });
+  }
+};

@@ -1,4 +1,5 @@
 import {
+  getAllOos,
   getProduct,
   getProductOptions,
   getProducts,
@@ -12,6 +13,10 @@ const productRouter = express.Router();
 productRouter.route("/option").get(authMid, getProductOptions);
 
 productRouter.route("/").post(authMid, updateProduct).get(authMid, getProducts);
+productRouter
+  .route("/oos")
+  .post(authMid, updateProduct)
+  .get(authMid, getAllOos);
 
 productRouter
   .route("/:id(\\d+)")

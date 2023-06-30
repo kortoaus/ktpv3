@@ -34,14 +34,15 @@
 - [x] Remote Image
 - [x] Product Preview
 - [x] Manage Detail
-- [ ] Shift Open Part2(Holiday Price)
-- [ ] Shift Close
+- [x] Shift Open Part2(Holiday Price)
+- [x] Shift Close
+- [x] Manage Menu
+- [x] Move Table
 - [ ] Refund
 - [ ] Print Driver
 - [ ] Print Ticket
 - [ ] Print Receipt
 - [ ] Print Bill
 - [ ] Cash In, Out
-- [ ] Manage Menu
 - [ ] Websocket Setup
 - [ ] Convert tailwindcss to scss in styles

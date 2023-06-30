@@ -2,13 +2,16 @@ import { getBuffetClasses } from "@controller/v1/buffetController";
 import {
   cancelOrder,
   deviceMe,
+  getAllProducts,
   getDevice,
   getDevices,
   getTableData,
+  moveTable,
   openTable,
   payment,
   placeOrder,
   shopData,
+  toggleOOS,
   updateBuffetData,
   updateBuffetTime,
   updateDevice,
@@ -50,9 +53,14 @@ deviceRouter
   .route("/table/:id(\\d+)/btime")
   .post(authDeviceMid, updateBuffetTime);
 
+// Product
+deviceRouter.route("/product").get(authDeviceMid, getAllProducts);
+deviceRouter.route("/product/:id(\\d+)/oos").post(authDeviceMid, toggleOOS);
+
 // Orders
 deviceRouter.route(`${saleIdPath}/place`).post(authDeviceMid, placeOrder);
 deviceRouter.route(`${saleIdPath}/cancel`).post(authDeviceMid, cancelOrder);
+deviceRouter.route(`${saleIdPath}/move`).post(authDeviceMid, moveTable);
 // Payment
 deviceRouter.route(`${saleIdPath}/payment`).post(authDeviceMid, payment);
 

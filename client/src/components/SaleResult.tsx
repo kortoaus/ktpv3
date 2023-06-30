@@ -1,0 +1,57 @@
+import { ReceivedLine } from "@/screens/ReceiptDetail";
+import { ShiftResultType } from "@/types/Shift";
+import React from "react";
+
+type Props = {
+  data: ShiftResultType;
+};
+
+export default function SaleResult({ data }: Props) {
+  const {
+    ppA,
+    ppB,
+    ppC,
+    pp,
+    subTotal,
+    charged,
+    total,
+    credit,
+    creditSurcharge,
+    creditPaid,
+    cashPaid,
+    discount,
+    c_ms,
+    c_fs,
+    c_my,
+    c_fy,
+    c_mm,
+    c_fm,
+    tables,
+  } = data;
+  return (
+    <div>
+      <ReceivedLine label="Sub Total" value={subTotal} />
+      <ReceivedLine label="Surcharge" value={charged} />
+      <ReceivedLine
+        label="Discount"
+        value={discount}
+        negative={true}
+        accent="text-red-500"
+      />
+      <ReceivedLine label="Total" value={total} accent="font-medium" />
+      <ReceivedLine label="Credit" value={credit} />
+      <ReceivedLine label="Credit Surcharge" value={creditSurcharge} />
+      <ReceivedLine
+        label="Paid Credit"
+        value={creditPaid}
+        accent="text-blue-500"
+      />
+      <ReceivedLine label="Paid Cash" value={cashPaid} accent="text-blue-500" />
+      <ReceivedLine
+        label="Paid Total"
+        value={creditPaid + cashPaid}
+        accent="text-blue-500"
+      />
+    </div>
+  );
+}

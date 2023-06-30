@@ -3,22 +3,20 @@ import DataLoading from "@/components/ui/DataLoading";
 import useShift from "@/libs/useShift";
 import useStaff from "@/libs/useUser";
 import getRole from "@/libs/util";
+import ShiftClose from "@/screens/ShiftClose";
 import ShiftOpen from "@/screens/ShiftOpen";
-import { ApiResultType } from "@/types/api";
-import { Product } from "@/types/model";
 import React from "react";
-import useSWR from "swr";
-
-type ResultProps = ApiResultType & {
-  result: Product[];
-};
 
 export default function ShiftOpenPage() {
-  const { shift, shiftLoading } = useShift();
+  const { shift, sales, shiftResult, shiftLoading } = useShift();
   const { staff, staffLoading } = useStaff();
-  const { data, isLoading } = useSWR<ResultProps>("/api/product/oos");
 
-  const loading = shiftLoading || staffLoading || isLoading;
+  const loading = shiftLoading || staffLoading;
+
+  const sl = sales ? sales : [];
+
+  const goodtogo =
+    shift !== null && shift !== undefined && sl.length == 0 && shiftResult;
 
   return (
     <>
@@ -26,10 +24,12 @@ export default function ShiftOpenPage() {
         <DataLoading />
       ) : (
         <>
-          {staff && data && getRole(staff, "isOpen") ? (
+          {staff && getRole(staff, "isOpen") ? (
             <>
-              {shift && <div>Already Opened</div>}
-              {shift === null && <ShiftOpen oos={data ? data.result : []} />}
+              {!goodtogo && <div>Can not close shift.</div>}
+              {goodtogo && (
+                <ShiftClose shift={shift} shiftResult={shiftResult} />
+              )}
             </>
           ) : (
             <div>You do not have permission!</div>

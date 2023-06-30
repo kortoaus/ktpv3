@@ -182,7 +182,7 @@ type ReceivedLineProps = {
   negative?: boolean;
 };
 
-function ReceivedLine({
+export function ReceivedLine({
   label,
   value,
   accent = "",

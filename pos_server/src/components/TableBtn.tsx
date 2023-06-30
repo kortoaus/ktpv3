@@ -46,3 +46,42 @@ export default function TableLinkBtn({ table }: Props) {
     </Link>
   );
 }
+
+export function TableHandlerBtn({
+  table,
+  handler,
+}: Props & { handler: () => void }) {
+  if (!table) {
+    return (
+      <div className="border rounded-md h-14 w-full p-2 fccc overflow-hidden opacity-25"></div>
+    );
+  }
+
+  const { id, name, sale } = table;
+
+  let stay = "";
+
+  if (sale) {
+    stay = time(new Date()).diff(sale.openAt, "minutes") + " Mins";
+  }
+
+  return (
+    <button
+      onClick={() => handler()}
+      className={`border rounded-md h-14 w-full p-2 fccc overflow-hidden ${
+        sale ? "bg-blue-500 text-white" : ""
+      }`}
+    >
+      <div className="text-sm">{name}</div>
+      {sale && (
+        <>
+          <div className="text-xs">
+            <span>{`$${sale.total.toFixed(2)}(${sale.pp})`}</span>
+            {sale.buffetId && <span className="text-blue-500">*</span>}
+            {stay && <div>{stay}</div>}
+          </div>
+        </>
+      )}
+    </button>
+  );
+}

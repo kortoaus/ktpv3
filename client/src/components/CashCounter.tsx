@@ -178,11 +178,15 @@ export default function CashCounter({ setVal }: Props) {
         <div>
           <h4>{`$${target}: ${getValue(target)}`}</h4>
         </div>
-        <NumPad
-          val={getValue(target) + ""}
-          setVal={(val) => onChangeHandler(val)}
-          useDot={false}
-        />
+
+        <div>
+          <NumPad
+            val={getValue(target) + ""}
+            setVal={(val) => onChangeHandler(val)}
+            useDot={false}
+          />
+        </div>
+
         <button
           className="BasicBtn w-full mt-2 bg-red-500 text-white justify-center text-2xl !border-0"
           onClick={() => {
@@ -217,7 +221,7 @@ const CashLine = ({
   getTotal,
 }: CashLineProps) => {
   return (
-    <div
+    <button
       className={`CashLine ${selected ? "selected" : ""}`}
       onClick={() => onClick(weight)}
     >
@@ -227,6 +231,6 @@ const CashLine = ({
       <div className="total col col-span-7 justify-end">
         ${getTotal(weight).toFixed(2)}
       </div>
-    </div>
+    </button>
   );
 };

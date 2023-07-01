@@ -38,11 +38,12 @@
 - [x] Shift Close
 - [x] Manage Menu
 - [x] Move Table
+- [x] Print Driver
+- [x] Print Receipt
+- [x] Print Ticket
+- [x] Print Shift Result
+- [x] Websocket Setup
+- [ ] Kitchen Close
 - [ ] Refund
-- [ ] Print Driver
-- [ ] Print Ticket
-- [ ] Print Receipt
-- [ ] Print Bill
 - [ ] Cash In, Out
-- [ ] Websocket Setup
 - [ ] Convert tailwindcss to scss in styles

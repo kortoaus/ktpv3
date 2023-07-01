@@ -1,18 +1,32 @@
 import { Request, Response } from "express";
 import client from "@libs/prismaClient";
-import { Device, Sale, Staff } from "@prisma/client";
+import { Device, Printer, Sale, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Catalogue } from "../../type/combination";
 import { filterCatalogue } from "@libs/saleData";
 import { SaleLineType } from "../../type/Sale";
+import { getPrinters } from "@libs/util";
+import { OrderTicketType, ReceiptTicketType } from "../../type/Ticket";
+import {
+  printKickDrawer,
+  printOrderTicket,
+  printReceipt,
+} from "@libs/printerDriver";
 
 async function getSaleAndStaff(saleId: string, staffId: number) {
   const sale = await client.sale.findFirst({
     where: {
       id: saleId,
       closedAt: null,
+    },
+    include: {
+      _count: {
+        select: {
+          lines: true,
+        },
+      },
     },
   });
 
@@ -508,6 +522,35 @@ export const placeOrder = async (req: Request, res: Response) => {
     });
 
     // Printing
+    let prs: number[] = [];
+    lines.forEach((line) => {
+      prs = [...prs, ...line.printerIds];
+    });
+
+    const printerIds: number[] = [];
+    new Set(prs).forEach((id) => printerIds.push(id));
+
+    let printers: OrderTicketType[] = (await getPrinters(printerIds)).map(
+      (pr) => ({
+        ...pr,
+        lines: [],
+        isNew: sale._count.lines === 0,
+        who: staff.name,
+        tableName: sale.tableName,
+        pp: sale.pp,
+      })
+    );
+
+    printers = printers.map((printer) => {
+      const printerline = lines.filter((line) =>
+        Boolean(line.printerIds.find((lp) => lp === printer.id))
+      );
+      return { ...printer, lines: printerline };
+    });
+
+    printers.forEach((data) => {
+      printOrderTicket(data);
+    });
 
     return res.json({ ok: true });
   } catch (e) {
@@ -655,8 +698,9 @@ type PaymentDataType = {
 
 export const payment = async (req: Request, res: Response) => {
   const device: Device = res.locals.device;
+  const shop = await client.shop.findFirst();
 
-  if (!device || (device && device.type !== "POS")) {
+  if (!device || (device && device.type !== "POS") || !shop) {
     return res.json({ ok: false, msg: "Unauthorized!" });
   }
 
@@ -687,7 +731,7 @@ export const payment = async (req: Request, res: Response) => {
   }
 
   try {
-    await client.sale.update({
+    const paid = await client.sale.update({
       where: {
         id: sale.id,
       },
@@ -707,14 +751,92 @@ export const payment = async (req: Request, res: Response) => {
         closeStaffId: staff.id,
         closeStaff: `${staff.name}(${staff.id})`,
       },
+      include: {
+        lines: true,
+      },
+    });
+
+    const printer = await client.printer.findFirst({
+      where: {
+        archived: false,
+        isMain: true,
+        hasDrawer: true,
+      },
     });
 
     // Printing
+    if (printer) {
+      const printData: ReceiptTicketType = {
+        ...printer,
+        sale: paid,
+        shop,
+        tableName: sale.tableName,
+        staff: staff.name,
+      };
+      printReceipt(printData);
+    }
 
     return res.json({ ok: true });
   } catch (e) {
     console.log(e);
     return res.json({ ok: false, msg: "Failed Payment!" });
+  }
+};
+
+export const getLastInvoice = async (req: Request, res: Response) => {
+  const shop = await client.shop.findFirst();
+  const shift = await client.shift.findFirst({
+    where: {
+      closedAt: null,
+    },
+  });
+
+  const printer = await client.printer.findFirst({
+    where: {
+      archived: false,
+      isMain: true,
+      hasDrawer: true,
+    },
+  });
+
+  // Printing
+
+  if (!shop || !shift || !printer) {
+    return res.json({ ok: false, msg: "Invalid Request!" });
+  }
+
+  try {
+    const sale = await client.sale.findFirst({
+      where: {
+        shiftId: shift.id,
+        closedAt: {
+          not: null,
+        },
+      },
+      orderBy: {
+        closedAt: "desc",
+      },
+      include: {
+        lines: true,
+      },
+    });
+
+    if (!sale) {
+      return res.json({ ok: false, msg: "Receipt Not Found" });
+    }
+
+    const printData: ReceiptTicketType = {
+      ...printer,
+      sale,
+      shop,
+      tableName: sale.tableName,
+      staff: "",
+    };
+    printReceipt(printData);
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Receipt Not Found" });
   }
 };
 
@@ -778,5 +900,27 @@ export const toggleOOS = async (req: Request, res: Response) => {
   } catch (e) {
     console.log(e);
     return res.json({ ok: false, msg: "Failed Toggle Out of stock " });
+  }
+};
+
+export const kickDrawer = async (req: Request, res: Response) => {
+  const staff: Staff = res.locals.staff;
+  const printer = await client.printer.findFirst({
+    where: {
+      archived: false,
+      hasDrawer: true,
+    },
+  });
+
+  if (!staff || !printer) {
+    return res.json({ ok: false });
+  }
+
+  try {
+    printKickDrawer(printer);
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false });
   }
 };

@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
-import http from "http";
+import http, { Server as HttpServer } from "http";
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
+const server: HttpServer = new HttpServer(app);
 const port = process.env.PORT;
 
 import authRouter from "@routes/v1/authRouter";
@@ -21,6 +21,7 @@ import staffRouter from "@routes/v1/staffRouter";
 import deviceRouter from "@routes/v1/deviceRouter";
 import { migrate } from "@controller/migrate";
 import saleRouter from "@routes/v1/saleRouter";
+import { initializeWebSocket } from "@libs/websocket";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -67,6 +68,7 @@ app.use(`${apiRoot}/v1/device`, deviceRouter);
 
 app.get("/", migrate);
 
+initializeWebSocket(server, corsOptions);
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });

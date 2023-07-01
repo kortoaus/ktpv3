@@ -2,11 +2,14 @@
 import Sidebar from "@/components/Sidebar";
 import TableLinkBtn from "@/components/TableBtn";
 import MenuIcon from "@/components/icons/MenuIcon";
+import { getData, mutation } from "@/libs/apiURL";
 import useAutoReload from "@/libs/useAutoReload";
+import { socket } from "@/libs/webSocket";
 import { SaleWithTotal } from "@/types/Sale";
 import { TableContainerWithTables } from "@/types/Table";
+import { ApiResultType } from "@/types/api";
 import { Device } from "@/types/model";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Props = {
   device: Device;
@@ -15,6 +18,7 @@ type Props = {
 };
 
 export default function TableScreen({ device, containers, sales }: Props) {
+  const sk = socket;
   useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
@@ -26,6 +30,17 @@ export default function TableScreen({ device, containers, sales }: Props) {
 
     window.location.reload();
   };
+
+  useEffect(() => {
+    sk.emit("join_pos", { device });
+    sk.emit("join_device", { device });
+    sk.on("pos_refresh", () => {
+      reload();
+    });
+    sk.on("device_refresh", () => {
+      reload();
+    });
+  }, []);
 
   const getTables = () => {
     const placeholders = Array(100).fill(0);
@@ -44,6 +59,14 @@ export default function TableScreen({ device, containers, sales }: Props) {
   const currentSales = () => {
     let pp = sales.reduce((a, b) => a + b.pp, 0);
     return `${sales.length} Tables / ${pp} customers`;
+  };
+
+  const lastInvHandler = async () => {
+    const result: ApiResultType = await mutation("/api/shift/lastreceipt", "");
+    if (!result || !result.ok) {
+      window.alert(result?.msg || "Receipt Not Found");
+    }
+    return;
   };
 
   return (
@@ -67,6 +90,7 @@ export default function TableScreen({ device, containers, sales }: Props) {
           </div>
           <div className="flex items-center gap-4">
             <div>{currentSales()}</div>
+            <button onClick={() => lastInvHandler()}>Last Inv.</button>
             <button
               onClick={() => setIsMenu(true)}
               className="BasicBtn fccc h-full text-blue-500 !border-0"

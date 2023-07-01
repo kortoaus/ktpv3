@@ -18,6 +18,14 @@ type ProductFormData = {
   archived: boolean;
 };
 
+const printerinit = async () => {
+  await client.product.updateMany({
+    data: {
+      printerIds: `[1]`,
+    },
+  });
+};
+
 export const getProductOptions = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
   const staff: Staff = res.locals.staff;

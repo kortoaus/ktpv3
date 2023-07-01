@@ -1,5 +1,6 @@
 "use client";
 import CashCounter from "@/components/CashCounter";
+import KickDrawerBtn from "@/components/KickDrawerBtn";
 import SaleResult from "@/components/SaleResult";
 import DataLoading from "@/components/ui/DataLoading";
 import { StillUpdating } from "@/libs/Messages";
@@ -111,6 +112,7 @@ export default function ShiftClose({ shiftResult, shift }: Props) {
           Close Shop
         </button>
       )}
+      <KickDrawerBtn />
     </div>
   );
 }

@@ -1,5 +1,6 @@
 "use client";
 import CashCounter from "@/components/CashCounter";
+import KickDrawerBtn from "@/components/KickDrawerBtn";
 import DataLoading from "@/components/ui/DataLoading";
 import { HandlerCheckbox } from "@/components/ui/form/ToggleCheckbox";
 import { StillUpdating } from "@/libs/Messages";
@@ -119,6 +120,8 @@ export default function ShiftOpen({ oos }: { oos: Product[] }) {
           Open Shop
         </button>
       )}
+
+      <KickDrawerBtn />
     </div>
   );
 }

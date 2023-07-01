@@ -4,6 +4,8 @@ import saleData from "@libs/saleData";
 import { Staff } from "@prisma/client";
 import Decimal from "decimal.js";
 import { Response, Request } from "express";
+import { ShiftTicketType } from "../../type/Ticket";
+import { printClosedShift } from "@libs/printerDriver";
 
 export type ShiftResultType = {
   ppA: number;
@@ -245,7 +247,7 @@ export const closeShift = async (req: Request, res: Response) => {
       differ,
     }: CloseFormData = req.body;
 
-    await client.shift.update({
+    const closed = await client.shift.update({
       where: {
         id: shift.id,
       },
@@ -277,6 +279,20 @@ export const closeShift = async (req: Request, res: Response) => {
         differ,
       },
     });
+
+    const shop = await client.shop.findFirst();
+
+    const printer = await client.printer.findFirst({
+      where: {
+        archived: false,
+        hasDrawer: true,
+      },
+    });
+
+    if (printer && shop) {
+      const printData: ShiftTicketType = { ...printer, shift: closed, shop };
+      printClosedShift(printData);
+    }
 
     return res.json({ ok: true });
   } catch (e) {

@@ -3,6 +3,7 @@ import client from "@libs/prismaClient";
 import { Category, Staff } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
+import { io } from "@libs/websocket";
 
 type CategoryDataProps = {
   id?: number;
@@ -15,6 +16,9 @@ type CategoryDataProps = {
 export const updateCategory = async (req: Request, res: Response) => {
   const id = req.params.id ? Math.abs(+req.params.id) : 0;
   const staff: Staff = res.locals.staff;
+
+  const socket = io;
+  socket.emit("refresh");
 
   if (isNaN(id)) {
     return res.status(400).json({ ok: false, msg: "Invalid Request!" });

@@ -5,7 +5,9 @@ import {
   getAllProducts,
   getDevice,
   getDevices,
+  getLastInvoice,
   getTableData,
+  kickDrawer,
   moveTable,
   openTable,
   payment,
@@ -32,9 +34,12 @@ deviceRouter
   .post(authMid, updateDevice)
   .get(authMid, getDevice);
 
+deviceRouter.route("/kd").post(authMid, kickDrawer);
+
 // Datas
 deviceRouter.route("/me").get(authDeviceMid, deviceMe);
 deviceRouter.route("/shift").get(authDeviceMid, getCurrentShift);
+deviceRouter.route("/shift/lastreceipt").post(authDeviceMid, getLastInvoice);
 deviceRouter.route("/shop").get(authDeviceMid, shopData);
 deviceRouter.route("/buffet").get(authDeviceMid, getBuffetClasses);
 deviceRouter.route("/staff").post(authDeviceMid, getStaffByCode);

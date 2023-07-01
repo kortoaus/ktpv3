@@ -135,7 +135,7 @@ export default function SaleScreen({
     let total = new Decimal(0);
 
     lines.forEach((li) => {
-      total = total.plus(SaleLineTotal(li).total);
+      total = total.plus(li.total);
     });
 
     return total.toNumber();

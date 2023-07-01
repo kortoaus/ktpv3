@@ -8,9 +8,7 @@ type Props = {
 };
 
 export default function ReceiptLineCard({ remove, line }: Props) {
-  const { description, qty, options, price, discount, cancelled } = line;
-
-  const total = SaleLineTotal(line);
+  const { description, qty, options, price, discount, cancelled, total } = line;
 
   return (
     <button
@@ -45,8 +43,8 @@ export default function ReceiptLineCard({ remove, line }: Props) {
       {true && (
         <>
           <div className="f-btw">
-            <div>{`$${total.unitPrice.toFixed(2)} X ${qty}`}</div>
-            <div>{`$${total.total}`}</div>
+            <div>{`$${price.toFixed(2)} X ${qty}`}</div>
+            <div>{`$${total}`}</div>
           </div>
           {Boolean(discount) && (
             <div className="text-right">{`@D/C: $${discount.toFixed(2)}`}</div>

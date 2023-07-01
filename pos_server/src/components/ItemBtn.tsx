@@ -18,14 +18,23 @@ export default function ItemBtn({ pd, add }: Props) {
   const { id, name, price, imgId, options: pOptions, outOfStock } = pd;
 
   const addLine = (qty: number, options: SelectedOptionType[]) => {
+    let charged = new Decimal(0);
+
+    options.forEach((opt) => {
+      const optionValue = new Decimal(opt.qty).mul(opt.value);
+      charged = charged.plus(optionValue);
+    });
+
+    const unitPrice = new Decimal(price).plus(charged);
+
     const data: SaleLineType = {
       productId: pd.id,
       id: new Date().getTime(),
       description: name,
-      price: price,
+      price: unitPrice.toNumber(),
       qty,
       discount: 0,
-      total: new Decimal(price).mul(qty).toNumber(),
+      total: unitPrice.mul(qty).toNumber(),
       cancelled: false,
       options,
       note: "",

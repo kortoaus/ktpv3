@@ -1,3 +1,5 @@
+import { Sale, SaleLine } from "@prisma/client";
+
 export type SaleLineType = {
   id: number;
   productId: number;
@@ -20,4 +22,8 @@ export type SelectedOptionType = {
   name: string;
   value: number;
   qty: number;
+};
+
+export type SaleWithLines = Sale & {
+  lines: SaleLine[];
 };

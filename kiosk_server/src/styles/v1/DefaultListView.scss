@@ -1,0 +1,31 @@
+.ListContainer {
+  @apply w-full;
+  .ToolbarContainer{
+    @apply  f-btw py-4 border-b;
+    .SearchForm{
+      max-width: 250px;
+      @apply w-full border rounded-md overflow-hidden border-gray-300 flex;
+      input{
+        @apply p-1 border-0 border-r border-gray-300 flex-auto;
+      }
+      button{
+        @apply fccc bg-gray-100 w-12;
+      }
+    }
+  }
+
+  .PaginatorContainer{
+    .InnerContainer{
+@apply w-full mx-auto max-w-sm flex items-center justify-center gap-8;
+      .PagingForm{
+        @apply flex items-center gap-2;
+        input{
+          @apply text-sm p-1 border-gray-300 w-12 text-right;
+        }
+      } 
+      a{
+        @apply text-blue-500 text-sm;
+      }
+    }
+  }
+}

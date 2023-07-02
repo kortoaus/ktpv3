@@ -43,6 +43,8 @@
 - [x] Print Ticket
 - [x] Print Shift Result
 - [x] Websocket Setup
+- [x] KIOSK
+- [ ] PWA Setup
 - [ ] Kitchen Close
 - [ ] Refund
 - [ ] Cash In, Out

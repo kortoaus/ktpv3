@@ -1,7 +1,6 @@
 import express from "express";
 const jwt = require("jsonwebtoken");
 import client from "@libs/prismaClient";
-import moment from "moment-timezone";
 
 export const authMid = async (
   req: express.Request,
@@ -58,21 +57,18 @@ export const authDeviceMid = async (
 
   const [_, ip] = key?.split(" ");
 
+  console.log(ip);
+
   const device = await client.device.findFirst({
     where: {
       archived: false,
-      // ip,
-      type: "POS",
+      ip,
     },
   });
 
   if (!device) {
     return res.status(403).json({ ok: false, msg: "Unauthorized!" });
   }
-
-  // if (type && device.type !== type) {
-  //   return res.status(403).json({ ok: false, msg: "Unauthorized!" });
-  // }
 
   res.locals.device = device;
 

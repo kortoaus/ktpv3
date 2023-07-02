@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import client from "@libs/prismaClient";
-import { Device, Printer, Sale, Staff } from "@prisma/client";
+import { Device, Printer, Sale, Staff, Table } from "@prisma/client";
 import getRole from "@libs/getRole";
 import { PaginationParams, PaginationResponse } from "../../type/pagination";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
@@ -14,6 +14,7 @@ import {
   printOrderTicket,
   printReceipt,
 } from "@libs/printerDriver";
+import { io } from "@libs/websocket";
 
 async function getSaleAndStaff(saleId: string, staffId: number) {
   const sale = await client.sale.findFirst({
@@ -222,12 +223,25 @@ export const getTableData = async (req: Request, res: Response) => {
     },
   });
 
-  const table = await client.table.findFirst({
-    where: {
-      id,
-      archived: false,
-    },
-  });
+  let table: Table | null = null;
+
+  if (device.type === "POS") {
+    table = await client.table.findFirst({
+      where: {
+        id,
+        archived: false,
+      },
+    });
+  }
+
+  if (device.type === "TABLE" && device.tableId) {
+    table = await client.table.findFirst({
+      where: {
+        id: device.tableId,
+        archived: false,
+      },
+    });
+  }
 
   if (!table) {
     return res.status(404).json({ ok: false, msg: "Table Not Found" });
@@ -275,6 +289,7 @@ export const getTableData = async (req: Request, res: Response) => {
         index: "asc",
       },
     });
+
     catalogue = filterCatalogue(catalogue, sale.buffetId);
   }
 
@@ -368,6 +383,8 @@ export const openTable = async (req: Request, res: Response) => {
     },
   });
 
+  io.emit(`table_${table.id}`);
+
   return res.json({ ok: true, result });
 };
 
@@ -407,7 +424,7 @@ export const updateBuffetData = async (req: Request, res: Response) => {
   }
 
   try {
-    await client.sale.update({
+    const target = await client.sale.update({
       where: {
         id: sale.id,
       },
@@ -421,6 +438,8 @@ export const updateBuffetData = async (req: Request, res: Response) => {
         logs: sale.logs + log,
       },
     });
+
+    io.emit(`table_${target.tableId}`);
     return res.json({ ok: true });
   } catch (e) {
     console.log(e);
@@ -459,7 +478,7 @@ export const updateBuffetTime = async (req: Request, res: Response) => {
     const amountM = Math.ceil(amount * 1000 * 60);
     const newVal = before + amountM;
 
-    await client.sale.update({
+    const target = await client.sale.update({
       where: {
         id: sale.id,
       },
@@ -468,6 +487,7 @@ export const updateBuffetTime = async (req: Request, res: Response) => {
         logs: sale.logs + log,
       },
     });
+    io.emit(`table_${target.tableId}`);
     return res.json({ ok: true });
   } catch (e) {
     console.log(e);
@@ -483,10 +503,17 @@ type PlaceOrderDataType = {
 export const placeOrder = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { staffId, lines }: PlaceOrderDataType = req.body;
+  const device: Device = res.locals.device;
 
   const { sale, staff } = await getSaleAndStaff(id, staffId);
 
-  if (!staff) {
+  const isTable = device.type === "TABLE";
+
+  if (!device) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!isTable && !staff) {
     return res.status(403).json({ ok: false, msg: "Unauthorized!" });
   }
 
@@ -509,7 +536,9 @@ export const placeOrder = async (req: Request, res: Response) => {
         } = line;
         return {
           saleId: sale.id,
-          staff: `${staff.name}(${staff.id})`,
+          staff: isTable
+            ? `Customer/${device.name}`
+            : `${staff?.name}(${staff?.id})`,
           productId,
           desc,
           price,
@@ -521,6 +550,8 @@ export const placeOrder = async (req: Request, res: Response) => {
       }),
     });
 
+    io.emit(`table_${sale.tableId}_mutate`);
+
     // Printing
     let prs: number[] = [];
     lines.forEach((line) => {
@@ -529,28 +560,32 @@ export const placeOrder = async (req: Request, res: Response) => {
 
     const printerIds: number[] = [];
     new Set(prs).forEach((id) => printerIds.push(id));
-
     let printers: OrderTicketType[] = (await getPrinters(printerIds)).map(
       (pr) => ({
         ...pr,
         lines: [],
         isNew: sale._count.lines === 0,
-        who: staff.name,
+        who: staff ? staff.name : "Customer",
         tableName: sale.tableName,
         pp: sale.pp,
       })
     );
 
-    printers = printers.map((printer) => {
-      const printerline = lines.filter((line) =>
-        Boolean(line.printerIds.find((lp) => lp === printer.id))
-      );
-      return { ...printer, lines: printerline };
-    });
+    try {
+      printers = printers.map((printer) => {
+        const printerline = lines.filter((line) =>
+          Boolean(line.printerIds.find((lp) => lp === printer.id))
+        );
+        return { ...printer, lines: printerline };
+      });
 
-    printers.forEach((data) => {
-      printOrderTicket(data);
-    });
+      printers.forEach((data) => {
+        printOrderTicket(data);
+      });
+    } catch (e) {
+      console.log(e);
+      return res.json({ ok: true });
+    }
 
     return res.json({ ok: true });
   } catch (e) {
@@ -601,6 +636,8 @@ export const cancelOrder = async (req: Request, res: Response) => {
         logs: sale.logs + log,
       },
     });
+
+    io.emit(`table_${sale.tableId}_mutate`);
 
     // Printing
 
@@ -665,6 +702,9 @@ export const moveTable = async (req: Request, res: Response) => {
       },
     });
 
+    io.emit(`table_${table.id}`);
+    io.emit(`table_${sale.tableId}`);
+
     // Printing
 
     return res.json({ ok: true });
@@ -699,8 +739,8 @@ type PaymentDataType = {
 export const payment = async (req: Request, res: Response) => {
   const device: Device = res.locals.device;
   const shop = await client.shop.findFirst();
-
-  if (!device || (device && device.type !== "POS") || !shop) {
+  // || (device && device.type !== "POS")
+  if (!device || !shop) {
     return res.json({ ok: false, msg: "Unauthorized!" });
   }
 
@@ -755,6 +795,8 @@ export const payment = async (req: Request, res: Response) => {
         lines: true,
       },
     });
+
+    io.emit(`table_${paid.tableId}`);
 
     const printer = await client.printer.findFirst({
       where: {
@@ -896,6 +938,8 @@ export const toggleOOS = async (req: Request, res: Response) => {
         outOfStock: !target.outOfStock,
       },
     });
+
+    io.emit(`mutate`);
     return res.json({ ok: true });
   } catch (e) {
     console.log(e);

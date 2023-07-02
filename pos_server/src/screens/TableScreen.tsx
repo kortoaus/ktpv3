@@ -18,7 +18,6 @@ type Props = {
 };
 
 export default function TableScreen({ device, containers, sales }: Props) {
-  const sk = socket;
   useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
@@ -27,20 +26,8 @@ export default function TableScreen({ device, containers, sales }: Props) {
     if (!window) {
       return;
     }
-
     window.location.reload();
   };
-
-  useEffect(() => {
-    sk.emit("join_pos", { device });
-    sk.emit("join_device", { device });
-    sk.on("pos_refresh", () => {
-      reload();
-    });
-    sk.on("device_refresh", () => {
-      reload();
-    });
-  }, []);
 
   const getTables = () => {
     const placeholders = Array(100).fill(0);

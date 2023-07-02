@@ -14,12 +14,13 @@ type ResultProps = {
 };
 
 export default function useTable(id: string) {
-  const { data, isLoading } = useSWR<ResultProps>(`/api/table/${id}`);
+  const { data, isLoading, mutate } = useSWR<ResultProps>(`/api/table/${id}`);
   return {
     table: data?.table,
     sale: data?.sale,
     catalogue: data?.catalogue,
     buffets: data?.buffets,
     isLoading,
+    mutate,
   };
 }

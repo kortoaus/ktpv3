@@ -8,11 +8,6 @@ import { SelectedOptionType } from "../type/Sale";
 const fontPath = join(__dirname, "fonts");
 const fontName = "Noto Sans KR";
 
-registerFont(fontPath + "/NotoSans-Thin.otf", {
-  family: "Noto Sans KR",
-  weight: "100",
-});
-
 registerFont(fontPath + "/NotoSans-Regular.otf", {
   family: "Noto Sans KR",
   weight: "400",

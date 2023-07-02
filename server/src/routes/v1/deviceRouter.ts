@@ -58,6 +58,8 @@ deviceRouter
   .route("/table/:id(\\d+)/btime")
   .post(authDeviceMid, updateBuffetTime);
 
+deviceRouter.route("/kiosk/table").get(authDeviceMid, getTableData);
+
 // Product
 deviceRouter.route("/product").get(authDeviceMid, getAllProducts);
 deviceRouter.route("/product/:id(\\d+)/oos").post(authDeviceMid, toggleOOS);

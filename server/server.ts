@@ -19,9 +19,9 @@ import printerRouter from "@routes/v1/printerRouter";
 import fileRouter from "@routes/v1/fileRouter";
 import staffRouter from "@routes/v1/staffRouter";
 import deviceRouter from "@routes/v1/deviceRouter";
-import { migrate } from "@controller/migrate";
 import saleRouter from "@routes/v1/saleRouter";
 import { initializeWebSocket } from "@libs/websocket";
+import initDB from "@libs/initDB";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -66,7 +66,13 @@ app.use(`${apiRoot}/v1/sale`, saleRouter);
 app.use(`${apiRoot}/v1/file`, fileRouter);
 app.use(`${apiRoot}/v1/device`, deviceRouter);
 
-app.get("/", migrate);
+// app.get("/", migrate);
+
+try {
+  initDB();
+} catch (e: any) {
+  throw Error(e);
+}
 
 initializeWebSocket(server, corsOptions);
 server.listen(port, () => {

@@ -20,6 +20,7 @@ import { Product } from "@/types/model";
 import { ApiResultType } from "@/types/api";
 import { useRouter } from "next/navigation";
 import Archived from "@/components/ui/form/Archived";
+import Link from "next/link";
 
 type BuffetPrice = {
   [key: number]: number;
@@ -243,6 +244,15 @@ export default function ProductUpdate({
   return (
     <>
       <div className="w-full max-w-2xl mx-auto">
+        <Link
+          href={`/product?page=${query.page || 1}&keyword=${
+            query.keyword || ""
+          }`}
+          prefetch
+        >
+          <button className="BasicBtn mb-2">Go Back To List</button>
+        </Link>
+        <h1 className="mb-2 border-b pb-2">Update Product</h1>
         <section className="grid grid-cols-3 gap-4 relative">
           <div className="col-span-2 border-r pr-4 pt-8">
             <ImgInput

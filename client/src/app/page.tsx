@@ -5,13 +5,11 @@ import useShift from "@/libs/useShift";
 import useStaff from "@/libs/useUser";
 import TitleScreen from "@/screens/TitleScreen";
 
-// Auth, Shift, Product, Category, Buffet, Printer,
-
 export default function TitlePage() {
   const { staff, staffLoading } = useStaff();
   const { shift, sales, shiftLoading } = useShift();
-
   const loading = staffLoading || shiftLoading;
+
   return (
     <>
       {loading && (

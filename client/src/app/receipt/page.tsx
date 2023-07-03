@@ -67,7 +67,7 @@ export default function DeviceListPage({
       )}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && data && paging && (
-        <ListWrapper paging={paging} basePath="/receipt">
+        <ListWrapper paging={paging} basePath="/receipt" useAdd={false}>
           <ReceiptList paging={paging} list={data} />
         </ListWrapper>
       )}

@@ -48,7 +48,7 @@ export default function TablePage({ params: { id } }: Props) {
         mutate();
       });
     }
-  }, [device, table, mutate]);
+  }, [device, table, mutate, sk]);
 
   return (
     <>

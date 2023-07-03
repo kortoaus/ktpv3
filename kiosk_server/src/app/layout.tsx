@@ -28,7 +28,7 @@ export default function RootLayout({
       window.alert("Connection Error!, Please tap the ok button to reload.");
       reload();
     });
-  }, []);
+  }, [sk]);
 
   return (
     <html lang="en">

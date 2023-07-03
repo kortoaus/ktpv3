@@ -38,7 +38,7 @@ export default function TitlePage() {
         mutate();
       });
     }
-  }, [device]);
+  }, [device, sk, mutate]);
 
   const isLoading = l1 || l2;
 

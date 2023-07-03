@@ -26,8 +26,6 @@ export const authMid = async (
   }
   const { _id: id, _signed }: { _id: number; _signed: number } = claim;
 
-  // console.log(_signed);
-
   const staff = await client.staff.findFirst({
     where: {
       id,
@@ -61,7 +59,6 @@ export const authDeviceMid = async (
     where: {
       archived: false,
       ip,
-      // type: "TABLE",
     },
   });
 

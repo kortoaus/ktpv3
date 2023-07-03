@@ -8,6 +8,7 @@ import { BeDisabled, RequiredField, StillUpdating } from "@/libs/Messages";
 import useMutation from "@/libs/useMutation";
 import { ApiResultType } from "@/types/api";
 import { Printer } from "@/types/model";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -91,6 +92,14 @@ export default function PrinterUpdate({ data, query }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto">
+      <Link
+        href={`/printer?page=${query.page || 1}&keyword=${query.keyword || ""}`}
+        prefetch
+      >
+        <button className="BasicBtn mb-2">Go Back To List</button>
+      </Link>
+      <h1 className="mb-2 border-b pb-2">Update Printer</h1>
+
       {loading ? (
         <DataLoading />
       ) : (

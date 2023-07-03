@@ -77,7 +77,7 @@ export default function CashCounter({ setVal }: Props) {
 
   useEffect(() => {
     setVal(getTotal());
-  }, [getTotal, count]);
+  }, [getTotal, count, setVal]);
 
   const lineTotal = (key: string) => {
     const ct = count[key] || 0;

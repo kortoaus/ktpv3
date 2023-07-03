@@ -4,6 +4,7 @@ import { ProductOptionGroup, SelectedOptionType } from "@/types/Product";
 import { SaleWithLines } from "@/types/Sale";
 import { SaleLine } from "@/types/model";
 import Decimal from "decimal.js";
+import Link from "next/link";
 import React, { useState } from "react";
 
 type Props = {
@@ -46,6 +47,11 @@ export default function ReceiptDetail({
 
   return (
     <div className="fccc mt-8">
+      <Link href={`/receipt`} prefetch={false}>
+        <button className="BasicBtn mb-2">Go Back To List</button>
+      </Link>
+      <h1 className="mb-4 border-b pb-2">Receipt Detail</h1>
+
       <div className="grid grid-cols-2 gap-4">
         {/* Receipt */}
         <div className="border p-4 w-full max-w-sm">

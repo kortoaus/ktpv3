@@ -36,7 +36,7 @@ export default function ProductListCard({
       </div>
       <div className="col-span-2 fccc">
         <Link
-          href={`/product/${id}?page=${current}&keyword=${keyword}/`}
+          href={`/product/${id}?page=${current}&keyword=${keyword}`}
           prefetch={false}
           className="text-blue-500 text-sm"
         >

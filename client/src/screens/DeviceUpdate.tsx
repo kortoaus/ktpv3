@@ -11,6 +11,7 @@ import { isIP } from "@/libs/util";
 import { TableContainerWithTables } from "@/types/Table";
 import { ApiResultType } from "@/types/api";
 import { Device } from "@/types/model";
+import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -130,6 +131,14 @@ export default function DeviceUpdate({ data, query, tables }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto">
+      <Link
+        href={`/device?page=${query.page || 1}&keyword=${query.keyword || ""}`}
+        prefetch={false}
+      >
+        <button className="BasicBtn mb-2">Go Back To List</button>
+      </Link>
+      <h1 className="mb-2 border-b pb-2">Update Device</h1>
+
       {loading ? (
         <DataLoading />
       ) : (

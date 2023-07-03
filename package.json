@@ -4,9 +4,20 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-all": "concurrently  \"npm run start:host-server\" \"npm run start:pos-server\" \"npm run start:table-server\" \"npm run start:manage-server\"",
+    "start:host-server": "cd ./server &&  npm run dev",
+    "start:pos-server": "cd ./pos_server && npm run build && npm run start",
+    "start:table-server": "cd ./kiosk_server && npm run build && npm run start",
+    "start:manage-server": "cd ./client && npm run build && npm run start",
+    "build:host-server": "cd ./server && npm run build",
+    "build:pos-server": "cd ./pos_server && npm run build",
+    "build:table-server": "cd ./kiosk_server && npm run build",
+    "build:manage-server": "cd ./client && npm run build"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  }
 }

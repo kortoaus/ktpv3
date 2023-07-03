@@ -10,7 +10,6 @@ datasource db {
 model Shop {
   id              Int      @id @default(autoincrement())
   abn             String   @unique
-  code            String   @unique
   name            String
   phone           String
   logo            String

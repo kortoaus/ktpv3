@@ -15,6 +15,7 @@ import { isMobile } from "@/libs/util";
 import { StaffRole } from "@/types/Staff";
 import { ApiResultType } from "@/types/api";
 import { Staff } from "@/types/model";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -105,6 +106,14 @@ export default function StaffUpdate({ data, query }: Props) {
 
   return (
     <div className="w-full max-w-md mx-auto">
+      <Link
+        href={`/staff?page=${query.page || 1}&keyword=${query.keyword || ""}`}
+        prefetch
+      >
+        <button className="BasicBtn mb-2">Go Back To List</button>
+      </Link>
+      <h1 className="mb-2 border-b pb-2">Update Staff</h1>
+
       {loading ? (
         <DataLoading />
       ) : (

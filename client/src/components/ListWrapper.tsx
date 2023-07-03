@@ -8,9 +8,15 @@ type Props = {
   basePath: string;
   children: React.ReactNode;
   paging: PagingProps;
+  useAdd?: boolean;
 };
 
-export default function ListWrapper({ basePath, children, paging }: Props) {
+export default function ListWrapper({
+  basePath,
+  children,
+  paging,
+  useAdd = true,
+}: Props) {
   const { keyword, hasNext, hasPrev, current, totalPages } = paging;
   return (
     <div className="ListContainer max-w-xl mx-auto">
@@ -25,15 +31,17 @@ export default function ListWrapper({ basePath, children, paging }: Props) {
             <SearchIcon />
           </button>
         </form>
-        <Link
-          href={`${basePath}/new?page=${current}&keyword=${keyword}`}
-          prefetch={false}
-        >
-          <button className="BasicBtn bg-purple-500 text-white border-purple-500">
-            <PlusIcon />
-            <span>Add New</span>
-          </button>
-        </Link>
+        {useAdd && (
+          <Link
+            href={`${basePath}/new?page=${current}&keyword=${keyword}`}
+            prefetch={false}
+          >
+            <button className="BasicBtn bg-purple-500 text-white border-purple-500">
+              <PlusIcon />
+              <span>Add New</span>
+            </button>
+          </Link>
+        )}
       </div>
       {children}
 

@@ -24,7 +24,7 @@ export default function ReceiptListCard({
 
   return (
     <div className="grid grid-cols-12 border-b py-4">
-      <div className="col-span-6 flex items-center justify-start">
+      <div className="col-span-10 flex items-center justify-start">
         <Link
           href={`/receipt/${id}?page=${current}&keyword=${keyword}`}
           prefetch={false}
@@ -36,7 +36,7 @@ export default function ReceiptListCard({
         </Link>
       </div>
 
-      <div className="col-span-2 flex items-center justify-start">
+      <div className="col-span-2 flex items-center justify-end">
         <Link
           href={`/receipt/${id}?page=${current}&keyword=${keyword}`}
           prefetch={false}

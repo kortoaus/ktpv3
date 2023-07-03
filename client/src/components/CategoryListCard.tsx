@@ -19,8 +19,8 @@ export default function CategoryListCard({
       <div className="col-span-2 flex items-center justify-start text-sm">
         {index}
       </div>
-      <div className="col-span-6 flex items-center justify-start font-medium">
-        <Link href={`/category/${id}/product`} prefetch={false}>
+      <div className="col-span-8 flex items-center justify-start font-medium">
+        <Link href={`/category/${id}`} prefetch={false}>
           {name}
         </Link>
       </div>
@@ -31,15 +31,6 @@ export default function CategoryListCard({
           className="text-blue-500 text-sm"
         >
           Update
-        </Link>
-      </div>
-      <div className="col-span-2 fccc">
-        <Link
-          href={`/category/${id}/product`}
-          prefetch={false}
-          className="text-blue-500 text-sm"
-        >
-          <span>{`${productCount} Prds`}</span>
         </Link>
       </div>
     </div>

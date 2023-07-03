@@ -170,11 +170,10 @@ export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
               {/* New */}
               <div className="">
                 {newLines.map((line) => (
-                  <div className="grid grid-cols-5">
+                  <div className="grid grid-cols-5" key={`new_${line.id}`}>
                     <div className="col-span-4 text-blue-500">
                       <ReceiptLineCard
                         line={line}
-                        key={`new_${line.id}`}
                         remove={() => removeNewLineHandler(line.id)}
                       />
                     </div>

@@ -123,7 +123,7 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
       setData(init);
       setLoading(false);
     }
-  }, [init, open]);
+  }, [open]);
 
   const getData = () => {
     if (!shop) {

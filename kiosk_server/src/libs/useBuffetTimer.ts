@@ -76,7 +76,7 @@ export default function useBuffetTimer({ buffet, started }: Props) {
     }
 
     return () => clearInterval(interval);
-  }, [buffet, started, howOld, data]);
+  }, [buffet, started, data]);
 
   return data;
 }

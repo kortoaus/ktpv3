@@ -8,6 +8,7 @@ import { BeDisabled, RequiredField, StillUpdating } from "@/libs/Messages";
 import useMutation from "@/libs/useMutation";
 import { ApiResultType } from "@/types/api";
 import { BuffetClass } from "@/types/model";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -123,6 +124,11 @@ export default function BuffetUpdate({ data }: Props) {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
+      <Link href={`/buffet`} prefetch={false}>
+        <button className="BasicBtn mb-2">Go Back To List</button>
+      </Link>
+      <h1 className="mb-2 border-b pb-2">Update Buffet</h1>
+
       {loading ? (
         <DataLoading />
       ) : (

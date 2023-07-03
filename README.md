@@ -44,7 +44,9 @@
 - [x] Print Shift Result
 - [x] Websocket Setup
 - [x] KIOSK
-- [ ] PWA Setup
+- [x] KIOSK BILL
+- [x] Phase Screen
+- [x] PWA Setup
 - [ ] Kitchen Close
 - [ ] Refund
 - [ ] Cash In, Out

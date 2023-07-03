@@ -7,6 +7,7 @@ import useShift from "@/libs/useShift";
 import useTable from "@/libs/useTable";
 import { reloadPage } from "@/libs/util";
 import { socket } from "@/libs/webSocket";
+import MenuScreen from "@/screens/MenuScreen";
 import SaleScreen from "@/screens/SaleScreen";
 import { TableContainerWithTables } from "@/types/Table";
 import { useEffect } from "react";
@@ -58,7 +59,13 @@ export default function TitlePage() {
                     buffets={buffets ? buffets : []}
                   />
                 ) : (
-                  <div>Menupage</div>
+                  <MenuScreen
+                    holiday={shift.holiday}
+                    buffets={
+                      buffets ? buffets.filter((bf) => bf.priceA !== 0) : []
+                    }
+                    name={table.name}
+                  />
                 )}
               </>
             ) : (

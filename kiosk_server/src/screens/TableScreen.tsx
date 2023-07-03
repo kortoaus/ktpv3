@@ -32,15 +32,17 @@ export default function TableScreen({ device, containers, sales }: Props) {
   };
 
   useEffect(() => {
-    sk.emit("join_pos", { device });
-    sk.emit("join_device", { device });
-    sk.on("pos_refresh", () => {
-      reload();
-    });
-    sk.on("device_refresh", () => {
-      reload();
-    });
-  }, []);
+    if (device) {
+      sk.emit("join_pos", { device });
+      sk.emit("join_device", { device });
+      sk.on("pos_refresh", () => {
+        reload();
+      });
+      sk.on("device_refresh", () => {
+        reload();
+      });
+    }
+  }, [device]);
 
   const getTables = () => {
     const placeholders = Array(100).fill(0);

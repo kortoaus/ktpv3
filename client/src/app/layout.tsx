@@ -6,14 +6,6 @@ import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Manager",
-    template: `%s | Manager`,
-  },
-  description: "KORTOPOS V3",
-};
-
 export default function RootLayout({
   children,
 }: {
@@ -21,6 +13,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+        ></meta>
+      </head>
       <SWRContext>
         <body className={inter.className}>
           <Layout>{children}</Layout>

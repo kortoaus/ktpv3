@@ -60,7 +60,6 @@ export default function CatalogueComp({ cat, add }: Props) {
 
 export function MenuComp({
   cat,
-  add,
   handler,
 }: Props & { handler: (val: number) => void }) {
   const scrollHandler = (id: string) => {
@@ -79,7 +78,7 @@ export function MenuComp({
           return (
             <button
               onClick={() => scrollHandler(`cat_${id}`)}
-              className="BasicBtn justify-center text-sm"
+              className="BasicBtn justify-center text-xs !py-3"
               key={`catbtn_${id}`}
             >
               {name}

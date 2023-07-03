@@ -83,17 +83,17 @@ export function buffetTimerMsg(
   switch (phase) {
     case "order":
       pos = `Can order for ${orderR}mins`;
-      kiosk = `You still have ${orderR}mins left to place your order`;
+      kiosk = `You still have ${orderR}mins left to place your order.`;
       break;
     case "stay":
       pos = `Can stay for ${stayR}mins`;
-      kiosk = `Order time has ended, but you can still enjoy the buffet for ${stayR}mins more`;
+      kiosk = `Order time has ended, but you can still enjoy for ${stayR} mins more.`;
       break;
     case "over":
       pos = `Occupied for ${stayR * -1}mins`;
       kiosk = `Your allocated stay time has ended (${
         stayR * -1
-      }mins). We kindly request you to kindly give up the table. Thank you for your understanding`;
+      } mins). We kindly request you to kindly give up the table. Thank you for your understanding.`;
       break;
     default:
       pos = ``;

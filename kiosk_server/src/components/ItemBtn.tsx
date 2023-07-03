@@ -6,7 +6,6 @@ import Image from "next/image";
 import React, { useState } from "react";
 import ModalPortal from "./ModalPortal";
 import OptionModal from "./OptionModal";
-import { ProductOptionGroup } from "@/types/Product";
 
 type Props = {
   pd: Product;
@@ -72,11 +71,21 @@ export default function ItemBtn({ pd, add }: Props) {
             />
           </div>
         ) : (
-          <div className="SquareImg bg-gray-100"></div>
+          <div className="SquareImg bg-white  relative">
+            <div className="absolute top-0 w-full h-full fccc text-lg font-medium text-center p-2 border">
+              {name}
+            </div>
+          </div>
         )}
         <div className="px-2 text-center">
           <div className="text-sm font-medium">{name}</div>
-          <div>{`$${price.toFixed(2)}`}</div>
+          <div>
+            {price ? (
+              `$${price.toFixed(2)}`
+            ) : (
+              <span className="font-medium text-red-500 text-sm">Included</span>
+            )}
+          </div>
         </div>
 
         {outOfStock && (
@@ -110,9 +119,7 @@ export function ItemHandlerBtn({
     <>
       <button
         key={`pd_${id}`}
-        className={`bg-white text-left w-full ${
-          outOfStock ? "opacity-50" : ""
-        }`}
+        className={`bg-white text-left w-full relative`}
         onClick={() => {
           handler(id);
         }}
@@ -127,12 +134,28 @@ export function ItemHandlerBtn({
             />
           </div>
         ) : (
-          <div className="SquareImg bg-gray-100"></div>
+          <div className="SquareImg bg-white  relative">
+            <div className="absolute top-0 w-full h-full fccc text-lg font-medium text-center p-2 border">
+              {name}
+            </div>
+          </div>
         )}
         <div className="px-2 text-center">
           <div className="text-sm font-medium">{name}</div>
-          <div>{`$${price.toFixed(2)}`}</div>
+          <div>
+            {price ? (
+              `$${price.toFixed(2)}`
+            ) : (
+              <span className="font-medium text-red-500 text-sm">Included</span>
+            )}
+          </div>
         </div>
+
+        {outOfStock && (
+          <div className="w-full h-full absolute top-0 fccc z-10 ">
+            <span className="bg-white/50 p-1">Sold Out</span>
+          </div>
+        )}
       </button>
     </>
   );

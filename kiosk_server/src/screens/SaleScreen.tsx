@@ -1,10 +1,12 @@
 "use client";
 import CatalogueComp from "@/components/Catalogue";
 import ReceiptLineCard from "@/components/ReceiptLineCard";
+import DeleteIcon from "@/components/icons/DeleteIcon";
+import BillDrawer from "@/components/parts/BillDrawer";
 import SaleScreenHeader from "@/components/parts/SaleScreenHeader";
 import { mutation } from "@/libs/apiURL";
 import useBuffetTimer from "@/libs/useBuffetTimer";
-import { buffetReceiptLine, reloadPage } from "@/libs/util";
+import { buffetReceiptLine, buffetTimerMsg, reloadPage } from "@/libs/util";
 import { Catalogue } from "@/types/Product";
 import { SaleLineType, SaleWithLines } from "@/types/Sale";
 import { BuffetClass, Table } from "@/types/model";
@@ -19,12 +21,14 @@ type Props = {
 };
 
 export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
+  const [isBill, setIsBill] = useState(false);
   const [newLines, setNewLines] = useState<SaleLineType[]>([]);
   const [placedLine, setPlacedLine] = useState<SaleLineType[]>([]);
   const [buffetLines, setBuffetLines] = useState<SaleLineType[]>([]);
   const buffet = buffets.find((bf) => bf.id === sale.buffetId);
   const buffetTimer = useBuffetTimer({ buffet, started: sale.buffetStarted });
   const receiptRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
 
   const checkQTY = (addup: number = 0) => {
     const qty =
@@ -63,24 +67,25 @@ export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
   };
 
   const placeOrderHandler = async (redirect: boolean = true) => {
+    if (loading) {
+      return;
+    }
     if (!checkQTY()) {
       return;
     }
+    setLoading(true);
     const result = await mutation(`/api/sale/${sale.id}/place`, {
       staffId: 0,
       lines: redirect ? newLines : [...newLines, ...buffetLines],
     });
 
+    setLoading(false);
     reloadPage();
     return;
   };
 
   const getTotal = () => {
-    const lines = [
-      ...buffetLines,
-      ...newLines,
-      ...placedLine.filter((pl) => !pl.cancelled),
-    ];
+    const lines = [...buffetLines, ...placedLine.filter((pl) => !pl.cancelled)];
 
     let total = new Decimal(0);
 
@@ -142,6 +147,7 @@ export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
         buffet={buffet}
         tableName={table.name}
         buffetTimer={buffetTimer}
+        openBill={() => setIsBill(true)}
       />
 
       {/* Catalogue */}
@@ -162,22 +168,36 @@ export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
           <div className="ReceiptLineContainer" ref={receiptRef}>
             <div className="ReceiptLineInnerContainer">
               {/* New */}
-              <div className="text-blue-500">
+              <div className="">
                 {newLines.map((line) => (
-                  <ReceiptLineCard
-                    line={line}
-                    key={`new_${line.id}`}
-                    remove={() => removeNewLineHandler(line.id)}
-                  />
+                  <div className="grid grid-cols-5">
+                    <div className="col-span-4 text-blue-500">
+                      <ReceiptLineCard
+                        line={line}
+                        key={`new_${line.id}`}
+                        remove={() => removeNewLineHandler(line.id)}
+                      />
+                    </div>
+                    <button
+                      onClick={() => removeNewLineHandler(line.id)}
+                      className="border-b fccc bg-red-500 text-white"
+                    >
+                      <DeleteIcon size={24} />
+                    </button>
+                  </div>
                 ))}
               </div>
             </div>
           </div>
-          {/* SubTotal */}
+
+          {/* Place */}
           <div className=" bg-blue-500 text-white w-full fccc">
             <button
               className="w-full h-full"
               onClick={() => {
+                if (loading) {
+                  return;
+                }
                 if (newLines.length === 0) {
                   reloadPage();
                 } else {
@@ -190,6 +210,41 @@ export default function SaleScreen({ sale, table, catalogue, buffets }: Props) {
           </div>
         </div>
       </div>
+
+      <BillDrawer
+        open={isBill}
+        onClose={() => setIsBill(false)}
+        lines={[...buffetLines, ...placedLine]}
+        total={receiptTotal}
+      />
+
+      {buffetTimer && buffetTimer.phase === "stay" && (
+        <div className="h-screen w-full fccc fixed top-0 z-50 bg-blue-500  p-4">
+          <div className="text-white text-2xl font-medium animate-bounce text-center">
+            {
+              buffetTimerMsg(
+                buffetTimer.phase,
+                buffetTimer.orderRem,
+                buffetTimer.stayRem
+              ).kiosk
+            }
+          </div>
+        </div>
+      )}
+
+      {buffetTimer && buffetTimer.phase === "over" && (
+        <div className="h-screen w-full fccc fixed top-0 z-50 bg-red-500 p-4">
+          <div className="text-white text-2xl font-medium animate-bounce text-center">
+            {
+              buffetTimerMsg(
+                buffetTimer.phase,
+                buffetTimer.orderRem,
+                buffetTimer.stayRem
+              ).kiosk
+            }
+          </div>
+        </div>
+      )}
     </div>
   );
 }

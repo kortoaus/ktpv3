@@ -6,6 +6,7 @@ import Decimal from "decimal.js";
 import { Response, Request } from "express";
 import { ShiftTicketType } from "../../type/Ticket";
 import { printClosedShift } from "@libs/printerDriver";
+import initDB from "@libs/initDB";
 
 export type ShiftResultType = {
   ppA: number;
@@ -196,6 +197,8 @@ export const openShift = async (req: Request, res: Response) => {
         })
     );
 
+    initDB();
+
     return res.json({ ok: true });
   } catch (e) {
     return res.status(400).json({ ok: false, msg: "Failed Open Shop!" });
@@ -293,6 +296,8 @@ export const closeShift = async (req: Request, res: Response) => {
       const printData: ShiftTicketType = { ...printer, shift: closed, shop };
       printClosedShift(printData);
     }
+
+    initDB();
 
     return res.json({ ok: true });
   } catch (e) {

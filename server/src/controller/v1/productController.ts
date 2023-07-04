@@ -15,15 +15,8 @@ type ProductFormData = {
   buffetPrice: string;
   options: string;
   hideKiosk: boolean;
+  outOfStock: boolean;
   archived: boolean;
-};
-
-const printerinit = async () => {
-  await client.product.updateMany({
-    data: {
-      printerIds: `[1]`,
-    },
-  });
 };
 
 export const getProductOptions = async (req: Request, res: Response) => {
@@ -90,49 +83,16 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    const {
-      imgId,
-      name,
-      categoryId,
-      isBuffet,
-      buffetIds,
-      printerIds,
-      price,
-      buffetPrice,
-      options,
-      hideKiosk,
-      archived,
-    }: ProductFormData = req.body;
+    const { archived, outOfStock, printerIds }: ProductFormData = req.body;
 
-    await client.product.upsert({
+    await client.product.update({
       where: {
         id,
       },
-      update: {
-        imgId,
-        name,
-        categoryId,
-        isBuffet,
-        buffetIds,
-        printerIds,
-        price,
-        buffetPrice,
-        options,
-        hideKiosk,
+      data: {
         archived,
-      },
-      create: {
-        imgId,
-        name,
-        categoryId,
-        isBuffet,
-        buffetIds,
+        outOfStock,
         printerIds,
-        price,
-        buffetPrice,
-        options,
-        hideKiosk,
-        archived,
       },
     });
 
@@ -187,9 +147,6 @@ export const getProducts = async (
             mode: "insensitive",
           },
         })),
-      },
-      {
-        archived: false,
       },
     ],
   };

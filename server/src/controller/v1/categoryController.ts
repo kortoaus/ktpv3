@@ -31,19 +31,15 @@ export const updateCategory = async (req: Request, res: Response) => {
   }
 
   try {
-    const { name, index, archived, hoc }: CategoryDataProps = req.body;
+    const { archived }: CategoryDataProps = req.body;
 
-    await client.category.upsert({
+    await client.category.update({
       where: {
         id,
       },
-      update: {
-        name,
-        index,
+      data: {
         archived,
-        hoc,
       },
-      create: { name, index, hoc },
     });
 
     return res.json({ ok: true });
@@ -97,9 +93,6 @@ export const getCategories = async (
             mode: "insensitive",
           },
         })),
-      },
-      {
-        archived: false,
       },
     ],
   };

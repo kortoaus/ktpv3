@@ -83,25 +83,26 @@ model BuffetClass {
 }
 
 model Product {
-  id          Int       @id @default(autoincrement())
-  mId         Int?
-  imgId       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  categoryId  Int?
-  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  name        String
-  price       Float
-  cost        Float     @default(0)
-  isBuffet    Boolean   @default(false)
-  buffetPrice String    @default("{}")
-  printerIds  String    @default("[]")
-  buffetIds   String    @default("[]")
-  options     String    @default("[]") @db.Text
-  index       Int       @default(999)
-  hideKiosk   Boolean   @default(false)
-  outOfStock  Boolean   @default(false)
-  archived    Boolean   @default(false)
+  id               Int       @id @default(autoincrement())
+  mId              Int?
+  imgId            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  categoryId       Int?
+  category         Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  name             String
+  price            Float
+  cost             Float     @default(0)
+  isBuffet         Boolean   @default(false)
+  buffetPrice      String    @default("{}")
+  printerIds       String    @default("[]")
+  buffetIds        String    @default("[]")
+  options          String    @default("[]") @db.Text
+  index            Int       @default(999)
+  hideKiosk        Boolean   @default(false)
+  outOfStock       Boolean   @default(false)
+  closeWithKitchen Boolean   @default(false)
+  archived         Boolean   @default(false)
 
   @@index([categoryId])
 }
@@ -195,6 +196,8 @@ model Shift {
   c_fy            Int       @default(0)
   c_mm            Int       @default(0)
   c_fm            Int       @default(0)
+  kitchenClosed   Boolean   @default(false)
+  synced          Boolean   @default(false)
 }
 
 model Sale {

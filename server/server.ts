@@ -1,5 +1,5 @@
-import express, { Request, Response } from "express";
-import http, { Server as HttpServer } from "http";
+import express from "express";
+import { Server as HttpServer } from "http";
 const cors = require("cors");
 const dotenv = require("dotenv");
 const bodyParser = require("body-parser");
@@ -75,6 +75,7 @@ try {
 }
 
 initializeWebSocket(server, corsOptions);
+
 server.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });

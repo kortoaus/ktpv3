@@ -16,8 +16,11 @@ export async function downloadImage(url: string, filename: string) {
   const response = await axios.get(url, { responseType: "arraybuffer" });
 
   fs.writeFile(`images/${filename}.webp`, response.data, (err) => {
-    if (err) throw err;
-    console.log("Image downloaded successfully!");
+    if (err) {
+      // console.log(err);
+      console.log("Failed Download Image.");
+    }
+    // console.log("Image downloaded successfully!");
   });
 }
 

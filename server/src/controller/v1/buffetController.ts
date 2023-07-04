@@ -52,38 +52,12 @@ export const updateBuffetClass = async (req: Request, res: Response) => {
       archived,
     }: BuffetClassDataProps = req.body;
 
-    await client.buffetClass.upsert({
+    await client.buffetClass.update({
       where: {
         id,
       },
-      update: {
-        name,
-        priceA,
-        priceB,
-        priceC,
-        h_priceA,
-        h_priceB,
-        h_priceC,
-        nameA,
-        nameB,
-        nameC,
-        stayTime,
-        orderTime,
+      data: {
         archived,
-      },
-      create: {
-        name,
-        priceA,
-        priceB,
-        priceC,
-        h_priceA,
-        h_priceB,
-        h_priceC,
-        nameA,
-        nameB,
-        nameC,
-        stayTime,
-        orderTime,
       },
     });
 
@@ -96,9 +70,6 @@ export const updateBuffetClass = async (req: Request, res: Response) => {
 
 export const getBuffetClasses = async (req: Request, res: Response) => {
   const result = await client.buffetClass.findMany({
-    where: {
-      archived: false,
-    },
     orderBy: {
       priceA: "asc",
     },

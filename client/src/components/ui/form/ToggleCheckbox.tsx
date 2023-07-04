@@ -8,17 +8,19 @@ type Props = {
 
 type ToggleCheckBoxProps = Props & {
   register: UseFormRegisterReturn;
+  disabled?: boolean;
 };
 
 export default function ToggleCheckbox({
   id,
   register,
   label = "",
+  disabled = false,
 }: ToggleCheckBoxProps) {
   return (
     <div className="form-element-group">
       <div className="flex items-center gap-2">
-        <input id={id} type="checkbox" {...register} />
+        <input id={id} type="checkbox" {...register} disabled={disabled} />
         <label htmlFor={id} className="!mb-0">
           {label}
         </label>
@@ -31,6 +33,7 @@ type MultipleCheckboxProps = Props & {
   value: number;
   checked: boolean;
   onChange: (val: number) => void;
+  disabled?: boolean;
 };
 
 export function MultipleCheckbox({
@@ -39,6 +42,7 @@ export function MultipleCheckbox({
   value,
   onChange,
   checked,
+  disabled = false,
 }: MultipleCheckboxProps) {
   return (
     <div className="form-element-group">
@@ -49,6 +53,7 @@ export function MultipleCheckbox({
           checked={checked}
           name={id}
           onChange={(e) => onChange(value)}
+          disabled={disabled}
         />
         <label htmlFor={id} className="!mb-0">
           {label}

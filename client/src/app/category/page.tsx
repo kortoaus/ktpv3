@@ -71,7 +71,7 @@ export default function CategoryListPage({
       )}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && data && paging && (
-        <ListWrapper paging={paging} basePath="/category">
+        <ListWrapper paging={paging} basePath="/category" useAdd={false}>
           <CategoryList paging={paging} list={data} />
         </ListWrapper>
       )}

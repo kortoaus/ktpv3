@@ -37,6 +37,7 @@ type FormData = {
   buffetPrice: BuffetPrice;
   options: ProductOptionGroup[];
   hideKiosk: boolean;
+  outOfStock: boolean;
   archived: boolean;
 };
 
@@ -198,10 +199,14 @@ export default function ProductUpdate({
         hideKiosk,
         archived,
         imgId,
+        outOfStock,
       } = data;
 
       if (categoryId) {
         setValue("categoryId", categoryId);
+      }
+      if (outOfStock) {
+        setValue("outOfStock", outOfStock);
       }
 
       if (name) {
@@ -260,8 +265,8 @@ export default function ProductUpdate({
               required
               val={imgFile}
               setVal={(val) => {
-                setValue("imgId", null);
-                setImgFile(val);
+                // setValue("imgId", null);
+                // setImgFile(val);
               }}
             />
 
@@ -271,6 +276,7 @@ export default function ProductUpdate({
               onSubmit={handleSubmit(updateHandler)}
             >
               <IdSelectInput
+                disabled
                 label="Category"
                 required
                 placeholder="Select a category"
@@ -288,18 +294,16 @@ export default function ProductUpdate({
                   value: opt.id,
                 }))}
                 error={errors.categoryId}
-                add={{
-                  label: "Add Category",
-                  href: "/category/new",
-                }}
               />
               <TextInput
                 label="Product Name"
                 register={register("name", { required: RequiredField })}
                 required
                 error={errors.name}
+                disabled
               />
               <ToggleCheckbox
+                disabled
                 id="isBuffet"
                 label="Buffet Product"
                 register={register("isBuffet", {
@@ -312,22 +316,12 @@ export default function ProductUpdate({
                 })}
               />
             </form>
-
             {/* Pricing */}
             {!formData.isBuffet ? (
               <form
                 className="defaultForm mt-4"
                 onSubmit={handleSubmit(updateHandler)}
-              >
-                <PriceInput
-                  label={`Price(A La Carte)`}
-                  register={register("price", {
-                    required: RequiredField,
-                    setValueAs: (val) => Math.abs(Number(val)),
-                  })}
-                  error={errors.price}
-                />
-              </form>
+              ></form>
             ) : (
               <div className="defaultForm mt-4">
                 <h3>Buffet Classes</h3>
@@ -336,6 +330,7 @@ export default function ProductUpdate({
                     <div key={bf.id} className="grid grid-cols-2 gap-4">
                       <div className="flex items-center">
                         <MultipleCheckbox
+                          disabled
                           id={bf.name}
                           label={bf.name}
                           checked={Boolean(
@@ -352,6 +347,7 @@ export default function ProductUpdate({
                         <BuffetPriceInput
                           value={formData.buffetPrice[bf.id] || 0}
                           onChange={(val) => buffetPriceHandler(bf.id, val)}
+                          disabled
                         />
                       )}
                     </div>
@@ -361,20 +357,22 @@ export default function ProductUpdate({
             )}
 
             {/* Options */}
-            <div className="defaultForm mt-4">
-              <h3>Options</h3>
-              <button
+            {formData.options.length !== 0 && (
+              <div className="defaultForm mt-4">
+                <h3>Options</h3>
+                {/* <button
                 onClick={() => setIsOptionDrawerOpen(true)}
                 className="BasicBtn justify-center"
               >
                 <TuneIcon size={24} />
                 <span>Open Option Editor</span>
-              </button>
+              </button> */}
 
-              {formData.options.map((opt) => {
-                return <ProductOptionListCard data={opt} key={opt.id} />;
-              })}
-            </div>
+                {formData.options.map((opt) => {
+                  return <ProductOptionListCard data={opt} key={opt.id} />;
+                })}
+              </div>
+            )}
 
             {/* Printers */}
             <div className="defaultForm mt-4">
@@ -404,6 +402,14 @@ export default function ProductUpdate({
                 id="hide_kiosk"
                 label="Hide on customer's screens"
                 register={register("hideKiosk", {
+                  setValueAs: (val) => Boolean(val),
+                })}
+                disabled
+              />
+              <ToggleCheckbox
+                id="outofstock"
+                label="Out Of Stock"
+                register={register("outOfStock", {
                   setValueAs: (val) => Boolean(val),
                 })}
               />

@@ -106,6 +106,7 @@ export default function CategoryUpdate({ data, query }: Props) {
             register={register("name", { required: RequiredField })}
             label="Category Name"
             error={errors.name}
+            disabled
           />
 
           <IntInput
@@ -113,12 +114,14 @@ export default function CategoryUpdate({ data, query }: Props) {
             required
             register={register("index", { required: RequiredField })}
             error={errors.index}
+            disabled
           />
 
           <ToggleCheckbox
             id={`hoc`}
             label={`Hide on Kiosk`}
             register={register("hoc")}
+            disabled
           />
 
           {data !== undefined && <Archived register={register("archived")} />}

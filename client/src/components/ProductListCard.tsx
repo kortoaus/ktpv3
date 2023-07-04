@@ -10,13 +10,17 @@ type Props = {
 };
 
 export default function ProductListCard({
-  data: { id, name, imgId },
+  data: { id, name, imgId, archived, isBuffet },
   paging,
 }: Props) {
   const { current, keyword } = paging;
   return (
-    <div className="grid grid-cols-12 border-b py-4">
-      <div className="col-span-2">
+    <div
+      className={`grid grid-cols-12 border-b py-4 gap-2 ${
+        archived ? "opacity-50" : ""
+      }`}
+    >
+      <div className="col-span-1 SquareImg">
         {imgId && (
           <Image
             alt={name}
@@ -26,12 +30,13 @@ export default function ProductListCard({
           />
         )}
       </div>
-      <div className="col-span-8 flex items-center justify-start font-medium">
+      <div className="col-span-9 flex items-center justify-start font-medium">
         <Link
           href={`/product/${id}?page=${current}&keyword=${keyword}`}
           prefetch={false}
         >
-          {name}
+          {isBuffet && <span className="mr-1 text-red-500">{`[Buffet]`}</span>}
+          <span>{name}</span>
         </Link>
       </div>
       <div className="col-span-2 fccc">

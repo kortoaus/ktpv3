@@ -13,14 +13,14 @@ type Props = {
 export default function BuffetList({ list }: Props) {
   return (
     <div className="ListContainer max-w-md mx-auto">
-      <div className="ToolbarContainer pb-4">
+      {/* <div className="ToolbarContainer pb-4">
         <Link href="/buffet/new">
           <button className="BasicBtn bg-purple-500 text-white border-purple-500">
             <PlusIcon />
             <span>Add New</span>
           </button>
         </Link>
-      </div>
+      </div> */}
       <div className="List">
         {list.map((data) => {
           return <BuffetListCard key={data.id} data={data} />;

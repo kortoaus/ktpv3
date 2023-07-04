@@ -2,14 +2,13 @@
 import Sidebar from "@/components/Sidebar";
 import TableLinkBtn from "@/components/TableBtn";
 import MenuIcon from "@/components/icons/MenuIcon";
-import { getData, mutation } from "@/libs/apiURL";
+import { mutation } from "@/libs/apiURL";
 import useAutoReload from "@/libs/useAutoReload";
-import { socket } from "@/libs/webSocket";
 import { SaleWithTotal } from "@/types/Sale";
 import { TableContainerWithTables } from "@/types/Table";
 import { ApiResultType } from "@/types/api";
 import { Device } from "@/types/model";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 type Props = {
   device: Device;

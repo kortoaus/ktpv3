@@ -67,7 +67,7 @@ export default function ProductListPage({
       )}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
       {!loading && data && paging && (
-        <ListWrapper paging={paging} basePath="/product">
+        <ListWrapper paging={paging} basePath="/product" useAdd={false}>
           <ProductList paging={paging} list={data} />
         </ListWrapper>
       )}

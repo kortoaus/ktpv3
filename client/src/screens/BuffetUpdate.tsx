@@ -136,6 +136,7 @@ export default function BuffetUpdate({ data }: Props) {
           {/* Name */}
 
           <TextInput
+            disabled
             label={"Class Name"}
             register={register("name", { required: RequiredField })}
             placeholder="eg. Standard Buffet"
@@ -148,6 +149,7 @@ export default function BuffetUpdate({ data }: Props) {
             {/* Price A */}
             <div className="grid grid-cols-3 gap-4">
               <TextInput
+                disabled
                 label={`Price Name(A)`}
                 register={register("nameA", { required: RequiredField })}
                 required
@@ -156,6 +158,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(A)`}
                 required
                 register={register("priceA", { required: RequiredField })}
@@ -163,6 +166,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(A) / Holiday`}
                 required
                 register={register("h_priceA", { required: RequiredField })}
@@ -172,6 +176,7 @@ export default function BuffetUpdate({ data }: Props) {
             {/* Price B */}
             <div className="grid grid-cols-3 gap-4">
               <TextInput
+                disabled
                 label={`Price Name(B)`}
                 register={register("nameB", { required: RequiredField })}
                 required
@@ -180,6 +185,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(B)`}
                 required
                 register={register("priceB", { required: RequiredField })}
@@ -187,6 +193,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(B) / Holiday`}
                 required
                 register={register("h_priceB", { required: RequiredField })}
@@ -196,6 +203,7 @@ export default function BuffetUpdate({ data }: Props) {
             {/* Price B */}
             <div className="grid grid-cols-3 gap-4">
               <TextInput
+                disabled
                 label={`Price Name(C)`}
                 register={register("nameC", { required: RequiredField })}
                 required
@@ -204,6 +212,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(C)`}
                 required
                 register={register("priceC", { required: RequiredField })}
@@ -211,6 +220,7 @@ export default function BuffetUpdate({ data }: Props) {
               />
 
               <PriceInput
+                disabled
                 label={`Price(C) / Holiday`}
                 required
                 register={register("h_priceC", { required: RequiredField })}
@@ -220,6 +230,7 @@ export default function BuffetUpdate({ data }: Props) {
           </section>
 
           <IntInput
+            disabled
             label={`Order Time(Mins)`}
             register={register("orderTime", { required: RequiredField })}
             error={errors.orderTime}
@@ -227,6 +238,7 @@ export default function BuffetUpdate({ data }: Props) {
           />
 
           <IntInput
+            disabled
             label={`Stay Time(Mins)`}
             register={register("stayTime", { required: RequiredField })}
             error={errors.stayTime}

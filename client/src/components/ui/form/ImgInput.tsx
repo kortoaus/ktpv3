@@ -74,12 +74,12 @@ export default function ImgInput({
                 alt="Image Uploaded"
               />
             </div>
-            <div className="w-full h-full absolute top-0 opacity-0 hover:opacity-100 cursor-pointer">
+            {/* <div className="w-full h-full absolute top-0 opacity-0 hover:opacity-100 cursor-pointer">
               <div className="bg-red-500/25 text-white fccc w-full h-full">
                 <DeleteIcon size={64} />
                 <p className="font-medium mt-1 text-lg">Remove</p>
               </div>
-            </div>
+            </div> */}
           </div>
         )}
       </div>

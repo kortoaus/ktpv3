@@ -35,6 +35,7 @@ export default function TitlePage() {
             sales={sales.filter((sale) => sale.closedAt === null)}
             device={device}
             containers={data.result}
+            kitchen={!shift?.kitchenClosed || false}
           />
         )}
         {!isLoading && !shift && (

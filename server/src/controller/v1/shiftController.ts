@@ -186,6 +186,7 @@ export const openShift = async (req: Request, res: Response) => {
         openStaff: `${staff.name}(${staff.id})`,
         openStaffId: staff.id,
         holiday,
+        kitchenClosed: false,
       },
     });
 

@@ -14,9 +14,15 @@ type Props = {
   device: Device;
   sales: SaleWithTotal[];
   containers: TableContainerWithTables[];
+  kitchen: boolean;
 };
 
-export default function TableScreen({ device, containers, sales }: Props) {
+export default function TableScreen({
+  device,
+  containers,
+  sales,
+  kitchen,
+}: Props) {
   useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
@@ -55,6 +61,15 @@ export default function TableScreen({ device, containers, sales }: Props) {
     return;
   };
 
+  const toggleKitchen = async () => {
+    const result: ApiResultType = await mutation("/api/shift/kitchen", "");
+    if (!result || !result.ok) {
+      window.alert(result?.msg || "Failed Toggle");
+    }
+    reload();
+    return;
+  };
+
   return (
     <div>
       {/* Header */}
@@ -77,6 +92,14 @@ export default function TableScreen({ device, containers, sales }: Props) {
           <div className="flex items-center gap-4">
             <div>{currentSales()}</div>
             <button onClick={() => lastInvHandler()}>Last Inv.</button>
+            <button
+              onClick={() => toggleKitchen()}
+              className={`BasicBtn justify-center ${
+                kitchen ? "text-blue-500" : "text-red-500"
+              }`}
+            >
+              {kitchen ? "Kitchen Opened" : "Kitchen Closed"}
+            </button>
             <button
               onClick={() => setIsMenu(true)}
               className="BasicBtn fccc h-full text-blue-500 !border-0"

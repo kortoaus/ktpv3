@@ -5,7 +5,6 @@
 export type Shop = {
   id: number;
   abn: string;
-  code: string;
   name: string;
   phone: string;
   logo: string;
@@ -113,6 +112,7 @@ export type Product = {
   index: number;
   hideKiosk: boolean;
   outOfStock: boolean;
+  closeWithKitchen: boolean;
   archived: boolean;
 };
 
@@ -202,6 +202,28 @@ export type Shift = {
   closedAt: Date | null;
   holiday: boolean;
   updatedAt: Date;
+  ppA: number;
+  ppB: number;
+  ppC: number;
+  pp: number;
+  subTotal: number;
+  charged: number;
+  total: number;
+  credit: number;
+  creditSurcharge: number;
+  creditPaid: number;
+  cashPaid: number;
+  discount: number;
+  differ: number;
+  tables: number;
+  c_ms: number;
+  c_fs: number;
+  c_my: number;
+  c_fy: number;
+  c_mm: number;
+  c_fm: number;
+  kitchenClosed: boolean;
+  synced: boolean;
 };
 
 /**

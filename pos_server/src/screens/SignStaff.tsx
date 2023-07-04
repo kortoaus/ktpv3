@@ -12,7 +12,7 @@ type Props = {
 };
 
 export default function SignStaff({ signIn }: Props) {
-  const [code, setCode] = useState("3957");
+  const [code, setCode] = useState("");
   const [err, setErr] = useState("");
 
   const [auth, { result, loading }] = useMutation<{

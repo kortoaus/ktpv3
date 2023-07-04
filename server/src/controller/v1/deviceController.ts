@@ -268,7 +268,7 @@ export const getTableData = async (req: Request, res: Response) => {
 
   let catalogue: Catalogue[] = [];
 
-  if (sale) {
+  if (sale && shift) {
     catalogue = await client.category.findMany({
       where: {
         archived: false,
@@ -279,6 +279,7 @@ export const getTableData = async (req: Request, res: Response) => {
           where: {
             hideKiosk: device.type === "POS" ? {} : false,
             archived: false,
+            closeWithKitchen: shift.kitchenClosed ? false : undefined,
           },
           orderBy: {
             index: "asc",
@@ -966,5 +967,35 @@ export const kickDrawer = async (req: Request, res: Response) => {
   } catch (e) {
     console.log(e);
     return res.json({ ok: false });
+  }
+};
+
+export const toggleKitchen = async (req: Request, res: Response) => {
+  const shift = await client.shift.findFirst({
+    where: {
+      closedAt: null,
+    },
+  });
+
+  // Printing
+
+  if (!shift) {
+    return res.json({ ok: false, msg: "Invalid Request!" });
+  }
+
+  try {
+    await client.shift.update({
+      where: {
+        id: shift.id,
+      },
+      data: {
+        kitchenClosed: !shift.kitchenClosed,
+      },
+    });
+    io.emit("refresh");
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Receipt Not Found" });
   }
 };

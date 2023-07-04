@@ -13,6 +13,7 @@ import {
   payment,
   placeOrder,
   shopData,
+  toggleKitchen,
   toggleOOS,
   updateBuffetData,
   updateBuffetTime,
@@ -40,6 +41,7 @@ deviceRouter.route("/kd").post(authMid, kickDrawer);
 deviceRouter.route("/me").get(authDeviceMid, deviceMe);
 deviceRouter.route("/shift").get(authDeviceMid, getCurrentShift);
 deviceRouter.route("/shift/lastreceipt").post(authDeviceMid, getLastInvoice);
+deviceRouter.route("/shift/kitchen").post(authDeviceMid, toggleKitchen);
 deviceRouter.route("/shop").get(authDeviceMid, shopData);
 deviceRouter.route("/buffet").get(authDeviceMid, getBuffetClasses);
 deviceRouter.route("/staff").post(authDeviceMid, getStaffByCode);

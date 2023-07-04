@@ -14,8 +14,8 @@ type formData = {
 };
 
 const initData = {
-  phone: "0434079783",
-  code: "3957",
+  phone: "",
+  code: "",
 };
 
 export default function SignInForm({ update }: Props) {

@@ -1,5 +1,4 @@
 cd projects/ktpv3
-ls
 git pull
 read -p "Checked Updates.. press enter to continue."
 node init

@@ -22,10 +22,13 @@ const syncDB = async () => {
         closedAt: {
           not: null,
         },
+        total: {
+          gt: 0,
+        },
       },
     });
     if (shifts.length !== 0) {
-      const synced: { ok: boolean; msg?: string } = await axios
+      const synced: { ok: boolean; msg?: string; ids?: number[] } = await axios
         .post(`${datacenter}/sync`, {
           shifts,
           apiKey: process.env.API_KEY,
@@ -33,16 +36,18 @@ const syncDB = async () => {
         .then((res) => res.data);
 
       if (synced.ok) {
-        shifts.forEach(async (shift) => {
-          await client.shift.update({
-            where: {
-              id: shift.id,
-            },
-            data: {
-              synced: true,
-            },
+        if (synced.ids) {
+          synced.ids.forEach(async (id) => {
+            await client.shift.update({
+              where: {
+                id,
+              },
+              data: {
+                synced: true,
+              },
+            });
           });
-        });
+        }
       }
       console.log(synced.msg || "Connected!");
     }

@@ -10,7 +10,16 @@ type Props = {
 };
 
 export default function ProductListCard({
-  data: { id, name, imgId, archived, isBuffet },
+  data: {
+    id,
+    name,
+    imgId,
+    archived,
+    isBuffet,
+    printerIds,
+    buffetIds,
+    buffetPrice,
+  },
   paging,
 }: Props) {
   const { current, keyword } = paging;
@@ -35,8 +44,15 @@ export default function ProductListCard({
           href={`/product/${id}?page=${current}&keyword=${keyword}`}
           prefetch={false}
         >
-          {isBuffet && <span className="mr-1 text-red-500">{`[Buffet]`}</span>}
-          <span>{name}</span>
+          <div>
+            {isBuffet && (
+              <span className="mr-1 text-red-500">{`[Buffet]`}</span>
+            )}
+            <span>{name}</span>
+          </div>
+
+          <div className="text-sm text-gray-500">{printerIds}</div>
+          <div className="text-sm text-gray-500">{buffetPrice}</div>
         </Link>
       </div>
       <div className="col-span-2 fccc">

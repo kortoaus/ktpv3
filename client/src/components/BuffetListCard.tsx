@@ -21,10 +21,15 @@ export default function BuffetListCard({
     nameC,
     priceC,
     h_priceC,
+    archived,
   },
 }: Props) {
   return (
-    <div className="border rounded-md mb-4 overflow-hidden shadow-md">
+    <div
+      className={`border rounded-md mb-4 overflow-hidden shadow-md ${
+        archived ? "opacity-50" : ""
+      }`}
+    >
       <div className="p-4 border-b flex items-center justify-between bg-blue-500 text-white">
         <h3>{name}</h3>
         <Link

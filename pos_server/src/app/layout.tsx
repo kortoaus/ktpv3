@@ -26,13 +26,7 @@ export default function RootLayout({
   useEffect(() => {
     if (sk) {
       sk.on("connect_error", (e) => {
-        if (
-          window.confirm(
-            "Connection Error!, Please tap the ok button to reload."
-          )
-        ) {
-          reload();
-        }
+        reload();
       });
     }
   }, [sk]);

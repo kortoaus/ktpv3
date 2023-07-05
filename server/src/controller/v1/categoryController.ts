@@ -109,6 +109,9 @@ export const getCategories = async (
 
   const result = await client.category.findMany({
     where: where,
+    orderBy: {
+      index: "asc",
+    },
     include: {
       _count: {
         select: {

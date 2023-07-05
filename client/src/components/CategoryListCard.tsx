@@ -9,13 +9,17 @@ type Props = {
 };
 
 export default function CategoryListCard({
-  data: { id, name, index, productCount },
+  data: { id, name, index, productCount, archived },
   paging,
 }: Props) {
   const { current, keyword } = paging;
 
   return (
-    <div className="grid grid-cols-12 border-b py-4">
+    <div
+      className={`grid grid-cols-12 border-b py-4 ${
+        archived ? "opacity-50" : ""
+      }`}
+    >
       <div className="col-span-2 flex items-center justify-start text-sm">
         {index}
       </div>

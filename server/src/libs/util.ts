@@ -13,15 +13,24 @@ export function readJsonFileSync(filepath: string, encoding: any) {
 }
 
 export async function downloadImage(url: string, filename: string) {
-  const response = await axios.get(url, { responseType: "arraybuffer" });
+  try {
+    const response = await axios.get(url, { responseType: "arraybuffer" });
+    let name = filename;
+    if (response.status === 200 && !fs.existsSync(`images/${filename}.webp`)) {
+      fs.writeFile(`images/${filename}.webp`, response.data, (err) => {
+        console.log(`Download ${filename}`);
 
-  fs.writeFile(`images/${filename}.webp`, response.data, (err) => {
-    if (err) {
-      // console.log(err);
-      console.log("Failed Download Image.");
+        if (err) {
+          console.log("Failed Download Image.");
+          name = "";
+        }
+      });
     }
-    // console.log("Image downloaded successfully!");
-  });
+    return name;
+  } catch (e) {
+    return "";
+  }
+  ``;
 }
 
 export const getPrinters = async (printerIds: number[]) => {

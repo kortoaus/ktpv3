@@ -122,14 +122,16 @@ const initDB = async () => {
       .map((pd) => (pd.imgId ? pd.imgId : ""))
       .filter((img) => typeof img === "string" && img !== "");
 
-    imgIds.forEach(async (img) => {
-      await downloadImage(
-        `https://imagedelivery.net/Cqklq-HapOBQqS6V9uKtyw/${img}/origin`,
-        img
-      );
-    });
-    console.log(`All Images Downloaded.`);
-    console.log("All Data is updated.");
+    const downloaded = await Promise.all(
+      imgIds.map(async (img) => {
+        return await downloadImage(
+          `https://imagedelivery.net/Cqklq-HapOBQqS6V9uKtyw/${img}/origin`,
+          img
+        );
+      })
+    );
+
+    console.log(`${downloaded.filter((d) => d).length} Images Downloaded!`);
   } catch (e) {
     console.error(`Failed Update Database. Please Check Internet Connection. `);
   } finally {

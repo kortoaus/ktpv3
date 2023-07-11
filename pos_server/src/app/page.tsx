@@ -24,7 +24,8 @@ export default function TitlePage() {
     device !== undefined &&
     data !== undefined &&
     data.ok &&
-    sales !== undefined;
+    sales !== undefined &&
+    device.type === "POS";
   return (
     <>
       {isLoading && <DataLoading />}

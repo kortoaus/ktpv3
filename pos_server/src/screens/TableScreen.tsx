@@ -23,7 +23,7 @@ export default function TableScreen({
   sales,
   kitchen,
 }: Props) {
-  useAutoReload();
+  // useAutoReload();
   const [selected, setSelected] = useState(containers[0]);
   const [isMenu, setIsMenu] = useState(false);
 

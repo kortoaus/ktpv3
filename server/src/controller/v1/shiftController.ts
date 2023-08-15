@@ -28,6 +28,8 @@ export type ShiftResultType = {
   c_mm: number;
   c_fm: number;
   tables: number;
+  cashIn: number;
+  cashOut: number;
 };
 
 type OpenFormData = {
@@ -71,6 +73,17 @@ export const getCurrentShift = async (req: Request, res: Response) => {
       },
     });
 
+    const cashIOs = await client.cashIO.findMany({
+      where: {
+        shiftId: shift.id,
+      },
+    });
+
+    const cashIn = Number(cashIOs.reduce((a, b) => a + b.cashIn, 0).toFixed(2));
+    const cashOut = Number(
+      cashIOs.reduce((a, b) => a + b.cashOut, 0).toFixed(2)
+    );
+
     let shiftResult = {
       ppA: 0,
       ppB: 0,
@@ -91,6 +104,8 @@ export const getCurrentShift = async (req: Request, res: Response) => {
       c_mm: 0,
       c_fm: 0,
       tables: receipts.length,
+      cashIn,
+      cashOut,
     };
 
     receipts.forEach((receipt) => {
@@ -249,6 +264,8 @@ export const closeShift = async (req: Request, res: Response) => {
       closeCash,
       closeNote,
       differ,
+      cashIn,
+      cashOut,
     }: CloseFormData = req.body;
 
     const closed = await client.shift.update({
@@ -281,6 +298,8 @@ export const closeShift = async (req: Request, res: Response) => {
         closeCash,
         closeNote,
         differ,
+        cashIn,
+        cashOut,
       },
     });
 

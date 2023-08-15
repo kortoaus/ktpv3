@@ -91,7 +91,10 @@ export const OrderTicketBuffer = async (data: OrderTicketType) => {
   return buffer;
 };
 
-export const ReceiptBuffer = async (data: ReceiptTicketType) => {
+export const ReceiptBuffer = async (
+  data: ReceiptTicketType,
+  useDrawer = true
+) => {
   const { shop, sale, tableName } = data;
   const { lines, closedAt, cashPaid } = sale;
   const { address1, address2, postcode, suburb, state, phone, abn } = shop;
@@ -133,7 +136,7 @@ export const ReceiptBuffer = async (data: ReceiptTicketType) => {
 
   let docBody = ``;
 
-  if (cashPaid) {
+  if (cashPaid && useDrawer) {
     docBody += `<open-cash-drawer />`;
   }
 
@@ -194,6 +197,8 @@ export const ShiftBuffer = async (data: ShiftTicketType) => {
     openNote,
     total,
     differ,
+    cashIn,
+    cashOut,
     tables: saleCount,
   } = shift;
 
@@ -239,11 +244,11 @@ export const ShiftBuffer = async (data: ShiftTicketType) => {
   docBody += genDashLine();
   docBody += await genPaymentLine("Open Cash", openCash);
   docBody += await genPaymentLine("Paid Cash", paidCash);
-  // docBody += await genPaymentLine("Cash Out", cashOut);
-  // docBody += await genPaymentLine("Cash In", cashIn);
+  docBody += await genPaymentLine("Cash Out", cashOut);
+  docBody += await genPaymentLine("Cash In", cashIn);
   docBody += await genPaymentLine(
     "Estimated Cash",
-    new Decimal(openCash).plus(paidCash).toNumber()
+    new Decimal(openCash).plus(paidCash).minus(cashOut).plus(cashIn).toNumber()
   );
   docBody += await genPaymentLine("Close Cash", closeCash);
   docBody += await genPaymentLine("Difference", Math.abs(differ), differ < 0);

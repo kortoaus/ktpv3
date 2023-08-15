@@ -8,15 +8,16 @@ export async function POST(
   context: { params: { id: string } }
 ) {
   const id = context.params.id;
+
   const rawIp = headers().get(`x-forwarded-for`) || "";
   const key = convertIP(rawIp);
 
   const data = await getData(
-    `/table/${id}/btime`,
+    encodeURI(`/sale/${id}/merge`),
     key,
     "POST",
     JSON.stringify(await req.json())
   );
-
+  // const data = { id };
   return NextResponse.json({ ...data });
 }

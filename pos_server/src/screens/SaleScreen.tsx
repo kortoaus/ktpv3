@@ -7,10 +7,11 @@ import PaymentDrawer, {
 import SaleBuffetTimeUpdateDrawer from "@/components/parts/SaleBuffetTimeUpdateDrawer";
 import SaleBuffetDrawer from "@/components/parts/SaleBuffetUpdateDrawer";
 import SaleScreenHeader from "@/components/parts/SaleScreenHeader";
+import TableMergeDrawer from "@/components/parts/TableMergeDrawer";
 import TableMoveDrawer from "@/components/parts/TableMoveDrawer";
 import { mutation } from "@/libs/apiURL";
 import useBuffetTimer from "@/libs/useBuffetTimer";
-import { SaleLineTotal, buffetReceiptLine, time } from "@/libs/util";
+import { buffetReceiptLine, time } from "@/libs/util";
 import { Catalogue } from "@/types/Product";
 import { SaleLineType, SaleWithLines } from "@/types/Sale";
 import { ApiResultType } from "@/types/api";
@@ -39,6 +40,7 @@ export default function SaleScreen({
   const [openBuffetTime, setOpenBuffetTime] = useState(false);
   const [openPay, setOpenPay] = useState(false);
   const [openMove, setOpenMove] = useState(false);
+  const [openMerge, setOpenMerge] = useState(false);
   const [newLines, setNewLines] = useState<SaleLineType[]>([]);
   const [placedLine, setPlacedLine] = useState<SaleLineType[]>([]);
   const [buffetLines, setBuffetLines] = useState<SaleLineType[]>([]);
@@ -143,6 +145,36 @@ export default function SaleScreen({
 
   const moveTableHandler = async (id: number) => {
     const result: ApiResultType = await mutation(`/api/sale/${sale.id}/move`, {
+      staffId: staff.id,
+      tableId: id,
+    });
+
+    if (result && result.ok) {
+      router.push("/");
+      return;
+    }
+
+    if (result && !result.ok) {
+      window.alert(result?.msg || "Failed!");
+      return;
+    }
+
+    return;
+  };
+
+  const mergeTableHandler = async (id: number) => {
+    if (id === table.id) {
+      return;
+    }
+
+    const msg =
+      "Merged table cannot be seperate again. do you really want to merge table?";
+
+    if (!window.confirm(msg)) {
+      return;
+    }
+
+    const result: ApiResultType = await mutation(`/api/sale/${sale.id}/merge`, {
       staffId: staff.id,
       tableId: id,
     });
@@ -315,12 +347,25 @@ export default function SaleScreen({
           </div>
           {/* Functions */}
           <div className="FunctionContainer ">
-            <button onClick={() => setOpenPay(true)}>
+            <button
+              onClick={() => setOpenPay(true)}
+              className="bg-blue-500 text-white"
+            >
               <div>Pay</div>
               <div>{receiptTotal.toFixed(2)}</div>
             </button>
-            <button>Bill</button>
-            <button onClick={() => setOpenMove(true)}>Move</button>
+            <button
+              className="bg-green-500 text-white"
+              onClick={() => setOpenMove(true)}
+            >
+              Move
+            </button>
+            <button
+              className="bg-red-500 text-white"
+              onClick={() => setOpenMerge(true)}
+            >
+              Merge
+            </button>
           </div>
         </div>
       </div>
@@ -354,6 +399,11 @@ export default function SaleScreen({
         open={openMove}
         onClose={() => setOpenMove(false)}
         move={(val) => moveTableHandler(val)}
+      />
+      <TableMergeDrawer
+        open={openMerge}
+        onClose={() => setOpenMerge(false)}
+        merge={(val) => mergeTableHandler(val)}
       />
     </div>
   );

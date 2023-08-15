@@ -1,6 +1,7 @@
 import express from "express";
 const jwt = require("jsonwebtoken");
 import client from "@libs/prismaClient";
+import { Console } from "console";
 
 export const authMid = async (
   req: express.Request,
@@ -25,6 +26,15 @@ export const authMid = async (
     return res.json({ ok: false, msg: "Unauthorized!" });
   }
   const { _id: id, _signed }: { _id: number; _signed: number } = claim;
+
+  const seconds = new Date().getTime() - _signed;
+  const min = 1000 * 60;
+  const differ = seconds / min;
+  const maxAge = 30;
+
+  if (differ > maxAge) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
 
   const staff = await client.staff.findFirst({
     where: {

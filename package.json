@@ -10,7 +10,7 @@
     "start:pos-server": "cd ./pos_server && npm run start",
     "start:table-server": "cd ./kiosk_server && npm run start",
     "start:manage-server": "cd ./client && npm run start",
-    "build:host-server": "cd ./server && npm run build",
+    "build:host-server": "cd ./server && npx prisma db push && npm run build",
     "build:pos-server": "cd ./pos_server && npm run build",
     "build:table-server": "cd ./kiosk_server && npm run build",
     "build:manage-server": "cd ./client && npm run build"

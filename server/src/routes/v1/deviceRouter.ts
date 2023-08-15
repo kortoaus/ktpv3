@@ -1,4 +1,5 @@
 import { getBuffetClasses } from "@controller/v1/buffetController";
+import { updateCashIO } from "@controller/v1/cashioController";
 import {
   cancelOrder,
   deviceMe,
@@ -8,6 +9,7 @@ import {
   getLastInvoice,
   getTableData,
   kickDrawer,
+  mergeTable,
   moveTable,
   openTable,
   payment,
@@ -70,7 +72,11 @@ deviceRouter.route("/product/:id(\\d+)/oos").post(authDeviceMid, toggleOOS);
 deviceRouter.route(`${saleIdPath}/place`).post(authDeviceMid, placeOrder);
 deviceRouter.route(`${saleIdPath}/cancel`).post(authDeviceMid, cancelOrder);
 deviceRouter.route(`${saleIdPath}/move`).post(authDeviceMid, moveTable);
+deviceRouter.route(`${saleIdPath}/merge`).post(authDeviceMid, mergeTable);
 // Payment
 deviceRouter.route(`${saleIdPath}/payment`).post(authDeviceMid, payment);
+
+// Cash IO
+deviceRouter.route(`/cashio`).post(authDeviceMid, updateCashIO);
 
 export default deviceRouter;

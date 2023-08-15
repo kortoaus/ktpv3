@@ -39,7 +39,9 @@ type FormDataProps = {
 const initValue: FormDataProps = {
   name: "",
   code: "",
-  permission: {},
+  permission: {
+    isDirector: true,
+  },
   archived: false,
 };
 
@@ -159,7 +161,7 @@ export default function StaffUpdate({ data, query }: Props) {
           />
 
           {/*  */}
-          <div>
+          {/* <div>
             <h4>Permissions</h4>
             <HandlerCheckbox
               checked={watched.permission[`isDirector`] || false}
@@ -202,7 +204,7 @@ export default function StaffUpdate({ data, query }: Props) {
               id="isStaff"
               onChange={(e) => permissionChangeHandler(e)}
             />
-          </div>
+          </div> */}
           {data !== undefined && <Archived register={register("archived")} />}
 
           <button>Update</button>

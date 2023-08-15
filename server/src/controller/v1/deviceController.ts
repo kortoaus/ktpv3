@@ -7,7 +7,7 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime";
 import { Catalogue } from "../../type/combination";
 import { filterCatalogue } from "@libs/saleData";
 import { SaleLineType } from "../../type/Sale";
-import { getPrinters } from "@libs/util";
+import { getPrinters, time } from "@libs/util";
 import { OrderTicketType, ReceiptTicketType } from "../../type/Ticket";
 import {
   printKickDrawer,
@@ -715,11 +715,112 @@ export const moveTable = async (req: Request, res: Response) => {
   }
 };
 
-// 뷔페 가격은 고정
-// 뷔페 가격 0 일 때 State로 관리
-// 테이블 이동 필요
-// 뷔페 남은 시간 순서대로 보여주는 화면
-// 직원 호출 종류 => 티켓, hold 15sec
+export const mergeTable = async (req: Request, res: Response) => {
+  const device: Device = res.locals.device;
+
+  if (!device || (device && device.type !== "POS")) {
+    return res.json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  const { id } = req.params;
+  const { staffId, tableId }: { staffId: number; tableId: number } = req.body;
+
+  const { sale: from, staff } = await getSaleAndStaff(id, staffId);
+
+  const table = await client.table.findFirst({
+    where: {
+      id: tableId,
+      archived: false,
+    },
+  });
+
+  if (!staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!from) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  if (!table) {
+    return res.status(404).json({ ok: false, msg: "Table Not Found!" });
+  }
+
+  const to = await client.sale.findFirst({
+    where: {
+      shiftId: from.shiftId,
+      tableId: table.id,
+      closedAt: null,
+    },
+  });
+
+  if (!to) {
+    return res.json({ ok: false, msg: "There's no table!" });
+  }
+
+  if (from.buffetId !== to.buffetId) {
+    return res.json({ ok: false, msg: "Invalid Buffet Class!" });
+  }
+
+  try {
+    const log = `${time(new Date()).format("YYMMDD HH:mm")}%%%${staff.name}(${
+      staff.id
+    })%%%[Merged Table${from.tableName}/(${from.id}) to Table${to.tableName}(${
+      to.id
+    })]\n`;
+
+    // to
+    await client.sale.update({
+      where: {
+        id: to.id,
+      },
+      data: {
+        ppA: to.ppA + from.ppA,
+        ppB: to.ppB + from.ppB,
+        ppC: to.ppC + from.ppC,
+        pp: to.pp + from.pp,
+        logs: to.logs + log,
+      },
+    });
+    // from
+    await client.sale.update({
+      where: {
+        id: from.id,
+      },
+      data: {
+        closeStaff: staff.name,
+        closeStaffId: staff.id,
+        closedAt: new Date(),
+        ppA: 0,
+        ppB: 0,
+        ppC: 0,
+        pp: 0,
+        logs: from.logs + log,
+      },
+    });
+
+    // from line
+    await client.saleLine.updateMany({
+      where: {
+        saleId: from.id,
+      },
+      data: {
+        saleId: to.id,
+      },
+    });
+
+    io.emit(`table_${table.id}`);
+    io.emit(`table_${from.tableId}`);
+    io.emit(`table_${to.tableId}`);
+
+    // Printing
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Cancel Order!" });
+  }
+};
 
 type PaymentDataType = {
   subTotal: number;

@@ -1,6 +1,6 @@
 "use client";
 import { time } from "@/libs/util";
-import { ProductOptionGroup, SelectedOptionType } from "@/types/Product";
+import { SelectedOptionType } from "@/types/Product";
 import { SaleWithLines } from "@/types/Sale";
 import { SaleLine } from "@/types/model";
 import Decimal from "decimal.js";
@@ -9,12 +9,13 @@ import React, { useState } from "react";
 
 type Props = {
   sale: SaleWithLines;
+  print: () => void;
 };
 
 export default function ReceiptDetail({
   sale: {
     id,
-    shiftId,
+
     tableName,
     ppA,
     ppB,
@@ -24,7 +25,6 @@ export default function ReceiptDetail({
     closeStaff,
     openAt,
     closedAt,
-    buffetStarted,
     logs,
     subTotal,
     charged,
@@ -39,18 +39,27 @@ export default function ReceiptDetail({
     customerProperty,
     lines,
   },
+  print,
 }: Props) {
   const [zero, setZero] = useState(false);
   const filteredLine = !zero ? lines.filter((li) => li.price !== 0) : lines;
-
   const parsedLogs: string[] = logs.split("\n");
 
   return (
-    <div className="fccc mt-8">
+    <div className="fccc mt-8 max-w-4xl mx-auto">
       <Link href={`/receipt`} prefetch={false}>
         <button className="BasicBtn mb-2">Go Back To List</button>
       </Link>
-      <h1 className="mb-4 border-b pb-2">Receipt Detail</h1>
+      <div className="mb-4 border-b pb-2 flex items-center justify-between w-full">
+        <h1>Receipt Detail</h1>
+
+        <button
+          onClick={() => print()}
+          className="bg-blue-500 text-white px-2 py-1 text-sm rounded-md"
+        >
+          Print
+        </button>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         {/* Receipt */}
@@ -104,7 +113,7 @@ export default function ReceiptDetail({
         </div>
 
         {/* Info */}
-        <div>
+        <div className="max-w-sm">
           <div className="mb-4 text-sm">
             <h3>Sales Data</h3>
             <div className="text-xs">{id}</div>
@@ -136,9 +145,11 @@ export default function ReceiptDetail({
           </div>
 
           <h3>Logs</h3>
-          {parsedLogs.map((log, idx) => (
-            <LogLine key={`log_${idx}`} log={log} />
-          ))}
+          <div className="break-all">
+            {parsedLogs.map((log, idx) => (
+              <LogLine key={`log_${idx}`} log={log} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -216,7 +227,7 @@ function LogLine({ log }: { log: string }) {
   const [when, who, what] = log.split("%%%");
 
   return (
-    <div className="py-2 border-b text-sm">
+    <div className="py-2 border-b text-sm break-all">
       <div>{when}</div>
       <div>{who}</div>
       <div>{what}</div>

@@ -2,28 +2,21 @@ import apiURL from "@/libs/apiURL";
 import { cookies } from "next/dist/client/components/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  context: { params: { id: string } }
+) {
+  const id = context.params.id;
   const key = cookies().get("accessToken")?.value || "";
 
-  if (!key) {
-    return NextResponse.json({
-      ok: false,
-      msg: "Unauthorized!(c)",
-    });
-  }
-
-  const data = await fetch(`${apiURL}/v1/shift/close`, {
-    method: "POST",
+  const data = await fetch(`${apiURL}/v1/sale/${id}/print`, {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${key}`,
     },
-    body: JSON.stringify(await req.json()),
   })
-    .then((res) => {
-      cookies().delete("accessToken");
-      return res.json();
-    })
+    .then((res) => res.json())
     .catch((e) => {
       console.log(e);
       return { ok: false, msg: "Communication Failed! Please Check Server!" };

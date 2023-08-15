@@ -13,6 +13,9 @@ export default function Sidebar({ open, onClose }: PopUpProps) {
         <Link href="/menu">
           <h2>Menu</h2>
         </Link>
+        <Link href="/cashio">
+          <h2>{`Cash I/O`}</h2>
+        </Link>
       </div>
     </Drawer>
   );

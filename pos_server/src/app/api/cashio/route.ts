@@ -7,12 +7,11 @@ export async function POST(
   req: NextRequest,
   context: { params: { id: string } }
 ) {
-  const id = context.params.id;
   const rawIp = headers().get(`x-forwarded-for`) || "";
   const key = convertIP(rawIp);
 
   const data = await getData(
-    `/table/${id}/btime`,
+    `/cashio`,
     key,
     "POST",
     JSON.stringify(await req.json())

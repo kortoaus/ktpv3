@@ -4,7 +4,6 @@ import useShift from "@/libs/useShift";
 import useStaff from "@/libs/useUser";
 import getRole from "@/libs/util";
 import ShiftClose from "@/screens/ShiftClose";
-import ShiftOpen from "@/screens/ShiftOpen";
 import React from "react";
 
 export default function ShiftOpenPage() {

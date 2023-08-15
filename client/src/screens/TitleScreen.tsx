@@ -15,6 +15,7 @@ import getRole from "@/libs/util";
 import { Sale, Shift, Staff } from "@/types/model";
 import Link from "next/link";
 import React from "react";
+import { MdTablet } from "react-icons/md";
 
 type Props = {
   staff?: Staff;
@@ -91,7 +92,7 @@ export default function TitleScreen({ staff, shift, sales }: Props) {
 
       {/* Signed */}
       {staff && (
-        <div className="grid grid-cols-2 grid-rows-4 gap-4 overflow-scroll">
+        <div className="grid grid-cols-2 grid-rows-5 gap-4 overflow-scroll">
           {getRole(staff, "isStaff") && (
             <LinkBtn
               className="bg-orange-500"
@@ -145,7 +146,7 @@ export default function TitleScreen({ staff, shift, sales }: Props) {
               className="bg-orange-500"
               href="/device"
               label={"Device"}
-              icon={<PaymentIcon size={iconSize} />}
+              icon={<MdTablet size={iconSize} />}
             />
           )}
           {getRole(staff, "isDirector") && (
@@ -154,6 +155,14 @@ export default function TitleScreen({ staff, shift, sales }: Props) {
               href="/receipt"
               label={"Receipts"}
               icon={<ReceiptIcon size={iconSize} />}
+            />
+          )}
+          {getRole(staff, "isDirector") && (
+            <LinkBtn
+              className="bg-orange-500"
+              href="/cashio"
+              label={"cash I/O"}
+              icon={<PaymentIcon size={iconSize} />}
             />
           )}
         </div>

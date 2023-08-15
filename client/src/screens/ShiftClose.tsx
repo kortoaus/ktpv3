@@ -30,6 +30,8 @@ export default function ShiftClose({ shiftResult, shift }: Props) {
 
   const differ = new Decimal(shift.openCash)
     .plus(shiftResult.cashPaid)
+    .minus(shiftResult.cashOut)
+    .plus(shiftResult.cashIn)
     .minus(cash)
     .mul(-1)
     .toNumber();
@@ -67,7 +69,7 @@ export default function ShiftClose({ shiftResult, shift }: Props) {
     <div className="w-full max-w-xl mx-auto py-8">
       <div className="mb-4">
         <h2 className="pb-2 border-b-2">Summary</h2>
-        <SaleResult data={shiftResult} />
+        <SaleResult openCash={shift.openCash} data={shiftResult} />
       </div>
 
       {/* Cash Drawer */}

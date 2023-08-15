@@ -27,6 +27,18 @@ export default function DeviceDetailPage({
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
 
+  const printHandler = async () => {
+    if (!id) {
+      return;
+    }
+
+    const { ok, result, msg }: ResultProps = await fetch(
+      `/api/receipt/${id}/print`
+    );
+
+    return;
+  };
+
   useEffect(() => {
     const getData = async () => {
       const { ok, result, msg }: ResultProps = await fetch(`/api/receipt/${id}`)
@@ -55,7 +67,9 @@ export default function DeviceDetailPage({
     <main className="">
       {isLoading && <DataLoading />}
       {err && <div className="h-full fccc text-red-500">{err}</div>}
-      {!isLoading && data && <ReceiptDetail sale={data} />}
+      {!isLoading && data && (
+        <ReceiptDetail print={() => printHandler()} sale={data} />
+      )}
     </main>
   );
 }

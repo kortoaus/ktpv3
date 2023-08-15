@@ -39,7 +39,7 @@ export default function StaffListCard({
           prefetch={false}
         >
           <div className="font-medium">{name}</div>
-          <div className="text-xs flex items-center flex-wrap gap-2 mt-1">
+          {/* <div className="text-xs flex items-center flex-wrap gap-2 mt-1">
             {keyParser(permission).map((role, idx) => (
               <span
                 className="bg-blue-500 text-white px-2 rounded-md"
@@ -48,7 +48,7 @@ export default function StaffListCard({
                 {role}
               </span>
             ))}
-          </div>
+          </div> */}
         </Link>
       </div>
       <div className="col-span-2 fccc text-blue-500">

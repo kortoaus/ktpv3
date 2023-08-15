@@ -283,3 +283,19 @@ export type SaleLine = {
   updatedAt: Date;
   note: string;
 };
+
+/**
+ * Model CashIO
+ *
+ */
+export type CashIO = {
+  id: string;
+  note: string;
+  shiftId: number;
+  staffId: number;
+  staff: string;
+  in: number;
+  out: number;
+  createdAt: Date;
+  updatedAt: Date;
+};

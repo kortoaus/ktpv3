@@ -41,9 +41,12 @@ export const printOrderTicket = async (data: OrderTicketType) => {
   sendPrint(ip, port, buffer);
 };
 
-export const printReceipt = async (data: ReceiptTicketType) => {
+export const printReceipt = async (
+  data: ReceiptTicketType,
+  useDrawer = true
+) => {
   const { ip, port } = data;
-  const buffer = await ReceiptBuffer(data);
+  const buffer = await ReceiptBuffer(data, useDrawer);
   sendPrint(ip, port, buffer);
 };
 

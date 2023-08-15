@@ -6,10 +6,10 @@ import { Drawer } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import useSWR from "swr";
 import DataLoading from "../ui/DataLoading";
-import TableLinkBtn, { TableHandlerBtn } from "../TableBtn";
+import { TableHandlerBtn } from "../TableBtn";
 
 type Props = PopUpProps & {
-  move: (val: number) => void;
+  merge: (val: number) => void;
 };
 
 type ResultProps = {
@@ -17,7 +17,7 @@ type ResultProps = {
   result: TableContainerWithTables[];
 };
 
-export default function TableMoveDrawer({ open, onClose, move }: Props) {
+export default function TableMergeDrawer({ open, onClose, merge }: Props) {
   const [selected, setSelected] = useState<
     TableContainerWithTables | undefined
   >();
@@ -51,8 +51,8 @@ export default function TableMoveDrawer({ open, onClose, move }: Props) {
     return tables;
   };
 
-  const moveHandler = (id: number) => {
-    move(id);
+  const mergeHandler = (id: number) => {
+    merge(id);
     onClose();
   };
 
@@ -67,7 +67,7 @@ export default function TableMoveDrawer({ open, onClose, move }: Props) {
           <section className="h-16 bg-white fixed top-0 w-full border-b z-10">
             <div className="w-full h-full overflow-hidden flex items-center justify-between px-4">
               <div className="flex items-center gap-4">
-                <h2>Move</h2>
+                <h2>Merge</h2>
                 {data?.result.map((ct) => (
                   <button
                     className={`text-lg ${
@@ -83,10 +83,7 @@ export default function TableMoveDrawer({ open, onClose, move }: Props) {
                 ))}
               </div>
               <button
-                onClick={() => {
-                  console.log("asdf");
-                  onClose();
-                }}
+                onClick={() => onClose()}
                 className="BasicBtn bg-red-500 text-white !border-0"
               >
                 Cancel
@@ -101,8 +98,8 @@ export default function TableMoveDrawer({ open, onClose, move }: Props) {
                   key={idx}
                   table={table}
                   handler={() => {
-                    if (table && !table.sale) {
-                      moveHandler(table.id);
+                    if (table && table.sale) {
+                      mergeHandler(table.id);
                     }
                   }}
                 />

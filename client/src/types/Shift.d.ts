@@ -18,4 +18,6 @@ export type ShiftResultType = {
   c_mm: number;
   c_fm: number;
   tables: number;
+  cashIn: number;
+  cashOut: number;
 };

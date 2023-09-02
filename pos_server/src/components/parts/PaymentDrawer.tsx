@@ -4,7 +4,7 @@ import { Drawer } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import NumPad from "../NumPad";
 import Decimal from "decimal.js";
-import DollarIcon from "../icons/DollarIcon";
+import DollarIcon, { PercentIcon } from "../icons/DollarIcon";
 import useShop from "@/libs/useShop";
 import { customerPropertyType } from "@/types/Sale";
 import DataLoading from "../ui/DataLoading";
@@ -29,6 +29,10 @@ export type PaymentStateType = {
   credit: number;
   surcharge: number;
   discount: number;
+  discount_percent: number;
+  discount_amount: number;
+  surcharge_percent: number;
+  surcharge_amount: number;
 };
 
 type Props = PopUpProps & {
@@ -41,15 +45,29 @@ const init: PaymentStateType = {
   credit: 0,
   surcharge: 0,
   discount: 0,
+  discount_percent: 0,
+  discount_amount: 0,
+  surcharge_percent: 0,
+  surcharge_amount: 0,
 };
 
-type TargetType = "cash" | "credit" | "discount" | "surcharge";
+type TargetType =
+  | "cash"
+  | "credit"
+  // | "discount"
+  // | "surcharge"
+  | "discount_percent"
+  | "discount_amount"
+  | "surcharge_percent"
+  | "surcharge_amount";
 
 export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
   const [loading, setLoading] = useState(false);
   const { shop } = useShop();
   const [target, setTarget] = useState<TargetType>("cash");
   const [data, setData] = useState<PaymentStateType>(init);
+  const [useDA, setUseDA] = useState(false);
+  const [useSA, setUseSA] = useState(false);
 
   const onChangeHandler = (val: string) => {
     const newVal = val ? new Decimal(val).div(100).toNumber() : 0;
@@ -61,7 +79,7 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
   const onClickHandler = (tg: TargetType) => {
     if (target === tg) {
       if (Number(data[target]) === 0) {
-        if (target === "surcharge") {
+        if (target.includes("_")) {
           return;
         }
         setData((prev) => ({ ...prev, [tg]: rest }));
@@ -132,12 +150,26 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
         msg: "Shop Not Loaded!",
       };
     }
-    const { discount, cash, credit, surcharge } = data;
+
+    const {
+      discount,
+      cash,
+      credit,
+      surcharge,
+      surcharge_amount,
+      surcharge_percent,
+      discount_amount,
+      discount_percent,
+    } = data;
     let origin = new Decimal(amount);
 
-    const charged = new Decimal(
-      Number(new Decimal(origin.div(100).mul(surcharge).toFixed(2)))
+    const surcharge_percent_amount = new Decimal(
+      +new Decimal(origin).div(100).mul(surcharge_percent).toFixed(2)
     );
+    const surcharge_amount_amount = new Decimal(surcharge_amount);
+
+    const charged = surcharge_amount_amount.plus(surcharge_percent_amount);
+
     origin = origin.plus(charged);
 
     const creditP = shop ? shop.creditRate : 0;
@@ -146,7 +178,17 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
     );
     const creditTotal = creditSurcharge.plus(credit);
 
-    const discounted = origin.minus(discount);
+    const discount_percent_amount = new Decimal(
+      +new Decimal(origin).div(100).mul(discount_percent).toFixed(2)
+    );
+    const discount_amount_amount = new Decimal(discount_amount);
+
+    const discounted_amount = discount_percent_amount.plus(
+      discount_amount_amount
+    );
+
+    const discounted = origin.minus(discounted_amount);
+
     if (discounted.toNumber() < 0) {
       return {
         ok: false,
@@ -177,7 +219,7 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
       credit,
       creditSurcharge: creditSurcharge.toNumber(),
       creditTotal: creditTotal.toNumber(),
-      discount,
+      discount: discounted_amount.toNumber(),
       rest: ok ? 0 : rest,
       change: !ok ? 0 : Math.abs(rest),
     };
@@ -259,6 +301,76 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
           {/* Pads */}
           <div className="">
             <div className="fccc gap-2 mb-8">
+              {/* Surcharge */}
+              <div className="w-full">
+                {useSA ? (
+                  <DataLine
+                    value={data["surcharge_amount"]}
+                    onClick={() => onClickHandler("surcharge_amount")}
+                    label="Surcharge(Amount)"
+                    selected={target === "surcharge_amount"}
+                  />
+                ) : (
+                  <DataLine
+                    useDollar={false}
+                    usePercent={true}
+                    value={data["surcharge_percent"]}
+                    onClick={() => onClickHandler("surcharge_percent")}
+                    label="Surcharge(Percent)"
+                    selected={target === "surcharge_percent"}
+                  />
+                )}
+                <button
+                  className="mb-2 bg-red-500 text-white px-2 py-1 w-full"
+                  onClick={() => {
+                    setData((prev) => ({
+                      ...prev,
+                      ["surcharge_amount"]: 0,
+                      ["surcharge_percent"]: 0,
+                    }));
+                    setTarget(useSA ? "surcharge_percent" : "surcharge_amount");
+                    setUseSA((p) => !p);
+                  }}
+                >
+                  {!useSA ? "Change To Amount" : "Change To Percent"}
+                </button>
+              </div>
+
+              {/* Discount */}
+              <div className="w-full">
+                {useDA ? (
+                  <DataLine
+                    value={data["discount_amount"]}
+                    onClick={() => onClickHandler("discount_amount")}
+                    label="Discount(Amount)"
+                    selected={target === "discount_amount"}
+                  />
+                ) : (
+                  <DataLine
+                    useDollar={false}
+                    usePercent={true}
+                    value={data["discount_percent"]}
+                    onClick={() => onClickHandler("discount_percent")}
+                    label="Discount(Percent)"
+                    selected={target === "discount_percent"}
+                  />
+                )}
+                <button
+                  className="mb-2 bg-red-500 text-white px-2 py-1 w-full"
+                  onClick={() => {
+                    setData((prev) => ({
+                      ...prev,
+                      ["discount_amount"]: 0,
+                      ["discount_percent"]: 0,
+                    }));
+                    setTarget(useDA ? "discount_percent" : "discount_amount");
+                    setUseDA((p) => !p);
+                  }}
+                >
+                  {!useDA ? "Change To Amount" : "Change To Percent"}
+                </button>
+              </div>
+
               <DataLine
                 value={data["cash"]}
                 onClick={() => onClickHandler("cash")}
@@ -272,18 +384,6 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
                   shop?.creditRate ? ` / ${shop?.creditRate}% Surcharge` : ""
                 }`}
                 selected={target === "credit"}
-              />
-              <DataLine
-                value={data["discount"]}
-                onClick={() => onClickHandler("discount")}
-                label="Discount"
-                selected={target === "discount"}
-              />
-              <DataLine
-                value={data["surcharge"]}
-                onClick={() => onClickHandler("surcharge")}
-                label="Surcharge(%)"
-                selected={target === "surcharge"}
               />
             </div>
             <div>
@@ -305,10 +405,19 @@ type DataLineProps = {
   value: number;
   label: string;
   selected: boolean;
+  useDollar?: boolean;
+  usePercent?: boolean;
   onClick: () => void;
 };
 
-function DataLine({ value, label, onClick, selected }: DataLineProps) {
+function DataLine({
+  value,
+  label,
+  onClick,
+  selected,
+  useDollar = true,
+  usePercent = false,
+}: DataLineProps) {
   return (
     <div onClick={() => onClick()} className="w-full">
       <div className="mb-1 font-medium">{label}</div>
@@ -318,7 +427,8 @@ function DataLine({ value, label, onClick, selected }: DataLineProps) {
         }`}
       >
         <div>
-          <DollarIcon />
+          {useDollar && <DollarIcon />}
+          {usePercent && <PercentIcon />}
         </div>
         <div>{value.toFixed(2)}</div>
       </div>

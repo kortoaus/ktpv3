@@ -22,6 +22,7 @@ import deviceRouter from "@routes/v1/deviceRouter";
 import saleRouter from "@routes/v1/saleRouter";
 import { initializeWebSocket } from "@libs/websocket";
 import initDB from "@libs/initDB";
+import { generateReportData } from "@controller/v1/shiftController";
 
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(
@@ -65,6 +66,11 @@ app.use(`${apiRoot}/v1/staff`, staffRouter);
 app.use(`${apiRoot}/v1/sale`, saleRouter);
 app.use(`${apiRoot}/v1/file`, fileRouter);
 app.use(`${apiRoot}/v1/device`, deviceRouter);
+
+app.get("/test", async (req, res) => {
+  const data = await generateReportData(3);
+  return res.json({ data });
+});
 
 // app.get("/", migrate);
 

@@ -324,3 +324,48 @@ export const closeShift = async (req: Request, res: Response) => {
     return res.status(400).json({ ok: false, msg: "Failed Open Shop!" });
   }
 };
+
+export const generateReportData = async (shiftId: number) => {
+  const buffetData = await client.sale.groupBy({
+    where: {
+      shiftId,
+      buffetId: {
+        not: null,
+      },
+    },
+    by: ["buffetId"],
+    _sum: {
+      ppA: true,
+      ppB: true,
+      ppC: true,
+    },
+  });
+
+  const buffetReport = buffetData.map((sd) => ({
+    id: sd.buffetId,
+    ppA: sd._sum.ppA || 0,
+    ppB: sd._sum.ppA || 0,
+    ppC: sd._sum.ppA || 0,
+  }));
+
+  const saleData = await client.saleLine.groupBy({
+    where: {
+      sale: {
+        shiftId,
+      },
+    },
+    by: ["productId"],
+    _sum: {
+      qty: true,
+    },
+  });
+
+  const saleReport = saleData
+    .map((sd) => ({
+      id: sd.productId,
+      qty: sd._sum.qty || 0,
+    }))
+    .sort((a, b) => a.id - b.id);
+
+  return { shiftId, buffetReport, saleReport };
+};

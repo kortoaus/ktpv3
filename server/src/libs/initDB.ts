@@ -2,6 +2,7 @@ import { BuffetClass, Category, Product, Shop } from "@prisma/client";
 import client from "./prismaClient";
 import axios from "axios";
 import { downloadImage } from "./util";
+import { generateReportData } from "@controller/v1/shiftController";
 
 const apiKey = process.env.API_KEY || "";
 
@@ -12,7 +13,7 @@ type MigrationDataType = {
 };
 
 const datacenter = `https://itzsan.com/api`;
-// const datacenter = `http://localhost:3001/api`;
+// const datacenter = `http://localhost:3006/api`;
 
 const syncDB = async () => {
   try {
@@ -27,28 +28,37 @@ const syncDB = async () => {
         },
       },
     });
+
+    const reports = await Promise.all(
+      shifts.map(async (shift) => {
+        const report = await generateReportData(shift.id);
+        return report;
+      })
+    );
+
     if (shifts.length !== 0) {
       const synced: { ok: boolean; msg?: string; ids?: number[] } = await axios
         .post(`${datacenter}/sync`, {
           shifts,
+          reports,
           apiKey: process.env.API_KEY,
         })
         .then((res) => res.data);
 
-      if (synced.ok) {
-        if (synced.ids) {
-          synced.ids.forEach(async (id) => {
-            await client.shift.update({
-              where: {
-                id,
-              },
-              data: {
-                synced: true,
-              },
-            });
-          });
-        }
-      }
+      // if (synced.ok) {
+      //   if (synced.ids) {
+      //     synced.ids.forEach(async (id) => {
+      //       await client.shift.update({
+      //         where: {
+      //           id,
+      //         },
+      //         data: {
+      //           synced: true,
+      //         },
+      //       });
+      //     });
+      //   }
+      // }
       console.log(synced.msg || "Connected!");
     }
   } catch (e) {

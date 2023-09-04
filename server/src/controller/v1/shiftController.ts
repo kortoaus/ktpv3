@@ -344,8 +344,8 @@ export const generateReportData = async (shiftId: number) => {
   const buffetReport = buffetData.map((sd) => ({
     id: sd.buffetId,
     ppA: sd._sum.ppA || 0,
-    ppB: sd._sum.ppA || 0,
-    ppC: sd._sum.ppA || 0,
+    ppB: sd._sum.ppB || 0,
+    ppC: sd._sum.ppC || 0,
   }));
 
   const saleData = await client.saleLine.groupBy({

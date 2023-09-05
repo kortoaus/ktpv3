@@ -1100,3 +1100,58 @@ export const toggleKitchen = async (req: Request, res: Response) => {
     return res.json({ ok: false, msg: "Receipt Not Found" });
   }
 };
+
+export const voidTable = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { staffId, lines }: PlaceOrderDataType = req.body;
+  const device: Device = res.locals.device;
+  const { sale, staff } = await getSaleAndStaff(id, staffId);
+
+  if (!device || !staff) {
+    return res.status(403).json({ ok: false, msg: "Unauthorized!" });
+  }
+
+  if (!sale) {
+    return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
+  }
+
+  try {
+    console.log("req");
+    // New Sales
+    const count = await client.saleLine.count({
+      where: {
+        saleId: sale.id,
+      },
+    });
+    console.log(count);
+
+    if (count !== 0) {
+      return res.json({ ok: false, msg: "This table can not be voided!" });
+    }
+
+    const voided = await client.sale.update({
+      where: {
+        id: sale.id,
+      },
+      data: {
+        closeStaff: `${staff.name}(${staff.id})`,
+        closedAt: new Date(),
+        logs: `${staff.name}(${staff.id}) voided`,
+        pp: 0,
+        ppA: 0,
+        ppB: 0,
+        ppC: 0,
+        buffetId: null,
+      },
+    });
+
+    console.log(voided);
+
+    io.emit(`table_${sale.tableId}_mutate`);
+
+    return res.json({ ok: true });
+  } catch (e) {
+    console.log(e);
+    return res.json({ ok: false, msg: "Failed Place Order!" });
+  }
+};

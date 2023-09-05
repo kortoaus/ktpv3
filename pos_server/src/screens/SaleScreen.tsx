@@ -127,6 +127,36 @@ export default function SaleScreen({
     return false;
   };
 
+  const voidTableHandler = async (redirect: boolean = true) => {
+    if (placedLine.length !== 0) {
+      const msg = "This table can not be voided.";
+      window.alert(msg);
+      return;
+    }
+
+    const ask = "Do you want to void this table?";
+    if (!window.confirm(ask)) {
+      return;
+    }
+
+    const result: ApiResultType = await mutation(`/api/sale/${sale.id}/void`, {
+      staffId: staff.id,
+    });
+
+    if (result && result.ok) {
+      if (redirect) {
+        router.push("/");
+      }
+      return true;
+    }
+
+    if (result && !result.ok) {
+      window.alert(result?.msg || "Failed!");
+      return false;
+    }
+    return false;
+  };
+
   const getTotal = () => {
     const lines = [
       ...buffetLines,
@@ -361,11 +391,19 @@ export default function SaleScreen({
               Move
             </button>
             <button
-              className="bg-red-500 text-white"
+              className="bg-yellow-500 text-white"
               onClick={() => setOpenMerge(true)}
             >
               Merge
             </button>
+            {placedLine.length === 0 && (
+              <button
+                className="bg-red-500 text-white"
+                onClick={() => voidTableHandler()}
+              >
+                Void
+              </button>
+            )}
           </div>
         </div>
       </div>

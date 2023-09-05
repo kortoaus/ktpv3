@@ -20,6 +20,7 @@ import {
   updateBuffetData,
   updateBuffetTime,
   updateDevice,
+  voidTable,
 } from "@controller/v1/deviceController";
 import { getCurrentShift } from "@controller/v1/shiftController";
 import { getStaffByCode } from "@controller/v1/staffController";
@@ -70,6 +71,7 @@ deviceRouter.route("/product/:id(\\d+)/oos").post(authDeviceMid, toggleOOS);
 
 // Orders
 deviceRouter.route(`${saleIdPath}/place`).post(authDeviceMid, placeOrder);
+deviceRouter.route(`${saleIdPath}/void`).post(authDeviceMid, voidTable);
 deviceRouter.route(`${saleIdPath}/cancel`).post(authDeviceMid, cancelOrder);
 deviceRouter.route(`${saleIdPath}/move`).post(authDeviceMid, moveTable);
 deviceRouter.route(`${saleIdPath}/merge`).post(authDeviceMid, mergeTable);

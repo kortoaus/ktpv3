@@ -13,7 +13,7 @@ export async function POST(
   const key = convertIP(rawIp);
 
   const data = await getData(
-    encodeURI(`/sale/${id}/place`),
+    encodeURI(`/sale/${id}/void`),
     key,
     "POST",
     JSON.stringify(await req.json())

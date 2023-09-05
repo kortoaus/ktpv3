@@ -45,20 +45,20 @@ const syncDB = async () => {
         })
         .then((res) => res.data);
 
-      // if (synced.ok) {
-      //   if (synced.ids) {
-      //     synced.ids.forEach(async (id) => {
-      //       await client.shift.update({
-      //         where: {
-      //           id,
-      //         },
-      //         data: {
-      //           synced: true,
-      //         },
-      //       });
-      //     });
-      //   }
-      // }
+      if (synced.ok) {
+        if (synced.ids) {
+          synced.ids.forEach(async (id) => {
+            await client.shift.update({
+              where: {
+                id,
+              },
+              data: {
+                synced: true,
+              },
+            });
+          });
+        }
+      }
       console.log(synced.msg || "Connected!");
     }
   } catch (e) {

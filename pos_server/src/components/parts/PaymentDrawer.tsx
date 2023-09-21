@@ -181,7 +181,9 @@ export default function PaymentDrawer({ open, onClose, pay, amount }: Props) {
     const discount_percent_amount = new Decimal(
       +new Decimal(origin).div(100).mul(discount_percent).toFixed(2)
     );
-    const discount_amount_amount = new Decimal(discount_amount);
+    const discount_amount_amount = new Decimal(
+      +new Decimal(discount_amount).toFixed(2)
+    );
 
     const discounted_amount = discount_percent_amount.plus(
       discount_amount_amount

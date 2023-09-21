@@ -1,8 +1,9 @@
-import { BuffetClass, Category, Product, Shop } from "@prisma/client";
+import { BuffetClass, Category, Product, Sale, Shop } from "@prisma/client";
 import client from "./prismaClient";
 import axios from "axios";
 import { downloadImage } from "./util";
 import { generateReportData } from "@controller/v1/shiftController";
+import { SaleWithLines } from "../type/Sale";
 
 const apiKey = process.env.API_KEY || "";
 
@@ -61,6 +62,27 @@ const syncDB = async () => {
       }
       console.log(synced.msg || "Connected!");
     }
+
+    const sales = await client.sale.findMany({
+      where: {
+        synced: false,
+        closedAt: {
+          not: null,
+        },
+        subTotal: {
+          gt: 0,
+        },
+      },
+      include: {
+        lines: true,
+      },
+    });
+
+    await Promise.all(
+      sales.map(async (sale) => {
+        return await syncReceipt(sale);
+      })
+    );
   } catch (e) {
     console.log(`Failed Synchronize!`);
   }
@@ -150,3 +172,25 @@ const initDB = async () => {
 };
 
 export default initDB;
+
+export const syncReceipt = async (data: SaleWithLines) => {
+  const result: { ok: boolean } = await axios
+    .post(`${datacenter}/v2/sync/receipt`, {
+      receipt: data,
+      apiKey: process.env.API_KEY,
+    })
+    .then((res) => res.data);
+
+  if (result.ok) {
+    await client.sale.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        synced: true,
+      },
+    });
+  }
+
+  return data.id;
+};

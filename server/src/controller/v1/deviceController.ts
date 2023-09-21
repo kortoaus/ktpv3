@@ -15,6 +15,7 @@ import {
   printReceipt,
 } from "@libs/printerDriver";
 import { io } from "@libs/websocket";
+import { syncReceipt } from "@libs/initDB";
 
 async function getSaleAndStaff(saleId: string, staffId: number) {
   const sale = await client.sale.findFirst({
@@ -919,6 +920,9 @@ export const payment = async (req: Request, res: Response) => {
       };
       printReceipt(printData);
     }
+
+    // Sync
+    await syncReceipt(paid);
 
     return res.json({ ok: true });
   } catch (e) {

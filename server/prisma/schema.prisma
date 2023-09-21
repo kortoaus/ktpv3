@@ -234,6 +234,7 @@ model Sale {
   change           Float      @default(0)
   customerProperty String     @default("")
   lines            SaleLine[]
+  synced           Boolean    @default(false)
 }
 
 model SaleLine {

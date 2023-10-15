@@ -126,12 +126,17 @@ export default function OptionModal({
 
             {/* Btns */}
             {goodToGo() && (
-              <button
-                onClick={() => addHandler()}
-                className="BasicBtn w-full mt-4 justify-center !py-2 !border-0 bg-red-500 text-white text-2xl"
-              >
-                Add
-              </button>
+              <>
+                <button
+                  onClick={() => addHandler()}
+                  className="BasicBtn w-full mt-4 justify-center !py-2 !border-0 bg-red-500 text-white text-2xl"
+                >
+                  Add
+                </button>
+                <div className="mt-2 text-sm font-medium text-center text-red-500">
+                  {`Any leftovers will be charged $15 per table.`}
+                </div>
+              </>
             )}
           </div>
         </div>

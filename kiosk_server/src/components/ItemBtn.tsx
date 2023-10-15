@@ -150,7 +150,6 @@ export function ItemHandlerBtn({
             )}
           </div>
         </div>
-
         {outOfStock && (
           <div className="w-full h-full absolute top-0 fccc z-10 ">
             <span className="bg-white/50 p-1">Sold Out</span>

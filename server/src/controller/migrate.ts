@@ -1,7 +1,6 @@
 import { downloadImage, readJsonFileSync } from "@libs/util";
 import { Request, Response } from "express";
 import client from "@libs/prismaClient";
-import { chownSync } from "fs";
 
 type BuffetClassDataType = {
   id: number;

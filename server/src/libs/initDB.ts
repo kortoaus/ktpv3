@@ -13,8 +13,8 @@ type MigrationDataType = {
   category: Category[];
 };
 
-const datacenter = `https://itzsan.com/api`;
-// const datacenter = `http://localhost:3006/api`;
+// const datacenter = `http://localhost:4040/api/v2`;
+const datacenter = `https://dc.itzsan.com/api/v2`;
 
 const syncDB = async () => {
   try {
@@ -91,64 +91,80 @@ const syncDB = async () => {
 const initDB = async () => {
   try {
     const { buffetClass, product, category }: MigrationDataType = (
-      await axios.get(`${datacenter}/migration`)
+      await axios.post(`${datacenter}/sync/data`, {
+        apiKey,
+      })
     ).data;
 
     // Buffets
-    buffetClass.forEach(async (item) => {
-      const { id, archived } = item;
-      await client.buffetClass.upsert({
-        where: {
-          id,
-        },
-        create: {
-          ...item,
-        },
-        update: {
-          ...item,
-          archived: archived ? true : undefined,
-        },
-      });
-    });
-    console.log(`Buffet Data is updated.`);
+    const buffetSync = await Promise.all(
+      buffetClass.map(async (item) => {
+        const { id, archived } = item;
+        await client.buffetClass.upsert({
+          where: {
+            id,
+          },
+          create: {
+            ...item,
+          },
+          update: {
+            ...item,
+            archived: archived ? true : undefined,
+          },
+        });
+
+        return id;
+      })
+    );
+    console.log(`${buffetSync.length} Buffet Data is updated.`);
+
     // Category
-    category.forEach(async (item) => {
-      const { id, archived } = item;
-      await client.category.upsert({
-        where: {
-          id,
-        },
-        create: {
-          ...item,
-        },
-        update: {
-          ...item,
-          archived: archived ? true : undefined,
-        },
-      });
-    });
-    console.log(`Category Data is updated.`);
+    const catSync = await Promise.all(
+      category.map(async (item) => {
+        const { id, archived } = item;
+        await client.category.upsert({
+          where: {
+            id,
+          },
+          create: {
+            ...item,
+          },
+          update: {
+            ...item,
+            archived: archived ? true : undefined,
+          },
+        });
+
+        return id;
+      })
+    );
+    console.log(`${catSync.length} Category Data is updated.`);
+
     // Product
-    product.forEach(async (item) => {
-      const { id, archived } = item;
-      await client.product.upsert({
-        where: {
-          id,
-        },
-        create: {
-          ...item,
-          imgId: item.imgId ? `${item.imgId}.webp` : null,
-        },
-        update: {
-          ...item,
-          imgId: item.imgId ? `${item.imgId}.webp` : null,
-          printerIds: undefined,
-          outOfStock: undefined,
-          archived: archived ? true : undefined,
-        },
-      });
-    });
-    console.log(`Product Data is updated.`);
+    const productSync = await Promise.all(
+      product.map(async (item) => {
+        const { id, archived } = item;
+        await client.product.upsert({
+          where: {
+            id,
+          },
+          create: {
+            ...item,
+            imgId: item.imgId ? `${item.imgId}.webp` : null,
+          },
+          update: {
+            ...item,
+            imgId: item.imgId ? `${item.imgId}.webp` : null,
+            printerIds: undefined,
+            outOfStock: undefined,
+            archived: archived ? true : undefined,
+          },
+        });
+
+        return id;
+      })
+    );
+    console.log(`${productSync.length} Product Data is updated.`);
 
     const imgIds: string[] = product
       .map((pd) => (pd.imgId ? pd.imgId : ""))
@@ -175,7 +191,7 @@ export default initDB;
 
 export const syncReceipt = async (data: SaleWithLines) => {
   const result: { ok: boolean } = await axios
-    .post(`${datacenter}/v2/sync/receipt`, {
+    .post(`${datacenter}/sync/receipt`, {
       receipt: data,
       apiKey: process.env.API_KEY,
     })

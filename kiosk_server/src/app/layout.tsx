@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import SWRContext from "@/context/SWRContext";
 import { socket } from "@/libs/webSocket";
 import { useEffect } from "react";
+import { Metadata } from "next";
 
 const inter = Inter({ subsets: ["latin"] });
 

@@ -173,7 +173,7 @@ export default function MenuScreen({ name, buffets, holiday }: Props) {
           </div>
           <div className="flex items-center gap-4">
             {buffets
-              .filter((bf) => bf.priceA !== 0)
+              .sort((a, b) => a.priceA - b.priceA)
               .map((bf) => (
                 <button
                   className={`BasicBtn ${

@@ -61,9 +61,7 @@ export default function TitlePage() {
                 ) : (
                   <MenuScreen
                     holiday={shift.holiday}
-                    buffets={
-                      buffets ? buffets.filter((bf) => bf.priceA !== 0) : []
-                    }
+                    buffets={buffets ? buffets.filter((bf) => true) : []}
                     name={table.name}
                   />
                 )}

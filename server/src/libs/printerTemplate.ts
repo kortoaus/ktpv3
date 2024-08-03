@@ -30,7 +30,16 @@ export const kickDrawerBuffer = () => {
 };
 
 export const OrderTicketBuffer = async (data: OrderTicketType) => {
-  const { isNew, pp, tableName, label, lines, isSplit, who: staff } = data;
+  const {
+    isNew,
+    pp,
+    tableName,
+    label,
+    lines,
+    isSplit,
+    who: staff,
+    prefix,
+  } = data;
   const now = time(new Date()).format("hh:mm");
   const docHeader = `
   <?xml version="1.0" encoding="UTF-8"?>
@@ -56,7 +65,9 @@ export const OrderTicketBuffer = async (data: OrderTicketType) => {
     lines.map(async (ln) => {
       const { description, qty, options } = ln;
 
-      const optionStrings = options.map((opt) => `${opt.qty} of ${opt.name}`);
+      const optionStrings = options.map(
+        (opt) => `${opt.qty} of ${prefix}${opt.name}`
+      );
 
       let ld = ``;
       if (isSplit) {

@@ -65,6 +65,8 @@ export const authDeviceMid = async (
 
   const [_, ip] = key?.split(" ");
 
+  console.log(ip);
+
   const device = await client.device.findFirst({
     where: {
       archived: false,

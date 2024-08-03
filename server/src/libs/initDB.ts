@@ -157,7 +157,7 @@ const initDB = async () => {
             imgId: item.imgId ? `${item.imgId}.webp` : null,
             printerIds: undefined,
             outOfStock: undefined,
-            archived: archived ? true : undefined,
+            archived: archived !== undefined ? archived : undefined,
           },
         });
 

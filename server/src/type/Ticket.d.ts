@@ -7,6 +7,7 @@ export type OrderTicketType = Printer & {
   who: string;
   tableName: string;
   pp: number;
+  prefix: string;
 };
 
 export type ReceiptTicketType = Printer & {

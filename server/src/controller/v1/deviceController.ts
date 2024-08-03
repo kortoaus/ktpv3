@@ -523,6 +523,23 @@ export const placeOrder = async (req: Request, res: Response) => {
     return res.status(404).json({ ok: false, msg: "Sale Not Found!" });
   }
 
+  let buffetPrefix = `[A]`;
+
+  if (sale.buffetId) {
+    const buffet = await client.buffetClass.findUnique({
+      where: {
+        id: sale.buffetId,
+      },
+      select: {
+        name: true,
+      },
+    });
+
+    if (buffet) {
+      buffetPrefix = `[${buffet.name[0].toUpperCase()}]`;
+    }
+  }
+
   try {
     // New Sales
     await client.saleLine.createMany({
@@ -570,6 +587,7 @@ export const placeOrder = async (req: Request, res: Response) => {
         who: staff ? staff.name : "Customer",
         tableName: sale.tableName,
         pp: sale.pp,
+        prefix: buffetPrefix,
       })
     );
 
